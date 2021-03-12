@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FishingTrawler\ModEntry.cs" />
+    <Compile Include="FishingTrawler\ModResources.cs" />
+    <Compile Include="FishingTrawler\Patches\Locations\BeachPatch.cs" />
+    <Compile Include="FishingTrawler\Patches\Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
