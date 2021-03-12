@@ -18,6 +18,10 @@ namespace FishingTrawler
             // Set up the monitor, helper and config
             monitor = Monitor;
             modHelper = helper;
+
+            // Load in our assets
+            ModResources.SetUpAssets(helper);
+
             // Load our Harmony patches
             try
             {
