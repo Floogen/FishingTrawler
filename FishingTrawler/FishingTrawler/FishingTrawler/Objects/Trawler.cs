@@ -14,8 +14,9 @@ namespace FishingTrawler.Objects
 
         internal static Vector2 GetTrawlerPosition()
         {
-            // Enable this line to test moving to the right: _boatOffset++;
-            return new Vector2(5300f + _boatOffset, 2640f);
+            // Enable this line to test moving to the right:
+            _boatOffset++;
+            return (new Vector2(80f, 42f) * 64f) + new Vector2(_boatOffset, 0f);
         }
 
         internal static void Reset()
