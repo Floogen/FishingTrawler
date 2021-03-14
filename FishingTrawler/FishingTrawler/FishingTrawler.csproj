@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
     <Compile Include="FishingTrawler\Objects\Trawler.cs" />
     <Compile Include="FishingTrawler\ModEntry.cs" />
     <Compile Include="FishingTrawler\ModResources.cs" />
