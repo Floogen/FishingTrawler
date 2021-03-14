@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using FishingTrawler.GameLocations;
 using FishingTrawler.Patches.Locations;
 using Harmony;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace FishingTrawler
@@ -12,6 +14,9 @@ namespace FishingTrawler
     {
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
+
+        // API related
+        //IContentPatcherAPI contentPatcherApi;
 
         public override void Entry(IModHelper helper)
         {
@@ -35,6 +40,27 @@ namespace FishingTrawler
                 Monitor.Log($"Issue with Harmony patching: {e}", LogLevel.Error);
                 return;
             }
+
+            // Hook into GameLaunched event
+            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
+
+            // Hook into SaveLoaded
+            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+        }
+
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            // get the internal asset key for the map file
+            string mapAssetKey = this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "FishingTrawler.tmx"), ContentSource.ModFolder);
+
+            // add the location
+            TrawlerSurface location = new TrawlerSurface(mapAssetKey, "Custom_FishingTrawler") { IsOutdoors = true, IsFarm = false };
+            Game1.locations.Add(location);
+        }
+
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+
         }
     }
 }
