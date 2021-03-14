@@ -59,6 +59,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\FishingTrawler.tmx">
+      <Link>FishingTrawler\assets\FishingTrawler.tmx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -71,6 +75,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerTiles.png">
+      <Link>FishingTrawler\assets\TrawlerTiles.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="FishingTrawler\assets\BellsAndWhistles.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="FishingTrawler\assets\Trawler.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
