@@ -1,0 +1,12 @@
+{
+  "Format": "1.21.0",
+  "Changes": [
+    {
+      "Action": "EditMap",
+      "Target": "Maps/Beach",
+      "AddWarps": [
+        "84 40 Custom_FishingTrawler 39 25"
+      ]
+    }
+  ]
+}
