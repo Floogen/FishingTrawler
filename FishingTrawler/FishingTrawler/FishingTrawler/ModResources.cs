@@ -15,7 +15,7 @@ namespace FishingTrawler
 
         internal static void SetUpAssets(IModHelper helper)
         {
-            boatTexture = helper.Content.Load<Texture2D>(Path.Combine(@"assets", "Trawler.png"));
+            boatTexture = helper.Content.Load<Texture2D>(Path.Combine("assets", "Trawler.png"));
         }
     }
 }

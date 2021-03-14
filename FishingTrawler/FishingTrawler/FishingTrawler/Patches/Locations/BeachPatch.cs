@@ -42,9 +42,9 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            //b.Draw(boatSprite);
-            b.Draw(boatTexture, Game1.GlobalToLocal(Game1.viewport, Trawler.GetTrawlerPosition()), new Rectangle(4, 0, 156, 118), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 720f / 10000f);
-            b.Draw(boatTexture, Game1.GlobalToLocal(Game1.viewport, Trawler.GetTrawlerPosition() + new Vector2(8f, 0f) * 4f), new Rectangle(0, 160, 128, 96), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, (720f + 408f) / 10000f);
+            b.Draw(boatTexture, Game1.GlobalToLocal(Trawler.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 720f / 10000f);
+            // Overlay for glass port
+            //b.Draw(boatTexture, Game1.GlobalToLocal(Game1.viewport, Trawler.GetTrawlerPosition() + new Vector2(8f, 0f) * 4f), new Rectangle(0, 160, 128, 96), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, (720f + 408f) / 10000f);
         }
     }
 }
