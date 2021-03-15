@@ -50,12 +50,13 @@ namespace FishingTrawler
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
-            // get the internal asset key for the map file
-            string mapAssetKey = this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "FishingTrawler.tmx"), ContentSource.ModFolder);
+            // Add the surface location
+            TrawlerSurface surfaceLocation = new TrawlerSurface(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "FishingTrawler.tmx"), ContentSource.ModFolder), "Custom_FishingTrawler") { IsOutdoors = true, IsFarm = false };
+            Game1.locations.Add(surfaceLocation);
 
-            // add the location
-            TrawlerSurface location = new TrawlerSurface(mapAssetKey, "Custom_FishingTrawler") { IsOutdoors = true, IsFarm = false };
-            Game1.locations.Add(location);
+            // Add the hull location
+            TrawlerHull hullLocation = new TrawlerHull(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "TrawlerHull.tmx"), ContentSource.ModFolder), "Custom_TrawlerHull") { IsOutdoors = false, IsFarm = false };
+            Game1.locations.Add(hullLocation);
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)

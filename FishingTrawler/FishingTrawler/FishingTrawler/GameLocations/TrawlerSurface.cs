@@ -9,9 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using xTile.Dimensions;
-using xTile.Tiles;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace FishingTrawler.GameLocations
 {

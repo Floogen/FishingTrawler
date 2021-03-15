@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FishingTrawler\GameLocations\TrawlerHull.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
     <Compile Include="FishingTrawler\Objects\Trawler.cs" />
     <Compile Include="FishingTrawler\ModEntry.cs" />
@@ -62,6 +63,10 @@
   <ItemGroup>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\FishingTrawler.tmx">
       <Link>FishingTrawler\assets\FishingTrawler.tmx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerHull.tmx">
+      <Link>FishingTrawler\assets\TrawlerHull.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="manifest.json">
