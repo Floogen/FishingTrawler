@@ -9,6 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using xTile.Dimensions;
+using xTile.Tiles;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace FishingTrawler.GameLocations
 {
@@ -42,8 +45,6 @@ namespace FishingTrawler.GameLocations
         {
             base.ignoreDebrisWeather.Value = true;
             base.critters = new List<Critter>();
-
-            AmbientLocationSounds.addSound(new Vector2(44f, 23f), 2);
         }
 
         protected override void resetLocalState()
@@ -51,7 +52,7 @@ namespace FishingTrawler.GameLocations
             base.critters = new List<Critter>();
             base.resetLocalState();
 
-            AmbientLocationSounds.removeSound(new Vector2(44f, 23f));
+            AmbientLocationSounds.addSound(new Vector2(44f, 23f), 2);
 
             // Set up the textures
             string assetPath = ModEntry.modHelper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
@@ -60,17 +61,25 @@ namespace FishingTrawler.GameLocations
 
         public override void checkForMusic(GameTime time)
         {
-            // TODO: Add music
+            if (Game1.random.NextDouble() < 0.006)
+            {
+                base.localSound("seagulls");
+            }
+
+            // Make this playable?
+            Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
         }
 
         public override void cleanupBeforePlayerExit()
         {
-            Game1.changeMusicTrack("none");
+            AmbientLocationSounds.removeSound(new Vector2(44f, 23f));
+
             base.cleanupBeforePlayerExit();
         }
+
         public override void tryToAddCritters(bool onlyIfOnScreen = false)
         {
-
+            // Overidden to hide birds, but also hides vanilla clouds (which works in our favor)
         }
 
         internal Rectangle PickRandomCloud()
@@ -99,7 +108,7 @@ namespace FishingTrawler.GameLocations
 
         internal Vector2 PickSpawnPosition(bool isCloud)
         {
-            int reservedLowerYPosition = 18;
+            int reservedLowerYPosition = 15;
             int reservedUpperYPosition = 33;
 
             int reservedLowerXPosition = 70;
@@ -141,7 +150,7 @@ namespace FishingTrawler.GameLocations
             else
             {
                 Vector2 smokePosition = new Vector2(43.5f, 19.5f) * 64f;
-                ModEntry.monitor.Log(smokePosition.ToString(), LogLevel.Debug);
+
                 TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 1600, 64, 128), 200f, 9, 1, smokePosition, flicker: false, flipped: false, 1f, 0.015f, Color.Gray, 1f, 0.025f, 0f, 0f);
                 sprite.acceleration = new Vector2(-0.30f, -0.15f);
                 base.temporarySprites.Add(sprite);
@@ -182,6 +191,11 @@ namespace FishingTrawler.GameLocations
 
                 base.temporarySprites.Add(decoration);
             }
+        }
+
+        public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
+        {
+            return true;
         }
     }
 }
