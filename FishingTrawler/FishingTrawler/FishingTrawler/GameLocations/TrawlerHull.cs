@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
+using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +21,8 @@ namespace FishingTrawler.GameLocations
     {
         private List<Location> _hullHoleLocations;
         private const int TRAWLER_TILESHEET_INDEX = 2;
+        private const float MINIMUM_WATER_LEVEL_FOR_FLOOR = 5f;
+        private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
 
         internal int waterLevel;
 
@@ -79,7 +82,38 @@ namespace FishingTrawler.GameLocations
 
         public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
         {
+            // Preventing player from placing items here
             return true;
+        }
+
+        public override void UpdateWhenCurrentLocation(GameTime time)
+        {
+            base.UpdateWhenCurrentLocation(time);
+
+            Vector2 playerStandingPosition = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
+            if (base.lastTouchActionLocation.Equals(Vector2.Zero) && waterLevel >= MINIMUM_WATER_LEVEL_FOR_FLOOR)
+            {
+                string touchActionProperty = this.doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", "FloodWater");
+                base.lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
+                if (touchActionProperty != null)
+                {
+                    if (touchActionProperty == "PlaySound")
+                    {
+                        string soundName = this.doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", "FloodWater");
+                        if (String.IsNullOrEmpty(soundName))
+                        {
+                            ModEntry.monitor.Log($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
+                            return;
+                        }
+
+                        ModEntry.monitor.Log($"{Game1.player.xVelocity}, {Game1.player.yVelocity}", LogLevel.Debug);
+                        TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, Game1.player.Position, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
+                        sprite2.acceleration = new Vector2(Game1.player.xVelocity, Game1.player.yVelocity);
+                        base.temporarySprites.Add(sprite2);
+                        Game1.playSound(soundName);
+                    }
+                }
+            }
         }
 
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -154,7 +188,7 @@ namespace FishingTrawler.GameLocations
                             // Add the custom properties for tracking
                             this.map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
-                            // TODO: Play crafting sound
+                            Game1.playSound("crafting");
 
                             isFirstTile = false;
                             continue;
@@ -185,6 +219,7 @@ namespace FishingTrawler.GameLocations
         public void AttemptCreateHullLeak()
         {
             //ModEntry.monitor.Log("Attempting to create hull leak...", LogLevel.Trace);
+
             List<Location> validHoleLocations = _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ToList();
 
             if (validHoleLocations.Count() == 0)
@@ -208,7 +243,7 @@ namespace FishingTrawler.GameLocations
                     this.setAnimatedMapTile(holeLocation.X, holeLocation.Y, holeLocation.Y == 1 ? GetHullLeakTileIndexes(401) : GetHullLeakTileIndexes(377), 60, "Buildings", null, TRAWLER_TILESHEET_INDEX);
                     this.map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
-                    // TODO: Play splash sound
+                    Game1.playSound("barrelBreak");
 
                     isFirstTile = false;
                     continue;
@@ -228,6 +263,11 @@ namespace FishingTrawler.GameLocations
             waterLevel += _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count();
 
             ModEntry.monitor.Log(waterLevel.ToString(), LogLevel.Debug);
+
+            // Look at using PyTK (https://www.nexusmods.com/stardewvalley/mods/1726?tab=description)
+            // Use it to load FloodLevel layer and decrease the opacity (make it more visible) depending on water level?
+            this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
+            this.map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
         }
     }
 }

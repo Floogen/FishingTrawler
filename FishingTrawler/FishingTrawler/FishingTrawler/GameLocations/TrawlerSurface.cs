@@ -195,6 +195,7 @@ namespace FishingTrawler.GameLocations
 
         public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
         {
+            // Preventing player from placing items here
             return true;
         }
     }
