@@ -65,6 +65,7 @@ namespace FishingTrawler
             }
 
             TrawlerHull trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+            TrawlerSurface trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
 
             // Every 5 seconds recalculate the water level for leaks
             // TODO: (when player bails the water level will update outside this timer)
@@ -79,6 +80,7 @@ namespace FishingTrawler
             {
                 // TODO: Base of Game1.random (10% probability?)
                 trawlerHull.AttemptCreateHullLeak();
+                trawlerSurface.AttemptCreateNetRip();
             }
         }
 

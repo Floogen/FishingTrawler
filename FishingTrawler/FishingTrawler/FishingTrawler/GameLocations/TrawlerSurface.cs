@@ -9,6 +9,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using xTile.Dimensions;
+using xTile.Layers;
+using xTile.Tiles;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace FishingTrawler.GameLocations
 {
@@ -23,8 +27,9 @@ namespace FishingTrawler.GameLocations
         private Rectangle _rockPillarSource = new Rectangle(0, 0, 40, 53);
         private Rectangle _rockWithTreeSource = new Rectangle(48, 16, 96, 96);
 
-        // Source spritesheet
-        private Texture2D _spriteSheet;
+        // Mini-game stat related
+        internal int numberOfFish;
+        private List<Location> _netRipLocations;
 
         // Speed related offsets
         private float _slowOffset = -5f;
@@ -33,6 +38,7 @@ namespace FishingTrawler.GameLocations
         private float _nextSmoke = 0f;
         private const int CLOUD_ID = 1010101;
         private const int GROUND_ID = 2020202;
+        private const int TRAWLER_TILESHEET_INDEX = 2;
 
         internal TrawlerSurface()
         {
@@ -43,6 +49,27 @@ namespace FishingTrawler.GameLocations
         {
             base.ignoreDebrisWeather.Value = true;
             base.critters = new List<Critter>();
+
+            numberOfFish = 0;
+            _netRipLocations = new List<Location>();
+
+            Layer alwaysFrontLayer = this.map.GetLayer("AlwaysFront");
+            for (int x = 0; x < alwaysFrontLayer.LayerWidth; x++)
+            {
+                for (int y = 0; y < alwaysFrontLayer.LayerHeight; y++)
+                {
+                    Tile tile = alwaysFrontLayer.Tiles[x, y];
+                    if (tile is null)
+                    {
+                        continue;
+                    }
+
+                    if (tile.Properties.ContainsKey("CustomAction") && tile.Properties["CustomAction"] == "RippedNet")
+                    {
+                        _netRipLocations.Add(new Location(x, y));
+                    }
+                }
+            }
         }
 
         protected override void resetLocalState()
@@ -51,10 +78,6 @@ namespace FishingTrawler.GameLocations
             base.resetLocalState();
 
             AmbientLocationSounds.addSound(new Vector2(44f, 23f), 2);
-
-            // Set up the textures
-            string assetPath = ModEntry.modHelper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
-            _spriteSheet = Game1.temporaryContent.Load<Texture2D>(Path.Combine(assetPath, "BellsAndWhistles.png"));
         }
 
         public override void checkForMusic(GameTime time)
@@ -197,6 +220,54 @@ namespace FishingTrawler.GameLocations
         {
             // Preventing player from placing items here
             return true;
+        }
+
+        private int[] GetNetRippedTileIndexes(int startingIndex)
+        {
+            List<int> indexes = new List<int>();
+            for (int offset = 0; offset < 5; offset++)
+            {
+                indexes.Add(startingIndex + offset);
+            }
+
+            return indexes.ToArray();
+        }
+
+        private bool IsNetRipped(int tileX, int tileY)
+        {
+            Tile hole = this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY];
+            if (hole != null && this.doesTileHaveProperty(tileX, tileY, "CustomAction", "AlwaysFront") == "RippedNet")
+            {
+                return bool.Parse(hole.Properties["IsRipped"]);
+            }
+
+            ModEntry.monitor.Log("Called [IsNetRipped] on tile that doesn't have IsRipped property on AlwaysFront layer, returning false!", LogLevel.Trace);
+            return false;
+        }
+
+        public void AttemptCreateNetRip()
+        {
+            //ModEntry.monitor.Log("Attempting to create net rip...", LogLevel.Trace);
+
+            List<Location> validNetLocations = _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).ToList();
+
+            if (validNetLocations.Count() == 0)
+            {
+                return;
+            }
+
+            // Pick a random valid spot to rip
+            Location netLocation = validNetLocations.ElementAt(Game1.random.Next(0, validNetLocations.Count()));
+
+            // Set the net as ripped
+            Tile firstTile = this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y];
+            firstTile.Properties["IsRipped"] = true;
+
+            this.setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+            this.setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+
+            // Copy over the old properties
+            this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
         }
     }
 }
