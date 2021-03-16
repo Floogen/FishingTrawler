@@ -64,11 +64,21 @@ namespace FishingTrawler
                 return;
             }
 
-            // Every 5 seconds check for new event (leak, net tearing, etc.) on Trawler
+            TrawlerHull trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+
+            // Every 5 seconds recalculate the water level for leaks
+            // TODO: (when player bails the water level will update outside this timer)
             if (e.IsMultipleOf(300))
             {
                 // TODO: Base of Game1.random (10% probability?)
-                (Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull).AttemptCreateHullLeak();
+                trawlerHull.UpdateWaterLevel();
+            }
+
+            // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler
+            if (e.IsMultipleOf(600))
+            {
+                // TODO: Base of Game1.random (10% probability?)
+                trawlerHull.AttemptCreateHullLeak();
             }
         }
 

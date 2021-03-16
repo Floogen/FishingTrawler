@@ -19,8 +19,9 @@ namespace FishingTrawler.GameLocations
     internal class TrawlerHull : GameLocation
     {
         private List<Location> _hullHoleLocations;
-
         private const int TRAWLER_TILESHEET_INDEX = 2;
+
+        internal int waterLevel;
 
         internal TrawlerHull()
         {
@@ -29,6 +30,7 @@ namespace FishingTrawler.GameLocations
 
         internal TrawlerHull(string mapPath, string name) : base(mapPath, name)
         {
+            waterLevel = 0;
             _hullHoleLocations = new List<Location>();
 
             Layer buildingsLayer = this.map.GetLayer("Buildings");
@@ -80,18 +82,6 @@ namespace FishingTrawler.GameLocations
             return true;
         }
 
-        public override void updateEvenIfFarmerIsntHere(GameTime time, bool skipWasUpdatedFlush = false)
-        {
-            base.updateEvenIfFarmerIsntHere(time, skipWasUpdatedFlush);
-        }
-
-        public override void UpdateWhenCurrentLocation(GameTime time)
-        {
-            base.UpdateWhenCurrentLocation(time);
-
-            // Check for any animated tiles that need to be updated (for water, etc)
-        }
-
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
             return base.checkAction(tileLocation, viewport, who);
@@ -133,18 +123,17 @@ namespace FishingTrawler.GameLocations
             Tile hole = this.map.GetLayer("Buildings").Tiles[tileX, tileY];
             if (hole != null && this.doesTileHaveProperty(tileX, tileY, "CustomAction", "Buildings") == "HullHole")
             {
-                ModEntry.monitor.Log($"HERE: {hole.Properties["IsLeaking"]}", LogLevel.Debug);
                 return bool.Parse(hole.Properties["IsLeaking"]);
             }
 
-            ModEntry.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Debug);
+            ModEntry.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
             return false;
         }
 
         public void AttemptPlugLeak(int tileX, int tileY, Farmer who)
         {
             AnimatedTile firstTile = this.map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
-            ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
+            //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Trace);
 
             if (firstTile != null && isActionableTile(tileX, tileY, who) && IsWithinRangeOfLeak(tileX, tileY, who))
             {
@@ -230,6 +219,15 @@ namespace FishingTrawler.GameLocations
                 int[] animatedHullTileIndexes = GetHullLeakTileIndexes(this.map.GetLayer(targetLayer).Tiles[holeLocation.X, tileY].TileIndex + 1);
                 this.setAnimatedMapTile(holeLocation.X, tileY, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
             }
+        }
+
+        public void UpdateWaterLevel()
+        {
+            // Should be called from ModEntry.OnOneSecondUpdateTicking (at X second interval)
+            // Foreach leak, add 1 to the water level
+            waterLevel += _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count();
+
+            ModEntry.monitor.Log(waterLevel.ToString(), LogLevel.Debug);
         }
     }
 }
