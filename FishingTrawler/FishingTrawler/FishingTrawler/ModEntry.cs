@@ -15,6 +15,9 @@ namespace FishingTrawler
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
 
+        private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
+        private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
+
         // API related
         //IContentPatcherAPI contentPatcherApi;
 
@@ -41,27 +44,74 @@ namespace FishingTrawler
                 return;
             }
 
+            // Hook into OneSecondUpdateTicking
+            helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
+
             // Hook into GameLaunched event
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
 
             // Hook into SaveLoaded
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+
+            // Hook into MouseClicked
+            helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        }
+
+        private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
+        {
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler())
+            {
+                return;
+            }
+
+            // Every 5 seconds check for new event (leak, net tearing, etc.) on Trawler
+            if (e.IsMultipleOf(300))
+            {
+                // TODO: Base of Game1.random (10% probability?)
+                (Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull).AttemptCreateHullLeak();
+            }
+        }
+
+        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+        {
+            if (!e.IsDown(SButton.MouseRight))
+            {
+                return;
+            }
+
+            if (Context.IsWorldReady && Game1.player.currentLocation.NameOrUniqueName == "Custom_TrawlerHull")
+            {
+                TrawlerHull hullLocation = Game1.player.currentLocation as TrawlerHull;
+                hullLocation.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+            }
         }
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "FishingTrawler.tmx"), ContentSource.ModFolder), "Custom_FishingTrawler") { IsOutdoors = true, IsFarm = false };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "FishingTrawler.tmx"), ContentSource.ModFolder), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
             Game1.locations.Add(surfaceLocation);
 
             // Add the hull location
-            TrawlerHull hullLocation = new TrawlerHull(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "TrawlerHull.tmx"), ContentSource.ModFolder), "Custom_TrawlerHull") { IsOutdoors = false, IsFarm = false };
+            TrawlerHull hullLocation = new TrawlerHull(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "TrawlerHull.tmx"), ContentSource.ModFolder), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
             Game1.locations.Add(hullLocation);
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
 
+        }
+
+        private bool IsPlayerOnTrawler()
+        {
+            switch (Game1.player.currentLocation)
+            {
+                case TrawlerSurface surface:
+                case TrawlerHull hull:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }
