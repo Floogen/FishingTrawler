@@ -106,7 +106,6 @@ namespace FishingTrawler.GameLocations
                             return;
                         }
 
-                        ModEntry.monitor.Log($"{Game1.player.xVelocity}, {Game1.player.yVelocity}", LogLevel.Debug);
                         TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, Game1.player.Position, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                         sprite2.acceleration = new Vector2(Game1.player.xVelocity, Game1.player.yVelocity);
                         base.temporarySprites.Add(sprite2);
