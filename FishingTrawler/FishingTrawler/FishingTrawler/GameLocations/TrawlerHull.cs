@@ -110,7 +110,7 @@ namespace FishingTrawler.GameLocations
                         TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, Game1.player.Position, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                         sprite2.acceleration = new Vector2(Game1.player.xVelocity, Game1.player.yVelocity);
                         base.temporarySprites.Add(sprite2);
-                        Game1.playSound(soundName);
+                        this.playSound(soundName);
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace FishingTrawler.GameLocations
                             // Add the custom properties for tracking
                             this.map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
-                            Game1.playSound("crafting");
+                            this.playSound("crafting");
 
                             isFirstTile = false;
                             continue;
@@ -243,7 +243,7 @@ namespace FishingTrawler.GameLocations
                     this.setAnimatedMapTile(holeLocation.X, holeLocation.Y, holeLocation.Y == 1 ? GetHullLeakTileIndexes(401) : GetHullLeakTileIndexes(377), 60, "Buildings", null, TRAWLER_TILESHEET_INDEX);
                     this.map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
-                    Game1.playSound("barrelBreak");
+                    this.playSound("barrelBreak");
 
                     isFirstTile = false;
                     continue;
