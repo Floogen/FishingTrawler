@@ -17,6 +17,7 @@ namespace FishingTrawler.GameLocations
         // Fluff ideas: Cloud shadows (if not rainy), rock pillar, small sandy hill island with palm tree
         private Rectangle _smallCloudSource = new Rectangle(0, 64, 48, 48);
         private Rectangle _mediumCloudSource = new Rectangle(0, 160, 96, 48);
+        private Rectangle _largeCloudSource = new Rectangle(0, 208, 144, 96);
         private Rectangle _longCloudSource = new Rectangle(0, 112, 96, 48);
 
         private Rectangle _rockPillarSource = new Rectangle(0, 0, 40, 53);
@@ -81,12 +82,14 @@ namespace FishingTrawler.GameLocations
 
         internal Rectangle PickRandomCloud()
         {
-            switch (Game1.random.Next(1, 3))
+            switch (Game1.random.Next(1, 5))
             {
                 case 1:
                     return _smallCloudSource;
                 case 2:
                     return _mediumCloudSource;
+                case 3:
+                    return _largeCloudSource;
                 default:
                     return _longCloudSource;
             }
