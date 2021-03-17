@@ -19,6 +19,7 @@ namespace FishingTrawler
 
         private TrawlerHull trawlerHull;
         private TrawlerSurface trawlerSurface;
+        private string trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
@@ -168,7 +169,15 @@ namespace FishingTrawler
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            // Check if spacechase0's JsonAssets is in the current mod list
+            if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
+            {
+                Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
+                ApiManager.HookIntoJsonAssets(Helper);
 
+                // Add the bailing bucket asset (weapon) and rewards
+                ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, trawlerItemsPath));
+            }
         }
 
         private bool IsPlayerOnTrawler()

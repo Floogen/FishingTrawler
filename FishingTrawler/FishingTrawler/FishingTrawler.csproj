@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FishingTrawler\API\ApiManager.cs" />
+    <Compile Include="FishingTrawler\API\Interfaces\IJsonAssetApi.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerHull.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
     <Compile Include="FishingTrawler\Objects\Trawler.cs" />
@@ -67,6 +69,9 @@
     </None>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerHull.tmx">
       <Link>FishingTrawler\assets\TrawlerHull.tmx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="FishingTrawler\assets\TrawlerItems\content-pack.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="manifest.json">
@@ -93,7 +98,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="FishingTrawler\API\" />
     <Folder Include="[CP] FishingTrawler\assets\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
