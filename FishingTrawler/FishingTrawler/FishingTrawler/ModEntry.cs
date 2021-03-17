@@ -86,15 +86,23 @@ namespace FishingTrawler
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (!e.IsDown(SButton.MouseRight))
+            if (!e.IsDown(SButton.MouseRight) || !Context.IsWorldReady)
             {
                 return;
             }
 
-            if (Context.IsWorldReady && Game1.player.currentLocation.NameOrUniqueName == "Custom_TrawlerHull")
+            if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
             {
                 TrawlerHull hullLocation = Game1.player.currentLocation as TrawlerHull;
                 hullLocation.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+            }
+            else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
+            {
+                TrawlerSurface surfaceLocation = Game1.player.currentLocation as TrawlerSurface;
+
+                // Attempt two checks, in case the user clicks above the rope
+                surfaceLocation.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                surfaceLocation.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1, Game1.player);
             }
         }
 

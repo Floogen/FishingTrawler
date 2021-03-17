@@ -18,7 +18,7 @@ namespace FishingTrawler.GameLocations
 {
     internal class TrawlerSurface : GameLocation
     {
-        // Fluff ideas: Cloud shadows (if not rainy), rock pillar, small sandy hill island with palm tree
+        // Source rectangles for drawing fluff
         private Rectangle _smallCloudSource = new Rectangle(0, 64, 48, 48);
         private Rectangle _mediumCloudSource = new Rectangle(0, 160, 96, 48);
         private Rectangle _largeCloudSource = new Rectangle(0, 208, 144, 96);
@@ -222,6 +222,33 @@ namespace FishingTrawler.GameLocations
             return true;
         }
 
+        public override bool isActionableTile(int xTile, int yTile, Farmer who)
+        {
+            string action_property = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "AlwaysFront");
+            if (action_property != null)
+            {
+                if (!IsWithinRangeOfNet(xTile, yTile, who))
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                return true;
+            }
+
+            return base.isActionableTile(xTile, yTile, who);
+        }
+
+        private bool IsWithinRangeOfNet(int tileX, int tileY, Farmer who)
+        {
+            //ModEntry.monitor.Log($"({who.Position.X / 64}, {who.Position.Y / 64})", LogLevel.Debug);
+            if (Enumerable.Range(34, 3).Contains((int)who.Position.X / 64) && Enumerable.Range(24, 2).Contains((int)who.Position.Y / 64))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private int[] GetNetRippedTileIndexes(int startingIndex)
         {
             List<int> indexes = new List<int>();
@@ -268,6 +295,32 @@ namespace FishingTrawler.GameLocations
 
             // Copy over the old properties
             this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
+
+            this.playSound("crit");
+        }
+
+        public void AttemptFixNet(int tileX, int tileY, Farmer who)
+        {
+            AnimatedTile firstTile = this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY] as AnimatedTile;
+            ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
+
+            if (firstTile != null && isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(tileX, tileY, who))
+            {
+                if (firstTile.Properties["CustomAction"] == "RippedNet" && bool.Parse(firstTile.Properties["IsRipped"]) is true)
+                {
+                    // Stop the rip
+                    firstTile.Properties["IsRipped"] = false;
+
+                    // Patch up the net
+                    this.setMapTile(tileX, tileY, 460, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                    this.setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+
+                    // Add the custom properties for tracking
+                    this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+
+                    this.playSound("harvest");
+                }
+            }
         }
     }
 }
