@@ -64,11 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\FishingTrawler.tmx">
-      <Link>FishingTrawler\assets\FishingTrawler.tmx</Link>
+      <Link>FishingTrawler\assets\Maps\FishingTrawler.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerHull.tmx">
-      <Link>FishingTrawler\assets\TrawlerHull.tmx</Link>
+      <Link>FishingTrawler\assets\Maps\TrawlerHull.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="FishingTrawler\assets\TrawlerItems\content-pack.json">
@@ -87,13 +87,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerTiles.png">
-      <Link>FishingTrawler\assets\TrawlerTiles.png</Link>
+      <Link>FishingTrawler\assets\Maps\TrawlerTiles.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="FishingTrawler\assets\BellsAndWhistles.png">
+    <Content Include="FishingTrawler\assets\Maps\BellsAndWhistles.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="FishingTrawler\assets\Trawler.png">
+    <Content Include="FishingTrawler\assets\Objects\Trawler.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

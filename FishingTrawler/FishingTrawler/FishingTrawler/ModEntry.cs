@@ -155,11 +155,11 @@ namespace FishingTrawler
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "FishingTrawler.tmx"), ContentSource.ModFolder), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
             Game1.locations.Add(surfaceLocation);
 
             // Add the hull location
-            TrawlerHull hullLocation = new TrawlerHull(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "TrawlerHull.tmx"), ContentSource.ModFolder), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
+            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
             Game1.locations.Add(hullLocation);
 
             // Verify our locations were added and establish our location variables

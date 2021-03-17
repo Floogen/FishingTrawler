@@ -203,7 +203,7 @@ namespace FishingTrawler.GameLocations
                         float randomScale = Game1.random.Next(3, 13);
                         bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
 
-                        TemporaryAnimatedSprite cloud = new TemporaryAnimatedSprite(Path.Combine(assetPath, "BellsAndWhistles.png"), PickRandomCloud(), 200f, 1, 9999, PickSpawnPosition(true), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, randomScale, 0f, 0f, 0f);
+                        TemporaryAnimatedSprite cloud = new TemporaryAnimatedSprite(Path.Combine(assetPath, "Maps", "BellsAndWhistles.png"), PickRandomCloud(), 200f, 1, 9999, PickSpawnPosition(true), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, randomScale, 0f, 0f, 0f);
                         cloud.motion = new Vector2(_slowOffset, 0f);
                         cloud.drawAboveAlwaysFront = true;
                         cloud.id = CLOUD_ID;
@@ -218,7 +218,7 @@ namespace FishingTrawler.GameLocations
                 string assetPath = ModResources.assetFolderPath;
                 bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
 
-                TemporaryAnimatedSprite decoration = new TemporaryAnimatedSprite(Path.Combine(assetPath, "BellsAndWhistles.png"), PickRandomDecoration(), 200f, 1, 9999, PickSpawnPosition(false), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, 4f, 0f, 0f, 0f);
+                TemporaryAnimatedSprite decoration = new TemporaryAnimatedSprite(Path.Combine(assetPath, "Maps", "BellsAndWhistles.png"), PickRandomDecoration(), 200f, 1, 9999, PickSpawnPosition(false), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, 4f, 0f, 0f, 0f);
                 decoration.motion = new Vector2(_fastOffset, 0f);
                 decoration.id = GROUND_ID;
 
