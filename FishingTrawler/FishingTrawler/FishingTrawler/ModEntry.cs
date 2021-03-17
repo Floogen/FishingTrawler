@@ -53,8 +53,24 @@ namespace FishingTrawler
             // Hook into SaveLoaded
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
 
+            helper.Events.Player.Warped += this.OnWarped;
+
             // Hook into MouseClicked
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        }
+
+        private void OnWarped(object sender, WarpedEventArgs e)
+        {
+            TrawlerHull trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+            TrawlerSurface trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
+
+            // Check if player just left the trawler
+            if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
+            {
+                // Reset the trawler
+                trawlerHull.Reset();
+                trawlerSurface.Reset();
+            }
         }
 
         private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
@@ -125,7 +141,12 @@ namespace FishingTrawler
 
         private bool IsPlayerOnTrawler()
         {
-            switch (Game1.player.currentLocation)
+            return IsValidTrawlerLocation(Game1.player.currentLocation);
+        }
+
+        private bool IsValidTrawlerLocation(GameLocation location)
+        {
+            switch (location)
             {
                 case TrawlerSurface surface:
                 case TrawlerHull hull:

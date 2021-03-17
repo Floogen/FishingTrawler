@@ -72,6 +72,16 @@ namespace FishingTrawler.GameLocations
             }
         }
 
+        internal void Reset()
+        {
+            foreach (Location netRippedLocation in _netRipLocations.Where(loc => IsNetRipped(loc.X, loc.Y)))
+            {
+                AttemptFixNet(netRippedLocation.X, netRippedLocation.Y, Game1.player, true);
+            }
+
+            UpdateFishCaught(0);
+        }
+
         protected override void resetLocalState()
         {
             base.critters = new List<Critter>();
@@ -299,33 +309,47 @@ namespace FishingTrawler.GameLocations
             this.playSound("crit");
         }
 
-        public void AttemptFixNet(int tileX, int tileY, Farmer who)
+        public void AttemptFixNet(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
             AnimatedTile firstTile = this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY] as AnimatedTile;
-            ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
+            //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
 
-            if (firstTile != null && isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(tileX, tileY, who))
+            if (firstTile is null)
             {
-                if (firstTile.Properties["CustomAction"] == "RippedNet" && bool.Parse(firstTile.Properties["IsRipped"]) is true)
-                {
-                    // Stop the rip
-                    firstTile.Properties["IsRipped"] = false;
+                return;
+            }
 
-                    // Patch up the net
-                    this.setMapTile(tileX, tileY, 460, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
-                    this.setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(tileX, tileY, who)))
+            {
+                return;
+            }
 
-                    // Add the custom properties for tracking
-                    this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+            if (firstTile.Properties["CustomAction"] == "RippedNet" && bool.Parse(firstTile.Properties["IsRipped"]) is true)
+            {
+                // Stop the rip
+                firstTile.Properties["IsRipped"] = false;
 
-                    this.playSound("harvest");
-                }
+                // Patch up the net
+                this.setMapTile(tileX, tileY, 460, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                this.setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+
+                // Add the custom properties for tracking
+                this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+
+                this.playSound("harvest");
             }
         }
 
-        public void UpdateFishCaught()
+        public void UpdateFishCaught(int fishCaughtOverride = -1)
         {
-            fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count();
+            if (fishCaughtOverride > -1)
+            {
+                fishCaughtQuantity = fishCaughtOverride;
+            }
+            else
+            {
+                fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count();
+            }
 
             ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
         }

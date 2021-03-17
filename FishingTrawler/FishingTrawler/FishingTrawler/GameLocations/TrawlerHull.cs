@@ -55,6 +55,16 @@ namespace FishingTrawler.GameLocations
             }
         }
 
+        internal void Reset()
+        {
+            foreach (Location hullHoleLocation in _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)))
+            {
+                AttemptPlugLeak(hullHoleLocation.X, hullHoleLocation.Y, Game1.player, true);
+            }
+
+            UpdateWaterLevel(0);
+        }
+
         protected override void resetLocalState()
         {
             base.resetLocalState();
@@ -163,43 +173,50 @@ namespace FishingTrawler.GameLocations
             return false;
         }
 
-        public void AttemptPlugLeak(int tileX, int tileY, Farmer who)
+        public void AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
             AnimatedTile firstTile = this.map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
             //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Trace);
 
-            if (firstTile != null && isActionableTile(tileX, tileY, who) && IsWithinRangeOfLeak(tileX, tileY, who))
+            if (firstTile is null)
             {
-                if (firstTile.Properties["CustomAction"] == "HullHole" && bool.Parse(firstTile.Properties["IsLeaking"]) is true)
+                return;
+            }
+
+            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfLeak(tileX, tileY, who)))
+            {
+                return;
+            }
+
+            if (firstTile.Properties["CustomAction"] == "HullHole" && bool.Parse(firstTile.Properties["IsLeaking"]) is true)
+            {
+                // Stop the leaking
+                firstTile.Properties["IsLeaking"] = false;
+
+                // Update the tiles
+                bool isFirstTile = true;
+                for (int y = tileY; y < 5; y++)
                 {
-                    // Stop the leaking
-                    firstTile.Properties["IsLeaking"] = false;
-
-                    // Update the tiles
-                    bool isFirstTile = true;
-                    for (int y = tileY; y < 5; y++)
+                    if (isFirstTile)
                     {
-                        if (isFirstTile)
-                        {
-                            // Board up the hole
-                            this.setMapTile(tileX, y, GetRandomBoardTile(), "Buildings", null, TRAWLER_TILESHEET_INDEX);
+                        // Board up the hole
+                        this.setMapTile(tileX, y, GetRandomBoardTile(), "Buildings", null, TRAWLER_TILESHEET_INDEX);
 
-                            // Add the custom properties for tracking
-                            this.map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+                        // Add the custom properties for tracking
+                        this.map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
-                            this.playSound("crafting");
+                        this.playSound("crafting");
 
-                            isFirstTile = false;
-                            continue;
-                        }
-
-                        string targetLayer = y == 4 ? "Back" : "Buildings";
-
-                        AnimatedTile animatedTile = this.map.GetLayer(targetLayer).Tiles[tileX, y] as AnimatedTile;
-                        int tileIndex = animatedTile.TileFrames[0].TileIndex - 1;
-
-                        this.setMapTile(tileX, y, tileIndex, targetLayer, null, TRAWLER_TILESHEET_INDEX);
+                        isFirstTile = false;
+                        continue;
                     }
+
+                    string targetLayer = y == 4 ? "Back" : "Buildings";
+
+                    AnimatedTile animatedTile = this.map.GetLayer(targetLayer).Tiles[tileX, y] as AnimatedTile;
+                    int tileIndex = animatedTile.TileFrames[0].TileIndex - 1;
+
+                    this.setMapTile(tileX, y, tileIndex, targetLayer, null, TRAWLER_TILESHEET_INDEX);
                 }
             }
         }
@@ -255,11 +272,19 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        public void UpdateWaterLevel()
+        public void UpdateWaterLevel(int waterLevelOverride = -1)
         {
             // Should be called from ModEntry.OnOneSecondUpdateTicking (at X second interval)
             // Foreach leak, add 1 to the water level
-            waterLevel += _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count();
+
+            if (waterLevelOverride > -1)
+            {
+                waterLevel = waterLevelOverride;
+            }
+            else
+            {
+                waterLevel += _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count();
+            }
 
             ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);
 
