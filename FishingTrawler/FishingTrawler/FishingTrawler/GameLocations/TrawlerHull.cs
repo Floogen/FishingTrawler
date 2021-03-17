@@ -261,10 +261,9 @@ namespace FishingTrawler.GameLocations
             // Foreach leak, add 1 to the water level
             waterLevel += _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count();
 
-            ModEntry.monitor.Log(waterLevel.ToString(), LogLevel.Debug);
+            ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);
 
-            // Look at using PyTK (https://www.nexusmods.com/stardewvalley/mods/1726?tab=description)
-            // Use it to load FloodLevel layer and decrease the opacity (make it more visible) depending on water level?
+            // Using PyTK for these layers and opacity
             this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
             this.map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
         }

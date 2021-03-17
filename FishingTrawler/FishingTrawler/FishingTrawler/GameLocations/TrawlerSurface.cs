@@ -28,7 +28,7 @@ namespace FishingTrawler.GameLocations
         private Rectangle _rockWithTreeSource = new Rectangle(48, 16, 96, 96);
 
         // Mini-game stat related
-        internal int numberOfFish;
+        internal int fishCaughtQuantity;
         private List<Location> _netRipLocations;
 
         // Speed related offsets
@@ -50,7 +50,7 @@ namespace FishingTrawler.GameLocations
             base.ignoreDebrisWeather.Value = true;
             base.critters = new List<Critter>();
 
-            numberOfFish = 0;
+            fishCaughtQuantity = 0;
             _netRipLocations = new List<Location>();
 
             Layer alwaysFrontLayer = this.map.GetLayer("AlwaysFront");
@@ -321,6 +321,13 @@ namespace FishingTrawler.GameLocations
                     this.playSound("harvest");
                 }
             }
+        }
+
+        public void UpdateFishCaught()
+        {
+            fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count();
+
+            ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
         }
     }
 }

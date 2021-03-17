@@ -67,12 +67,13 @@ namespace FishingTrawler
             TrawlerHull trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
             TrawlerSurface trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
 
-            // Every 5 seconds recalculate the water level for leaks
+            // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
             // TODO: (when player bails the water level will update outside this timer)
             if (e.IsMultipleOf(300))
             {
                 // TODO: Base of Game1.random (10% probability?)
                 trawlerHull.UpdateWaterLevel();
+                trawlerSurface.UpdateFishCaught();
             }
 
             // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler
