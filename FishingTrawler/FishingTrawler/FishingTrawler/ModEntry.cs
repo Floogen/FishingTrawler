@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using FishingTrawler.API;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Patches.Locations;
 using Harmony;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Tools;
 
 namespace FishingTrawler
 {
@@ -14,6 +16,9 @@ namespace FishingTrawler
     {
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
+
+        private TrawlerHull trawlerHull;
+        private TrawlerSurface trawlerSurface;
 
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
@@ -44,6 +49,9 @@ namespace FishingTrawler
                 return;
             }
 
+            // Hook into UpdateTicking
+            helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking; ;
+
             // Hook into OneSecondUpdateTicking
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
 
@@ -61,15 +69,38 @@ namespace FishingTrawler
 
         private void OnWarped(object sender, WarpedEventArgs e)
         {
-            TrawlerHull trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
-            TrawlerSurface trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
-
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
                 // Reset the trawler
                 trawlerHull.Reset();
                 trawlerSurface.Reset();
+
+                return;
+            }
+
+            // Check if player just entered the trawler
+            if (IsPlayerOnTrawler() && !IsValidTrawlerLocation(e.OldLocation))
+            {
+                // Give them a bailing bucket
+                Game1.player.addItemToInventory(new MeleeWeapon(ApiManager.GetBailingBucketID()));
+            }
+        }
+
+        private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
+        {
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler())
+            {
+                return;
+            }
+
+            // Every quarter of a second play leaking sound, if there is a leak
+            if (e.IsMultipleOf(15))
+            {
+                if (Game1.player.currentLocation is TrawlerHull && trawlerHull.HasLeak())
+                {
+                    trawlerHull.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
+                }
             }
         }
 
@@ -79,9 +110,6 @@ namespace FishingTrawler
             {
                 return;
             }
-
-            TrawlerHull trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
-            TrawlerSurface trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
 
             // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
             // TODO: (when player bails the water level will update outside this timer)
@@ -132,6 +160,10 @@ namespace FishingTrawler
             // Add the hull location
             TrawlerHull hullLocation = new TrawlerHull(this.Helper.Content.GetActualAssetKey(Path.Combine("assets", "TrawlerHull.tmx"), ContentSource.ModFolder), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
             Game1.locations.Add(hullLocation);
+
+            // Verify our locations were added and establish our location variables
+            trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+            trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
