@@ -12,10 +12,12 @@ namespace FishingTrawler
     public static class ModResources
     {
         internal static Texture2D boatTexture;
+        internal static string assetFolderPath;
 
         internal static void SetUpAssets(IModHelper helper)
         {
             boatTexture = helper.Content.Load<Texture2D>(Path.Combine("assets", "Trawler.png"));
+            assetFolderPath = helper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
         }
     }
 }

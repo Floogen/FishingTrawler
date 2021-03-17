@@ -195,7 +195,7 @@ namespace FishingTrawler.GameLocations
             {
                 if (!base.temporarySprites.Any(t => t.id == CLOUD_ID) || (Game1.random.NextDouble() < 0.05 && base.temporarySprites.Where(t => t.id == CLOUD_ID).Count() < 10))
                 {
-                    string assetPath = ModEntry.modHelper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
+                    string assetPath = ModResources.assetFolderPath;
 
                     // Fill up with some clouds
                     for (int x = 0; x < Game1.random.Next(1, 5); x++)
@@ -215,7 +215,7 @@ namespace FishingTrawler.GameLocations
 
             if (!base.temporarySprites.Any(t => t.id == GROUND_ID) && Game1.random.NextDouble() < 0.10)
             {
-                string assetPath = ModEntry.modHelper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
+                string assetPath = ModResources.assetFolderPath;
                 bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
 
                 TemporaryAnimatedSprite decoration = new TemporaryAnimatedSprite(Path.Combine(assetPath, "BellsAndWhistles.png"), PickRandomDecoration(), 200f, 1, 9999, PickSpawnPosition(false), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, 4f, 0f, 0f, 0f);
@@ -330,7 +330,7 @@ namespace FishingTrawler.GameLocations
                 firstTile.Properties["IsRipped"] = false;
 
                 // Patch up the net
-                this.setMapTile(tileX, tileY, 460, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                this.setMapTile(tileX, tileY, 435, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
                 this.setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
 
                 // Add the custom properties for tracking
