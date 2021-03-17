@@ -292,5 +292,10 @@ namespace FishingTrawler.GameLocations
             this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
             this.map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
         }
+
+        public bool HasLeak()
+        {
+            return _hullHoleLocations.Any(loc => IsHoleLeaking(loc.X, loc.Y));
+        }
     }
 }
