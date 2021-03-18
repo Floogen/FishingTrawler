@@ -80,6 +80,12 @@ namespace FishingTrawler
                 _trawlerHull.Reset();
                 _trawlerSurface.Reset();
 
+                // Take away any bailing buckets
+                foreach (BailingBucket bucket in Game1.player.Items.Where(i => i != null && i is BailingBucket))
+                {
+                    Game1.player.removeItemFromInventory(bucket);
+                }
+
                 return;
             }
 
@@ -87,7 +93,12 @@ namespace FishingTrawler
             if (IsPlayerOnTrawler() && !IsValidTrawlerLocation(e.OldLocation))
             {
                 // Give them a bailing bucket
-                Game1.player.addItemToInventory(new BailingBucket());
+                if (!Game1.player.items.Any(i => i is BailingBucket))
+                {
+                    Game1.player.addItemToInventory(new BailingBucket());
+                }
+
+                return;
             }
         }
 
@@ -120,7 +131,7 @@ namespace FishingTrawler
             if (e.IsMultipleOf(300))
             {
                 // TODO: Base of Game1.random (10% probability?)
-                _trawlerHull.UpdateWaterLevel();
+                _trawlerHull.RecaculateWaterLevel();
                 _trawlerSurface.UpdateFishCaught();
             }
 

@@ -62,7 +62,7 @@ namespace FishingTrawler.GameLocations
                 AttemptPlugLeak(hullHoleLocation.X, hullHoleLocation.Y, Game1.player, true);
             }
 
-            UpdateWaterLevel(0);
+            RecaculateWaterLevel(0);
         }
 
         protected override void resetLocalState()
@@ -132,8 +132,8 @@ namespace FishingTrawler.GameLocations
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
-            string action_property = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
-            if (action_property != null)
+            string actionProperty = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
+            if (actionProperty != null && actionProperty == "HullHole")
             {
                 if (!IsWithinRangeOfLeak(xTile, yTile, who))
                 {
@@ -272,7 +272,7 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        public void UpdateWaterLevel(int waterLevelOverride = -1)
+        public void RecaculateWaterLevel(int waterLevelOverride = -1)
         {
             // Should be called from ModEntry.OnOneSecondUpdateTicking (at X second interval)
             // Foreach leak, add 1 to the water level
@@ -291,6 +291,16 @@ namespace FishingTrawler.GameLocations
             // Using PyTK for these layers and opacity
             this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
             this.map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
+        }
+
+        public void ChangeWaterLevel(int change)
+        {
+            waterLevel += change;
+
+            if (waterLevel < 0)
+            {
+                waterLevel = 0;
+            }
         }
 
         public bool HasLeak()

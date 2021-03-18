@@ -234,10 +234,10 @@ namespace FishingTrawler.GameLocations
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
-            string action_property = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "AlwaysFront");
-            if (action_property != null)
+            string actionProperty = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "AlwaysFront");
+            if (actionProperty != null && actionProperty == "RippedNet")
             {
-                if (!IsWithinRangeOfNet(xTile, yTile, who))
+                if (!IsWithinRangeOfNet(who))
                 {
                     Game1.mouseCursorTransparency = 0.5f;
                 }
@@ -248,10 +248,13 @@ namespace FishingTrawler.GameLocations
             return base.isActionableTile(xTile, yTile, who);
         }
 
-        private bool IsWithinRangeOfNet(int tileX, int tileY, Farmer who)
+        private bool IsWithinRangeOfNet(Farmer who)
         {
+            int playerX = (int)(who.Position.X / 64f);
+            int playerY = (int)(who.Position.Y / 64f);
             //ModEntry.monitor.Log($"({who.Position.X / 64}, {who.Position.Y / 64})", LogLevel.Debug);
-            if (Enumerable.Range(34, 3).Contains((int)who.Position.X / 64) && Enumerable.Range(24, 2).Contains((int)who.Position.Y / 64))
+
+            if (Enumerable.Range(34, 3).Contains(playerX) && Enumerable.Range(24, 2).Contains(playerY))
             {
                 return true;
             }
@@ -319,7 +322,7 @@ namespace FishingTrawler.GameLocations
                 return;
             }
 
-            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(tileX, tileY, who)))
+            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(who)))
             {
                 return;
             }
@@ -352,6 +355,21 @@ namespace FishingTrawler.GameLocations
             }
 
             ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
+        }
+
+        public bool IsPlayerByBoatEdge(Farmer who)
+        {
+            int playerX = (int)(who.Position.X / 64f);
+            int playerY = (int)(who.Position.Y / 64f);
+
+            ModEntry.monitor.Log($"{(int)(who.Position.X / 64f)}, {(int)(who.Position.Y / 64f)}", LogLevel.Debug);
+            string actionProperty = this.doesTileHaveProperty(playerX, playerY, "CustomAction", "Back");
+            if (actionProperty != null && actionProperty == "EmptyBucketSpot")
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
