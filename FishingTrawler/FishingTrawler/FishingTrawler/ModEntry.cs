@@ -1,13 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using FishingTrawler.API;
 using FishingTrawler.GameLocations;
+using FishingTrawler.Objects.Tools;
 using FishingTrawler.Patches.Locations;
 using Harmony;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Buildings;
+using StardewValley.Locations;
+using StardewValley.Objects;
 using StardewValley.Tools;
 
 namespace FishingTrawler
@@ -16,6 +21,7 @@ namespace FishingTrawler
     {
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
+        internal static string bailingBucketKey;
 
         private TrawlerHull trawlerHull;
         private TrawlerSurface trawlerSurface;
@@ -34,6 +40,7 @@ namespace FishingTrawler
             modHelper = helper;
 
             // Load in our assets
+            bailingBucketKey = $"{ModManifest.UniqueID}/bailing-bucket";
             ModResources.SetUpAssets(helper);
 
             // Load our Harmony patches
@@ -50,18 +57,14 @@ namespace FishingTrawler
                 return;
             }
 
-            // Hook into UpdateTicking
+            // Hook into GameLoops related events
             helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking; ;
-
-            // Hook into OneSecondUpdateTicking
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
+            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+            helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.Saving += this.OnSaving;
 
-            // Hook into GameLaunched event
-            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
-
-            // Hook into SaveLoaded
-            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
-
+            // Hook into Player related events
             helper.Events.Player.Warped += this.OnWarped;
 
             // Hook into MouseClicked
@@ -84,7 +87,7 @@ namespace FishingTrawler
             if (IsPlayerOnTrawler() && !IsValidTrawlerLocation(e.OldLocation))
             {
                 // Give them a bailing bucket
-                Game1.player.addItemToInventory(new MeleeWeapon(ApiManager.GetBailingBucketID()));
+                Game1.player.addItemToInventory(new BailingBucket());
             }
         }
 
@@ -152,7 +155,7 @@ namespace FishingTrawler
             }
         }
 
-        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             // Add the surface location
             TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
@@ -165,6 +168,102 @@ namespace FishingTrawler
             // Verify our locations were added and establish our location variables
             trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
             trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
+
+            // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
+            // However, in the situations it does happen this will prevent crashes
+
+            // For every player, add the BailingBucket Tool (if they had previously)
+            foreach (Farmer farmer in Game1.getAllFarmers())
+            {
+                foreach (MilkPail pail in farmer.Items.Where(i => i != null && i.modData.ContainsKey(bailingBucketKey)))
+                {
+                    farmer.removeItemFromInventory(pail);
+                    farmer.addItemToInventory(new BailingBucket() { modData = pail.modData });
+                }
+            }
+
+            // Check every location for a chest and then re-add any previous BailingBuckets
+            foreach (GameLocation location in Game1.locations)
+            {
+                ConvertStoredBailingBuckets(location, true);
+
+                if (location is BuildableGameLocation)
+                {
+                    foreach (Building building in (location as BuildableGameLocation).buildings)
+                    {
+                        GameLocation indoorLocation = building.indoors.Value;
+                        if (indoorLocation is null)
+                        {
+                            continue;
+                        }
+
+                        ConvertStoredBailingBuckets(indoorLocation, true);
+                    }
+                }
+            }
+        }
+
+        private void OnSaving(object sender, SavingEventArgs e)
+        {
+            // Offload the custom locations
+            Game1.locations.Remove(trawlerHull);
+            Game1.locations.Remove(trawlerSurface);
+
+            // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
+            // However, in the situations it does happen this will prevent crashes
+
+            // For every player, replace any BailingBucket with MilkPail
+            foreach (Farmer farmer in Game1.getAllFarmers())
+            {
+                foreach (BailingBucket bucket in farmer.Items.Where(i => i != null && i is BailingBucket))
+                {
+                    farmer.removeItemFromInventory(bucket);
+                    farmer.addItemToInventory(new MilkPail() { modData = bucket.modData });
+                }
+            }
+
+            // Check every location for a chest and then replace any BailingBucket with MilkPail
+            foreach (GameLocation location in Game1.locations)
+            {
+                ConvertStoredBailingBuckets(location);
+
+                if (location is BuildableGameLocation)
+                {
+                    foreach (Building building in (location as BuildableGameLocation).buildings)
+                    {
+                        GameLocation indoorLocation = building.indoors.Value;
+                        if (indoorLocation is null)
+                        {
+                            continue;
+                        }
+
+                        ConvertStoredBailingBuckets(indoorLocation);
+                    }
+                }
+            }
+        }
+
+        private void ConvertStoredBailingBuckets(GameLocation location, bool inverse = false)
+        {
+            foreach (Chest chest in location.Objects.Pairs.Where(o => o.Value != null && o.Value is Chest).Select(o => o.Value))
+            {
+                if (inverse)
+                {
+                    foreach (MilkPail pail in chest.items.Where(i => i != null && i.modData.ContainsKey(bailingBucketKey)).ToList())
+                    {
+                        chest.items.Remove(pail);
+                        chest.items.Add(new BailingBucket() { modData = pail.modData });
+                    }
+                }
+                else
+                {
+                    foreach (BailingBucket bucket in chest.items.Where(i => i != null && i is BailingBucket).ToList())
+                    {
+                        chest.items.Remove(bucket);
+                        chest.items.Add(new MilkPail() { modData = bucket.modData });
+                    }
+                }
+            }
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
@@ -180,12 +279,12 @@ namespace FishingTrawler
             }
         }
 
-        private bool IsPlayerOnTrawler()
+        internal static bool IsPlayerOnTrawler()
         {
             return IsValidTrawlerLocation(Game1.player.currentLocation);
         }
 
-        private bool IsValidTrawlerLocation(GameLocation location)
+        private static bool IsValidTrawlerLocation(GameLocation location)
         {
             switch (location)
             {

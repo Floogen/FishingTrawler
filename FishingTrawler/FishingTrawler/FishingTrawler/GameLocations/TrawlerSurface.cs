@@ -92,7 +92,7 @@ namespace FishingTrawler.GameLocations
 
         public override void checkForMusic(GameTime time)
         {
-            if (Game1.random.NextDouble() < 0.006)
+            if (Game1.random.NextDouble() < 0.006 && !(Game1.isSnowing || Game1.isRaining))
             {
                 base.localSound("seagulls");
             }

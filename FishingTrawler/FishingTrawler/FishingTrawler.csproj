@@ -55,6 +55,7 @@
     <Compile Include="FishingTrawler\API\Interfaces\IJsonAssetApi.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerHull.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
+    <Compile Include="FishingTrawler\Objects\Tools\BailingBucket.cs" />
     <Compile Include="FishingTrawler\Objects\Trawler.cs" />
     <Compile Include="FishingTrawler\ModEntry.cs" />
     <Compile Include="FishingTrawler\ModResources.cs" />
@@ -86,6 +87,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\BailingBucket.png">
+      <Link>FishingTrawler\assets\Objects\BailingBucket.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerTiles.png">
       <Link>FishingTrawler\assets\Maps\TrawlerTiles.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
