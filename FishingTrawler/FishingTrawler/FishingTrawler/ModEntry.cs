@@ -6,6 +6,7 @@ using FishingTrawler.API;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Objects.Tools;
 using FishingTrawler.Patches.Locations;
+using FishingTrawler.UI;
 using Harmony;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -22,7 +23,9 @@ namespace FishingTrawler
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
         internal static string bailingBucketKey;
+        internal static int fishingTripTimer;
 
+        // Trawler map / texture related
         private TrawlerHull _trawlerHull;
         private TrawlerSurface _trawlerSurface;
         private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
@@ -35,13 +38,16 @@ namespace FishingTrawler
 
         public override void Entry(IModHelper helper)
         {
-            // Set up the monitor, helper and config
+            // Set up the monitor and helper
             monitor = Monitor;
             modHelper = helper;
 
             // Load in our assets
             bailingBucketKey = $"{ModManifest.UniqueID}/bailing-bucket";
             ModResources.SetUpAssets(helper);
+
+            // Initialize the timer for fishing trip
+            fishingTripTimer = 0;
 
             // Load our Harmony patches
             try
@@ -64,11 +70,24 @@ namespace FishingTrawler
             helper.Events.GameLoop.DayStarted += OnDayStarted;
             helper.Events.GameLoop.Saving += this.OnSaving;
 
+            // Hook into Display related events
+            helper.Events.Display.RenderedHud += this.OnRenderedHud;
+
             // Hook into Player related events
             helper.Events.Player.Warped += this.OnWarped;
 
             // Hook into MouseClicked
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        }
+
+        private void OnRenderedHud(object sender, RenderedHudEventArgs e)
+        {
+            if (!IsPlayerOnTrawler())
+            {
+                return;
+            }
+
+            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel);
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -98,6 +117,9 @@ namespace FishingTrawler
                     Game1.player.addItemToInventory(new BailingBucket());
                 }
 
+                // Start the timer (3 minute default)
+                fishingTripTimer = 180000;
+
                 return;
             }
         }
@@ -126,8 +148,13 @@ namespace FishingTrawler
                 return;
             }
 
+            // Iterate the fishing trip timer
+            if (fishingTripTimer > 0f)
+            {
+                fishingTripTimer -= 1000;
+            }
+
             // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
-            // TODO: (when player bails the water level will update outside this timer)
             if (e.IsMultipleOf(300))
             {
                 // TODO: Base of Game1.random (10% probability?)

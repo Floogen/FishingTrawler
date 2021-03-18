@@ -61,6 +61,7 @@
     <Compile Include="FishingTrawler\ModResources.cs" />
     <Compile Include="FishingTrawler\Patches\Locations\BeachPatch.cs" />
     <Compile Include="FishingTrawler\Patches\Patch.cs" />
+    <Compile Include="FishingTrawler\UI\TrawlerUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +94,10 @@
     </Content>
     <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerTiles.png">
       <Link>FishingTrawler\assets\Maps\TrawlerTiles.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerUI.png">
+      <Link>FishingTrawler\assets\UI\TrawlerUI.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="FishingTrawler\assets\Maps\BellsAndWhistles.png">

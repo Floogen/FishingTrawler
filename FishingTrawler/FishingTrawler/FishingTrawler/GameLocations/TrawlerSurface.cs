@@ -162,16 +162,6 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        public override void draw(SpriteBatch b)
-        {
-            base.draw(b);
-        }
-
-        public override void drawAboveAlwaysFrontLayer(SpriteBatch b)
-        {
-            base.drawAboveAlwaysFrontLayer(b);
-        }
-
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
             base.UpdateWhenCurrentLocation(time);
