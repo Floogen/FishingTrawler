@@ -23,9 +23,9 @@ namespace FishingTrawler
         internal static IModHelper modHelper;
         internal static string bailingBucketKey;
 
-        private TrawlerHull trawlerHull;
-        private TrawlerSurface trawlerSurface;
-        private string trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
+        private TrawlerHull _trawlerHull;
+        private TrawlerSurface _trawlerSurface;
+        private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
@@ -77,8 +77,8 @@ namespace FishingTrawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
                 // Reset the trawler
-                trawlerHull.Reset();
-                trawlerSurface.Reset();
+                _trawlerHull.Reset();
+                _trawlerSurface.Reset();
 
                 return;
             }
@@ -101,9 +101,9 @@ namespace FishingTrawler
             // Every quarter of a second play leaking sound, if there is a leak
             if (e.IsMultipleOf(15))
             {
-                if (Game1.player.currentLocation is TrawlerHull && trawlerHull.HasLeak())
+                if (Game1.player.currentLocation is TrawlerHull && _trawlerHull.HasLeak())
                 {
-                    trawlerHull.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
+                    _trawlerHull.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
                 }
             }
         }
@@ -120,16 +120,16 @@ namespace FishingTrawler
             if (e.IsMultipleOf(300))
             {
                 // TODO: Base of Game1.random (10% probability?)
-                trawlerHull.UpdateWaterLevel();
-                trawlerSurface.UpdateFishCaught();
+                _trawlerHull.UpdateWaterLevel();
+                _trawlerSurface.UpdateFishCaught();
             }
 
             // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler
             if (e.IsMultipleOf(600))
             {
                 // TODO: Base of Game1.random (10% probability?)
-                trawlerHull.AttemptCreateHullLeak();
-                trawlerSurface.AttemptCreateNetRip();
+                _trawlerHull.AttemptCreateHullLeak();
+                _trawlerSurface.AttemptCreateNetRip();
             }
         }
 
@@ -166,8 +166,8 @@ namespace FishingTrawler
             Game1.locations.Add(hullLocation);
 
             // Verify our locations were added and establish our location variables
-            trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
-            trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
+            _trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+            _trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
 
             // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
             // However, in the situations it does happen this will prevent crashes
@@ -206,8 +206,8 @@ namespace FishingTrawler
         private void OnSaving(object sender, SavingEventArgs e)
         {
             // Offload the custom locations
-            Game1.locations.Remove(trawlerHull);
-            Game1.locations.Remove(trawlerSurface);
+            Game1.locations.Remove(_trawlerHull);
+            Game1.locations.Remove(_trawlerSurface);
 
             // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
             // However, in the situations it does happen this will prevent crashes
@@ -275,7 +275,7 @@ namespace FishingTrawler
                 ApiManager.HookIntoJsonAssets(Helper);
 
                 // Add the bailing bucket asset (weapon) and rewards
-                ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, trawlerItemsPath));
+                ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, _trawlerItemsPath));
             }
         }
 
