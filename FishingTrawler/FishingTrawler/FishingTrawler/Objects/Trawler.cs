@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace FishingTrawler.Objects
 {
-    // TODO: Look at Boat, BoatTunnel, BoatJourney
     internal static class Trawler
     {
         private static int _boatOffset;
