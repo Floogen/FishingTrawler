@@ -148,7 +148,7 @@ namespace FishingTrawler.GameLocations
 
         private bool IsWithinRangeOfLeak(int tileX, int tileY, Farmer who)
         {
-            if (who.getTileY() != 4 || who.getTileX() != tileX)
+            if (who.getTileY() != 4 || !Enumerable.Range(who.getTileX() - 1, 3).Contains(tileX))
             {
                 return false;
             }
@@ -283,7 +283,7 @@ namespace FishingTrawler.GameLocations
             }
             else
             {
-                waterLevel += _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count();
+                ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count());
             }
 
             ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);
@@ -300,6 +300,10 @@ namespace FishingTrawler.GameLocations
             if (waterLevel < 0)
             {
                 waterLevel = 0;
+            }
+            else if (waterLevel > 100)
+            {
+                waterLevel = 100;
             }
         }
 
