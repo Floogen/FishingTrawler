@@ -87,7 +87,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel);
+            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel, _trawlerSurface.AreAnyNetsRipped());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)

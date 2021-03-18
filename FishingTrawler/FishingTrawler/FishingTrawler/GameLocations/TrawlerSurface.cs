@@ -361,5 +361,10 @@ namespace FishingTrawler.GameLocations
 
             return false;
         }
+
+        public bool AreAnyNetsRipped()
+        {
+            return _netRipLocations.Any(loc => IsNetRipped(loc.X, loc.Y));
+        }
     }
 }
