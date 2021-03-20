@@ -55,7 +55,9 @@ namespace FishingTrawler.UI
                     ModEntry.monitor.Log(position.ToString(), StardewModdingAPI.LogLevel.Debug);
                     break;
                 case TrawlerHull trawlerHull:
-                    position = new Vector2(0f, 0f);
+                    x = 14;
+                    y = 1;
+                    position = Game1.GlobalToLocal(new Vector2(13.95f, 0.58f) * 64f);
                     break;
                 default:
                     position = new Vector2(0f, 0f);
@@ -74,23 +76,9 @@ namespace FishingTrawler.UI
             {
                 int left_edge = -Game1.viewport.X + 28;
                 int right_edge = -Game1.viewport.X + Game1.currentLocation.map.Layers[0].LayerWidth * 64 - 28;
-                if (position.X < (float)left_edge)
-                {
-                    position.X = left_edge;
-                }
-                if (position.X + (float)text_width > (float)right_edge)
-                {
-                    position.X = right_edge - text_width;
-                }
+
                 speech_position.X += text_width / 2;
-                if (speech_position.X < position.X)
-                {
-                    position.X += speech_position.X - position.X;
-                }
-                if (speech_position.X > position.X + (float)text_width - 24f)
-                {
-                    position.X += speech_position.X - (position.X + (float)text_width - 24f);
-                }
+
                 speech_position.X = Utility.Clamp(speech_position.X, position.X, position.X + (float)text_width - 24f);
             }
             b.Draw(Game1.mouseCursors, position + new Vector2(-7f, -3f) * 4f, new Rectangle(324, 299, 7, 17), Color.White * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, layerDepth - 0.001f);

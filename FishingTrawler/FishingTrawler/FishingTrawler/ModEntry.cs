@@ -151,12 +151,32 @@ namespace FishingTrawler
                 return;
             }
 
+            if (_isNotificationFading)
+            {
+                _notificationAlpha -= 0.1f;
+            }
+
+            if (_notificationAlpha < 0f)
+            {
+                _activeNotification = String.Empty;
+                _isNotificationFading = false;
+                _notificationAlpha = 1f;
+            }
+
             // Every quarter of a second play leaking sound, if there is a leak
             if (e.IsMultipleOf(15))
             {
                 if (Game1.player.currentLocation is TrawlerHull && _trawlerHull.HasLeak())
                 {
                     _trawlerHull.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
+                }
+            }
+
+            if (e.IsMultipleOf(150))
+            {
+                if (!String.IsNullOrEmpty(_activeNotification))
+                {
+                    _isNotificationFading = true;
                 }
             }
         }
@@ -172,23 +192,6 @@ namespace FishingTrawler
             if (fishingTripTimer > 0f)
             {
                 fishingTripTimer -= 1000;
-            }
-
-            if (_isNotificationFading)
-            {
-                _notificationAlpha -= 0.25f;
-            }
-
-            if (_notificationAlpha < 0f)
-            {
-                _notificationAlpha = 1f;
-                _isNotificationFading = false;
-                _activeNotification = String.Empty;
-            }
-
-            if (!String.IsNullOrEmpty(_activeNotification))
-            {
-                _isNotificationFading = true;
             }
 
             // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
