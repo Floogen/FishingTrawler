@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +34,11 @@ namespace FishingTrawler
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
 
+        // Notification related
+        private bool _isNotificationFading;
+        private float _notificationAlpha;
+        private string _activeNotification;
+
         // API related
         //IContentPatcherAPI contentPatcherApi;
 
@@ -48,6 +54,11 @@ namespace FishingTrawler
 
             // Initialize the timer for fishing trip
             fishingTripTimer = 0;
+
+            // Set up our notification on the trawler
+            _activeNotification = String.Empty;
+            _notificationAlpha = 1f;
+            _isNotificationFading = false;
 
             // Load our Harmony patches
             try
@@ -71,6 +82,7 @@ namespace FishingTrawler
             helper.Events.GameLoop.Saving += this.OnSaving;
 
             // Hook into Display related events
+            helper.Events.Display.RenderingHud += this.OnRenderingHud;
             helper.Events.Display.RenderedHud += this.OnRenderedHud;
 
             // Hook into Player related events
@@ -78,6 +90,14 @@ namespace FishingTrawler
 
             // Hook into MouseClicked
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        }
+
+        private void OnRenderingHud(object sender, RenderingHudEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(_activeNotification))
+            {
+                TrawlerUI.DrawNotification(e.SpriteBatch, Game1.player.currentLocation, _activeNotification, _notificationAlpha);
+            }
         }
 
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
@@ -154,10 +174,26 @@ namespace FishingTrawler
                 fishingTripTimer -= 1000;
             }
 
+            if (_isNotificationFading)
+            {
+                _notificationAlpha -= 0.25f;
+            }
+
+            if (_notificationAlpha < 0f)
+            {
+                _notificationAlpha = 1f;
+                _isNotificationFading = false;
+                _activeNotification = String.Empty;
+            }
+
+            if (!String.IsNullOrEmpty(_activeNotification))
+            {
+                _isNotificationFading = true;
+            }
+
             // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
             if (e.IsMultipleOf(300))
             {
-                // TODO: Base of Game1.random (10% probability?)
                 _trawlerHull.RecaculateWaterLevel();
                 _trawlerSurface.UpdateFishCaught();
             }
@@ -168,6 +204,12 @@ namespace FishingTrawler
                 // TODO: Base of Game1.random (10% probability?)
                 _trawlerHull.AttemptCreateHullLeak();
                 _trawlerSurface.AttemptCreateNetRip();
+
+                string message = "We're taking on water!";
+                if (_activeNotification != message)
+                {
+                    _activeNotification = message;
+                }
             }
         }
 

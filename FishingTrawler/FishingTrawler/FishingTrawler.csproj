@@ -49,6 +49,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="BmFont">
+      <HintPath>$(GamePath)\BmFont.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FishingTrawler\API\ApiManager.cs" />
