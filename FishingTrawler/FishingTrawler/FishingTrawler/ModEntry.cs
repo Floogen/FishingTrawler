@@ -29,10 +29,12 @@ namespace FishingTrawler
         // Trawler map / texture related
         private TrawlerHull _trawlerHull;
         private TrawlerSurface _trawlerSurface;
+        private TrawlerCabin _trawlerCabin;
         private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
+        private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
 
         // Notification related
         private bool _isNotificationFading;
@@ -94,6 +96,11 @@ namespace FishingTrawler
 
         private void OnRenderingHud(object sender, RenderingHudEventArgs e)
         {
+            if (!IsPlayerOnTrawler())
+            {
+                return;
+            }
+
             if (!String.IsNullOrEmpty(_activeNotification))
             {
                 TrawlerUI.DrawNotification(e.SpriteBatch, Game1.player.currentLocation, _activeNotification, _notificationAlpha);
@@ -107,7 +114,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel, _trawlerSurface.GetRippedNetsCount());
+            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel, _trawlerSurface.GetRippedNetsCount(), _trawlerCabin.GetLeakingPipesCount());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -207,6 +214,7 @@ namespace FishingTrawler
                 // TODO: Base of Game1.random (10% probability?)
                 _trawlerHull.AttemptCreateHullLeak();
                 _trawlerSurface.AttemptCreateNetRip();
+                _trawlerCabin.AttemptCreatePipeLeak();
 
                 string message = "We're taking on water!";
                 if (_activeNotification != message)
@@ -225,16 +233,17 @@ namespace FishingTrawler
 
             if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
             {
-                TrawlerHull hullLocation = Game1.player.currentLocation as TrawlerHull;
-                hullLocation.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                _trawlerHull.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
             }
             else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
             {
-                TrawlerSurface surfaceLocation = Game1.player.currentLocation as TrawlerSurface;
-
                 // Attempt two checks, in case the user clicks above the rope
-                surfaceLocation.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
-                surfaceLocation.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1, Game1.player);
+                _trawlerSurface.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                _trawlerSurface.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1, Game1.player);
+            }
+            else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
+            {
+                _trawlerCabin.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
             }
         }
 
@@ -248,9 +257,14 @@ namespace FishingTrawler
             TrawlerHull hullLocation = new TrawlerHull(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
             Game1.locations.Add(hullLocation);
 
+            // Add the cabin location
+            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
+            Game1.locations.Add(cabinLocation);
+
             // Verify our locations were added and establish our location variables
             _trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
             _trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
+            _trawlerCabin = Game1.getLocationFromName(TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
 
             // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
             // However, in the situations it does happen this will prevent crashes
@@ -291,6 +305,7 @@ namespace FishingTrawler
             // Offload the custom locations
             Game1.locations.Remove(_trawlerHull);
             Game1.locations.Remove(_trawlerSurface);
+            Game1.locations.Remove(_trawlerCabin);
 
             // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
             // However, in the situations it does happen this will prevent crashes
@@ -373,6 +388,7 @@ namespace FishingTrawler
             {
                 case TrawlerSurface surface:
                 case TrawlerHull hull:
+                case TrawlerCabin cabin:
                     return true;
                 default:
                     return false;

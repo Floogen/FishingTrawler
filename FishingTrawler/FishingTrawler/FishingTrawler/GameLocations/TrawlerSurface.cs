@@ -103,8 +103,6 @@ namespace FishingTrawler.GameLocations
 
         public override void cleanupBeforePlayerExit()
         {
-            AmbientLocationSounds.removeSound(new Vector2(44f, 23f));
-
             base.cleanupBeforePlayerExit();
         }
 
@@ -344,7 +342,7 @@ namespace FishingTrawler.GameLocations
                 fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count();
             }
 
-            ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
+            //ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
         }
 
         public bool IsPlayerByBoatEdge(Farmer who)
@@ -352,7 +350,6 @@ namespace FishingTrawler.GameLocations
             int playerX = (int)(who.Position.X / 64f);
             int playerY = (int)(who.Position.Y / 64f);
 
-            ModEntry.monitor.Log($"{(int)(who.Position.X / 64f)}, {(int)(who.Position.Y / 64f)}", LogLevel.Debug);
             string actionProperty = this.doesTileHaveProperty(playerX, playerY, "CustomAction", "Back");
             if (actionProperty != null && actionProperty == "EmptyBucketSpot")
             {

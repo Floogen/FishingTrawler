@@ -84,9 +84,6 @@ namespace FishingTrawler.GameLocations
         public override void cleanupBeforePlayerExit()
         {
             //Game1.changeMusicTrack("none");
-            AmbientLocationSounds.removeSound(new Vector2(7f, 0f));
-            AmbientLocationSounds.removeSound(new Vector2(13f, 0f));
-
             base.cleanupBeforePlayerExit();
         }
 
@@ -286,7 +283,7 @@ namespace FishingTrawler.GameLocations
                 ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count());
             }
 
-            ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);
+            //ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);
 
             // Using PyTK for these layers and opacity
             this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
