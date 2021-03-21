@@ -97,7 +97,7 @@ namespace FishingTrawler.GameLocations
                 base.localSound("seagulls");
             }
 
-            if (Game1.player.currentLocation.miniJukeboxTrack.Value is null)
+            if (String.IsNullOrEmpty(this.miniJukeboxTrack.Value) && Game1.getMusicTrackName() != "fieldofficeTentMusic")
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }

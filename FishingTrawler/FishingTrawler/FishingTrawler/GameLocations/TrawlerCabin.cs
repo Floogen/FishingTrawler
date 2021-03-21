@@ -60,7 +60,7 @@ namespace FishingTrawler.GameLocations
 
             AmbientLocationSounds.addSound(new Vector2(4f, 3f), 2);
 
-            if (Game1.player.currentLocation.miniJukeboxTrack.Value is null)
+            if (this.miniJukeboxTrack.Value is null)
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }
@@ -69,20 +69,21 @@ namespace FishingTrawler.GameLocations
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
             base.UpdateWhenCurrentLocation(time);
-
-            if (this.miniJukeboxTrack.Value != null && this.miniJukeboxTrack.Value != ModEntry.trawlerThemeSong)
-            {
-                ModEntry.SetTrawlerTheme(this.miniJukeboxTrack);
-            }
-
-            if (this.miniJukeboxTrack.Value is null && ModEntry.trawlerThemeSong != null)
-            {
-                ModEntry.SetTrawlerTheme(null);
-            }
         }
 
         public override void cleanupBeforePlayerExit()
         {
+            if (Game1.startedJukeboxMusic)
+            {
+                ModEntry.monitor.Log("HERE123", LogLevel.Debug);
+                ModEntry.SetTrawlerTheme(Game1.getMusicTrackName());
+            }
+            else if (String.IsNullOrEmpty(this.miniJukeboxTrack.Value) && !String.IsNullOrEmpty(ModEntry.trawlerThemeSong))
+            {
+                ModEntry.monitor.Log("HERE!!!", LogLevel.Debug);
+                ModEntry.SetTrawlerTheme(null);
+            }
+
             base.cleanupBeforePlayerExit();
         }
 

@@ -9,6 +9,7 @@ using FishingTrawler.Objects.Tools;
 using FishingTrawler.Patches.Locations;
 using FishingTrawler.UI;
 using Harmony;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -49,6 +50,7 @@ namespace FishingTrawler
         private readonly KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>("We've got a leak!", 5);
 
         // Notification related
+        private bool _isTripEnding;
         private bool _isNotificationFading;
         private float _notificationAlpha;
         private string _activeNotification;
@@ -70,6 +72,7 @@ namespace FishingTrawler
             fishingTripTimer = 0;
 
             // Set up our notification on the trawler
+            _isTripEnding = false;
             _activeNotification = String.Empty;
             _notificationAlpha = 1f;
             _isNotificationFading = false;
@@ -137,6 +140,7 @@ namespace FishingTrawler
                 // Reset the trawler
                 _trawlerHull.Reset();
                 _trawlerSurface.Reset();
+                _trawlerCabin.Reset();
 
                 // Take away any bailing buckets
                 foreach (BailingBucket bucket in Game1.player.Items.Where(i => i != null && i is BailingBucket))
@@ -146,6 +150,8 @@ namespace FishingTrawler
 
                 // Set the theme to null
                 SetTrawlerTheme(null);
+
+                _isTripEnding = false;
 
                 return;
             }
@@ -206,15 +212,12 @@ namespace FishingTrawler
 
                 // Update water level (from leaks) every second
                 _trawlerHull.RecaculateWaterLevel();
-
-                // Every 5 seconds recalculate the amount of fish caught / lost
-                _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
             }
         }
 
         private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null)
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null || _isTripEnding)
             {
                 return;
             }
@@ -224,14 +227,33 @@ namespace FishingTrawler
             {
                 fishingTripTimer -= 1000;
             }
+            else
+            {
+                // End trip due to timer finishing
+                Game1.player.currentLocation.playSound("trainWhistle");
+                Game1.player.CanMove = false;
+                Game1.addHUDMessage(new HUDMessage("The trip was a success! Murphy starts heading back to port.", null));
+                DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2000);
+
+                _isTripEnding = true;
+                return;
+            }
 
             // Update the track if needed
             if (themeSongUpdated)
             {
                 themeSongUpdated = false;
 
+                monitor.Log(trawlerThemeSong, LogLevel.Debug);
+                _trawlerCabin.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
                 _trawlerHull.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
                 _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+            }
+
+            // Every 3 seconds recalculate the amount of fish caught / lost
+            if (e.IsMultipleOf(300))
+            {
+                _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
             }
 
             // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler

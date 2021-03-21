@@ -73,7 +73,7 @@ namespace FishingTrawler.GameLocations
             AmbientLocationSounds.addSound(new Vector2(7f, 0f), 0);
             AmbientLocationSounds.addSound(new Vector2(13f, 0f), 0);
 
-            if (Game1.player.currentLocation.miniJukeboxTrack.Value is null)
+            if (String.IsNullOrEmpty(this.miniJukeboxTrack.Value))
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }
