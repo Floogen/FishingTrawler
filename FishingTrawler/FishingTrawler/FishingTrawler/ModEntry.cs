@@ -126,7 +126,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel, _trawlerSurface.GetRippedNetsCount(), _trawlerCabin.GetLeakingPipesCount());
+            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer, _trawlerSurface.fishCaughtQuantity, _trawlerHull.waterLevel, _trawlerHull.HasLeak(), _trawlerSurface.GetRippedNetsCount(), _trawlerCabin.GetLeakingPipesCount());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)

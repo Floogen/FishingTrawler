@@ -14,7 +14,7 @@ namespace FishingTrawler.UI
 {
     internal static class TrawlerUI
     {
-        internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, int rippedNetsCount, int leakingPipes)
+        internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, bool isHullLeaking, int rippedNetsCount, int leakingPipes)
         {
             int languageOffset = ((LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en) ? 8 : (LocalizedContentManager.CurrentLanguageLatin ? 16 : 8));
 
@@ -24,7 +24,7 @@ namespace FishingTrawler.UI
             b.Draw(ModResources.uiTexture, new Vector2(16f, 16f) + new Vector2(-1f, -3f) * 4f, new Rectangle(2, 16, 74, 57), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f - 0.001f);
             b.Draw(ModResources.uiTexture, new Vector2(16f, 16f) + new Vector2(256 + 4, -12f), new Rectangle(68, 16, 8, 67), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f - 0.001f);
 
-            Game1.drawWithBorder($"Flooding: {floodLevel}%", Color.Black, floodLevel < 50 ? Color.White : floodLevel > 75 ? Color.Red : Color.Yellow, new Vector2(32f, 24f), 0f, 1f, 1f, tiny: false);
+            Game1.drawWithBorder($"Flooding: {floodLevel}%", Color.Black, floodLevel > 75 ? Color.Red : isHullLeaking ? Color.Yellow : Color.White, new Vector2(32f, 24f), 0f, 1f, 1f, tiny: false);
             Game1.drawWithBorder(string.Concat("Nets: ", rippedNetsCount < 1 ? "Working" : rippedNetsCount > 1 ? "Ripped" : "Ripping"), Color.Black, rippedNetsCount < 1 ? Color.White : rippedNetsCount > 1 ? Color.Red : Color.Yellow, new Vector2(32f, 76f), 0f, 1f, 1f, tiny: false);
             Game1.drawWithBorder(string.Concat("Engine: ", leakingPipes > 0 ? "Failing" : "Working"), Color.Black, leakingPipes > 0 ? Color.Red : Color.White, new Vector2(32f, 128f), 0f, 1f, 1f, tiny: false);
             b.Draw(ModResources.uiTexture, new Vector2(28f, 174f), new Rectangle(0, 0, 16, 16), Color.White, 0f, Vector2.Zero, 3f, SpriteEffects.None, 1f);
