@@ -59,6 +59,26 @@ namespace FishingTrawler.GameLocations
             base.resetLocalState();
 
             AmbientLocationSounds.addSound(new Vector2(4f, 3f), 2);
+
+            if (Game1.player.currentLocation.miniJukeboxTrack.Value is null)
+            {
+                Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
+            }
+        }
+
+        public override void UpdateWhenCurrentLocation(GameTime time)
+        {
+            base.UpdateWhenCurrentLocation(time);
+
+            if (this.miniJukeboxTrack.Value != null && this.miniJukeboxTrack.Value != ModEntry.trawlerThemeSong)
+            {
+                ModEntry.SetTrawlerTheme(this.miniJukeboxTrack);
+            }
+
+            if (this.miniJukeboxTrack.Value is null && ModEntry.trawlerThemeSong != null)
+            {
+                ModEntry.SetTrawlerTheme(null);
+            }
         }
 
         public override void cleanupBeforePlayerExit()
@@ -185,6 +205,11 @@ namespace FishingTrawler.GameLocations
         public bool AreAnyPipesLeaking()
         {
             return _cabinPipeLocations.Any(loc => IsPipeLeaking(loc.X, loc.Y));
+        }
+
+        public bool AreAllPipesLeaking()
+        {
+            return _cabinPipeLocations.Count(loc => IsPipeLeaking(loc.X, loc.Y)) == _cabinPipeLocations.Count();
         }
 
         public int GetLeakingPipesCount()

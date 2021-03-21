@@ -25,6 +25,8 @@ namespace FishingTrawler
         internal static IModHelper modHelper;
         internal static string bailingBucketKey;
         internal static int fishingTripTimer;
+        internal static string trawlerThemeSong;
+        internal static bool themeSongUpdated;
 
         // Trawler map / texture related
         private TrawlerHull _trawlerHull;
@@ -96,7 +98,7 @@ namespace FishingTrawler
 
         private void OnRenderingHud(object sender, RenderingHudEventArgs e)
         {
-            if (!IsPlayerOnTrawler())
+            if (!IsPlayerOnTrawler() || Game1.isTimePaused)
             {
                 return;
             }
@@ -109,7 +111,7 @@ namespace FishingTrawler
 
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
-            if (!IsPlayerOnTrawler())
+            if (!IsPlayerOnTrawler() || Game1.isTimePaused)
             {
                 return;
             }
@@ -132,12 +134,18 @@ namespace FishingTrawler
                     Game1.player.removeItemFromInventory(bucket);
                 }
 
+                // Set the theme to null
+                SetTrawlerTheme(null);
+
                 return;
             }
 
             // Check if player just entered the trawler
             if (IsPlayerOnTrawler() && !IsValidTrawlerLocation(e.OldLocation))
             {
+                // Set the default track
+                Game1.changeMusicTrack("fieldofficeTentMusic");
+
                 // Give them a bailing bucket
                 if (!Game1.player.items.Any(i => i is BailingBucket))
                 {
@@ -153,7 +161,7 @@ namespace FishingTrawler
 
         private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler())
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.isTimePaused)
             {
                 return;
             }
@@ -190,7 +198,7 @@ namespace FishingTrawler
 
         private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler())
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.isTimePaused)
             {
                 return;
             }
@@ -201,23 +209,39 @@ namespace FishingTrawler
                 fishingTripTimer -= 1000;
             }
 
+            // Update the track if needed
+            if (themeSongUpdated)
+            {
+                themeSongUpdated = false;
+
+                _trawlerHull.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+            }
+
+
             // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
             if (e.IsMultipleOf(300))
             {
                 _trawlerHull.RecaculateWaterLevel();
-                _trawlerSurface.UpdateFishCaught();
+                _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
             }
 
             // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler
             if (e.IsMultipleOf(600))
             {
-                // TODO: Base of Game1.random (10% probability?)
-                _trawlerHull.AttemptCreateHullLeak();
-                _trawlerSurface.AttemptCreateNetRip();
-                _trawlerCabin.AttemptCreatePipeLeak();
+                string message = String.Empty;
 
-                string message = "We're taking on water!";
-                if (_activeNotification != message)
+                // Check if the player gets lucky and skips getting an event
+                if (Game1.random.NextDouble() < 0.05)
+                {
+                    message = "The sea favors us today!";
+                }
+                else
+                {
+                    message = CreateTrawlerEventsAndGetMessage();
+                }
+
+                if (_activeNotification != message && !String.IsNullOrEmpty(message))
                 {
                     _activeNotification = message;
                 }
@@ -226,7 +250,7 @@ namespace FishingTrawler
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (!e.IsDown(SButton.MouseRight) || !Context.IsWorldReady)
+            if (!e.IsDown(SButton.MouseRight) || !Context.IsWorldReady || Game1.isTimePaused)
             {
                 return;
             }
@@ -244,6 +268,19 @@ namespace FishingTrawler
             else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
             {
                 _trawlerCabin.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+            }
+        }
+
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            // Check if spacechase0's JsonAssets is in the current mod list
+            if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
+            {
+                Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
+                ApiManager.HookIntoJsonAssets(Helper);
+
+                // Add the bailing bucket asset (weapon) and rewards
+                ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, _trawlerItemsPath));
             }
         }
 
@@ -364,17 +401,68 @@ namespace FishingTrawler
             }
         }
 
-        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        private string CreateTrawlerEventsAndGetMessage()
         {
-            // Check if spacechase0's JsonAssets is in the current mod list
-            if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
+            int amountOfEvents = 0;
+            for (int x = 0; x < 4; x++)
             {
-                Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
-                ApiManager.HookIntoJsonAssets(Helper);
+                // Chance of skipping an event increases with each pass of this loop
+                if (Game1.random.NextDouble() < 0.1 + (x * 0.1f))
+                {
+                    // Skip event
+                    continue;
+                }
 
-                // Add the bailing bucket asset (weapon) and rewards
-                ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, _trawlerItemsPath));
+                amountOfEvents++;
             }
+
+            List<string> possibleMessages = new List<string>();
+            for (int x = 0; x < amountOfEvents; x++)
+            {
+                if (!_trawlerSurface.AreAllNetsRipped() && Game1.random.NextDouble() < 0.35)
+                {
+                    _trawlerSurface.AttemptCreateNetRip();
+                    possibleMessages.Add(_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() ? "We're losing fish!" : "The nets are torn!");
+                    continue;
+                }
+
+                if (!_trawlerCabin.AreAllPipesLeaking() && Game1.random.NextDouble() < 0.25)
+                {
+                    _trawlerCabin.AttemptCreatePipeLeak();
+                    possibleMessages.Add(_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() ? "We're losing fish!" : "The engine is failing!");
+                    continue;
+                }
+
+                // Default hull breaking event
+                if (!_trawlerHull.AreAllHolesLeaking())
+                {
+                    _trawlerHull.AttemptCreateHullLeak();
+                    possibleMessages.Add(_trawlerHull.AreAllHolesLeaking() ? "We're taking on water!" : "We've got a leak!");
+                    continue;
+                }
+            }
+
+            // Check if all possible events are activated
+            if (_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() && _trawlerHull.AreAllHolesLeaking())
+            {
+                possibleMessages.Add("This ship is falling apart!");
+            }
+
+            // Add a generic message if there are lots of issues
+            if (amountOfEvents > 1)
+            {
+                possibleMessages.Add("We've got lots of problems!");
+            }
+
+            // TODO: Make this a weighted list instead of random, e.g. Losing fish message has higher priority over leak message
+            // Select a random message from the eligible list
+            return amountOfEvents == 0 ? "Yoba be praised!" : possibleMessages.ElementAt(Game1.random.Next(0, possibleMessages.Count()));
+        }
+
+        internal static void SetTrawlerTheme(string songName)
+        {
+            trawlerThemeSong = songName;
+            themeSongUpdated = true;
         }
 
         internal static bool IsPlayerOnTrawler()

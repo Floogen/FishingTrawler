@@ -73,7 +73,10 @@ namespace FishingTrawler.GameLocations
             AmbientLocationSounds.addSound(new Vector2(7f, 0f), 0);
             AmbientLocationSounds.addSound(new Vector2(13f, 0f), 0);
 
-            Game1.changeMusicTrack("fieldofficeTentMusic");
+            if (Game1.player.currentLocation.miniJukeboxTrack.Value is null)
+            {
+                Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
+            }
         }
 
         public override void checkForMusic(GameTime time)
@@ -307,6 +310,11 @@ namespace FishingTrawler.GameLocations
         public bool HasLeak()
         {
             return _hullHoleLocations.Any(loc => IsHoleLeaking(loc.X, loc.Y));
+        }
+
+        public bool AreAllHolesLeaking()
+        {
+            return _hullHoleLocations.Count(loc => IsHoleLeaking(loc.X, loc.Y)) == _hullHoleLocations.Count();
         }
     }
 }

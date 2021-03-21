@@ -79,7 +79,7 @@ namespace FishingTrawler.GameLocations
                 AttemptFixNet(netRippedLocation.X, netRippedLocation.Y, Game1.player, true);
             }
 
-            UpdateFishCaught(0);
+            UpdateFishCaught(fishCaughtOverride: 0);
         }
 
         protected override void resetLocalState()
@@ -97,8 +97,10 @@ namespace FishingTrawler.GameLocations
                 base.localSound("seagulls");
             }
 
-            // Make this playable?
-            Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
+            if (Game1.player.currentLocation.miniJukeboxTrack.Value is null)
+            {
+                Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
+            }
         }
 
         public override void cleanupBeforePlayerExit()
@@ -331,7 +333,7 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        public void UpdateFishCaught(int fishCaughtOverride = -1)
+        public void UpdateFishCaught(bool isEngineFailing = false, int fishCaughtOverride = -1)
         {
             if (fishCaughtOverride > -1)
             {
@@ -339,7 +341,8 @@ namespace FishingTrawler.GameLocations
             }
             else
             {
-                fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count();
+                // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
+                fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() + (isEngineFailing ? -1 : 1);
             }
 
             //ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
@@ -362,6 +365,11 @@ namespace FishingTrawler.GameLocations
         public bool AreAnyNetsRipped()
         {
             return _netRipLocations.Any(loc => IsNetRipped(loc.X, loc.Y));
+        }
+
+        public bool AreAllNetsRipped()
+        {
+            return _netRipLocations.Count(loc => IsNetRipped(loc.X, loc.Y)) == _netRipLocations.Count();
         }
 
         public int GetRippedNetsCount()
