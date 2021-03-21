@@ -156,7 +156,7 @@ namespace FishingTrawler.GameLocations
                 firstTile.Properties["IsLeaking"] = false;
 
                 // Patch up the net
-                this.setMapTile(tileX, tileY, 129, "Buildings", null, CABIN_TILESHEET_INDEX);
+                this.setMapTile(tileX, tileY, 81, "Buildings", null, CABIN_TILESHEET_INDEX);
                 this.setMapTileIndex(tileX, tileY - 1, -1, "Buildings");
 
                 // Add the custom properties for tracking
@@ -193,8 +193,8 @@ namespace FishingTrawler.GameLocations
             Tile firstTile = this.map.GetLayer("Buildings").Tiles[netLocation.X, netLocation.Y];
             firstTile.Properties["IsLeaking"] = true;
 
-            this.setAnimatedMapTile(netLocation.X, netLocation.Y, GetPipeLeakingIndexes(248), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
-            this.setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetPipeLeakingIndexes(218), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
+            this.setAnimatedMapTile(netLocation.X, netLocation.Y, GetPipeLeakingIndexes(152), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
+            this.setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetPipeLeakingIndexes(134), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
 
             // Copy over the old properties
             this.map.GetLayer("Buildings").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);

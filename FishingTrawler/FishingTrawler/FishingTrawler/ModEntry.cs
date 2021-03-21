@@ -34,9 +34,19 @@ namespace FishingTrawler
         private TrawlerCabin _trawlerCabin;
         private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
+        // Location names
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
         private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
+
+        // Notificiation messages
+        private readonly KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>("This ship is falling apart!", 10);
+        private readonly KeyValuePair<string, int> MESSAGE_LOSING_FISH = new KeyValuePair<string, int>("We're losing fish!", 9);
+        private readonly KeyValuePair<string, int> MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>("We're taking on water!", 8);
+        private readonly KeyValuePair<string, int> MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>("We've got lots of problems!", 7);
+        private readonly KeyValuePair<string, int> MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>("The nets are torn!", 6);
+        private readonly KeyValuePair<string, int> MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>("The engine is failing!", 6);
+        private readonly KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>("We've got a leak!", 5);
 
         // Notification related
         private bool _isNotificationFading;
@@ -98,7 +108,7 @@ namespace FishingTrawler
 
         private void OnRenderingHud(object sender, RenderingHudEventArgs e)
         {
-            if (!IsPlayerOnTrawler() || Game1.isTimePaused)
+            if (!IsPlayerOnTrawler())
             {
                 return;
             }
@@ -111,7 +121,7 @@ namespace FishingTrawler
 
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
-            if (!IsPlayerOnTrawler() || Game1.isTimePaused)
+            if (!IsPlayerOnTrawler())
             {
                 return;
             }
@@ -152,8 +162,8 @@ namespace FishingTrawler
                     Game1.player.addItemToInventory(new BailingBucket());
                 }
 
-                // Start the timer (3 minute default)
-                fishingTripTimer = 180000;
+                // Start the timer (2.5 minute default)
+                fishingTripTimer = 150000;
 
                 return;
             }
@@ -161,7 +171,7 @@ namespace FishingTrawler
 
         private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.isTimePaused)
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null)
             {
                 return;
             }
@@ -193,12 +203,18 @@ namespace FishingTrawler
                 {
                     _isNotificationFading = true;
                 }
+
+                // Update water level (from leaks) every second
+                _trawlerHull.RecaculateWaterLevel();
+
+                // Every 5 seconds recalculate the amount of fish caught / lost
+                _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
             }
         }
 
         private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.isTimePaused)
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null)
             {
                 return;
             }
@@ -218,20 +234,12 @@ namespace FishingTrawler
                 _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
             }
 
-
-            // Every 5 seconds recalculate the water level (from leaks), amount of fish caught
-            if (e.IsMultipleOf(300))
-            {
-                _trawlerHull.RecaculateWaterLevel();
-                _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
-            }
-
             // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler
             if (e.IsMultipleOf(600))
             {
                 string message = String.Empty;
 
-                // Check if the player gets lucky and skips getting an event
+                // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
                 if (Game1.random.NextDouble() < 0.05)
                 {
                     message = "The sea favors us today!";
@@ -241,7 +249,13 @@ namespace FishingTrawler
                     message = CreateTrawlerEventsAndGetMessage();
                 }
 
-                if (_activeNotification != message && !String.IsNullOrEmpty(message))
+                // Check for empty string 
+                if (String.IsNullOrEmpty(message))
+                {
+                    message = "Ah the smell of the sea...";
+                }
+
+                if (_activeNotification != message)
                 {
                     _activeNotification = message;
                 }
@@ -250,7 +264,7 @@ namespace FishingTrawler
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (!e.IsDown(SButton.MouseRight) || !Context.IsWorldReady || Game1.isTimePaused)
+            if (!e.IsDown(SButton.MouseRight) || !Context.IsWorldReady || Game1.activeClickableMenu != null)
             {
                 return;
             }
@@ -416,20 +430,25 @@ namespace FishingTrawler
                 amountOfEvents++;
             }
 
-            List<string> possibleMessages = new List<string>();
+            int executedEvents = 0;
+            List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
             for (int x = 0; x < amountOfEvents; x++)
             {
                 if (!_trawlerSurface.AreAllNetsRipped() && Game1.random.NextDouble() < 0.35)
                 {
                     _trawlerSurface.AttemptCreateNetRip();
-                    possibleMessages.Add(_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() ? "We're losing fish!" : "The nets are torn!");
+                    possibleMessages.Add(_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
+
+                    executedEvents++;
                     continue;
                 }
 
                 if (!_trawlerCabin.AreAllPipesLeaking() && Game1.random.NextDouble() < 0.25)
                 {
                     _trawlerCabin.AttemptCreatePipeLeak();
-                    possibleMessages.Add(_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() ? "We're losing fish!" : "The engine is failing!");
+                    possibleMessages.Add(_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_ENGINE_PROBLEM);
+
+                    executedEvents++;
                     continue;
                 }
 
@@ -437,7 +456,9 @@ namespace FishingTrawler
                 if (!_trawlerHull.AreAllHolesLeaking())
                 {
                     _trawlerHull.AttemptCreateHullLeak();
-                    possibleMessages.Add(_trawlerHull.AreAllHolesLeaking() ? "We're taking on water!" : "We've got a leak!");
+                    possibleMessages.Add(_trawlerHull.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
+
+                    executedEvents++;
                     continue;
                 }
             }
@@ -445,18 +466,17 @@ namespace FishingTrawler
             // Check if all possible events are activated
             if (_trawlerSurface.AreAllNetsRipped() && _trawlerCabin.AreAllPipesLeaking() && _trawlerHull.AreAllHolesLeaking())
             {
-                possibleMessages.Add("This ship is falling apart!");
+                possibleMessages.Add(MESSAGE_EVERYTHING_FAILING);
             }
 
             // Add a generic message if there are lots of issues
-            if (amountOfEvents > 1)
+            if (executedEvents > 1)
             {
-                possibleMessages.Add("We've got lots of problems!");
+                possibleMessages.Add(MESSAGE_MULTI_PROBLEMS);
             }
 
-            // TODO: Make this a weighted list instead of random, e.g. Losing fish message has higher priority over leak message
-            // Select a random message from the eligible list
-            return amountOfEvents == 0 ? "Yoba be praised!" : possibleMessages.ElementAt(Game1.random.Next(0, possibleMessages.Count()));
+            // Select highest priority item (priority == default_priority_level * frequency)
+            return amountOfEvents == 0 ? "Yoba be praised!" : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
         internal static void SetTrawlerTheme(string songName)
