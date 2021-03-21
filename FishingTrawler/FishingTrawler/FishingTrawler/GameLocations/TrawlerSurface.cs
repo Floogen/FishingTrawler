@@ -343,6 +343,10 @@ namespace FishingTrawler.GameLocations
             {
                 // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
                 fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() + (isEngineFailing ? -1 : 1);
+                if (fishCaughtQuantity < 0)
+                {
+                    fishCaughtQuantity = 0;
+                }
             }
 
             //ModEntry.monitor.Log($"Fish caught: {fishCaughtQuantity}", LogLevel.Debug);
@@ -350,9 +354,9 @@ namespace FishingTrawler.GameLocations
 
         public bool IsPlayerByBoatEdge(Farmer who)
         {
-            int playerX = (int)(who.Position.X / 64f);
-            int playerY = (int)(who.Position.Y / 64f);
-
+            int playerX = who.getStandingX() / 64;
+            int playerY = who.getStandingY() / 64;
+            ModEntry.monitor.Log($"{playerX}, {playerY}", LogLevel.Debug);
             string actionProperty = this.doesTileHaveProperty(playerX, playerY, "CustomAction", "Back");
             if (actionProperty != null && actionProperty == "EmptyBucketSpot")
             {
