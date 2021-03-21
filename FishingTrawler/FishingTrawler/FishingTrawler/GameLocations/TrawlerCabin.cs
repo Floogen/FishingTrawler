@@ -75,12 +75,10 @@ namespace FishingTrawler.GameLocations
         {
             if (Game1.startedJukeboxMusic)
             {
-                ModEntry.monitor.Log("HERE123", LogLevel.Debug);
                 ModEntry.SetTrawlerTheme(Game1.getMusicTrackName());
             }
             else if (String.IsNullOrEmpty(this.miniJukeboxTrack.Value) && !String.IsNullOrEmpty(ModEntry.trawlerThemeSong))
             {
-                ModEntry.monitor.Log("HERE!!!", LogLevel.Debug);
                 ModEntry.SetTrawlerTheme(null);
             }
 

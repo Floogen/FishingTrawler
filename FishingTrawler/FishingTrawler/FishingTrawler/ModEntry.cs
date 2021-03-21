@@ -244,7 +244,6 @@ namespace FishingTrawler
             {
                 themeSongUpdated = false;
 
-                monitor.Log(trawlerThemeSong, LogLevel.Debug);
                 _trawlerCabin.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
                 _trawlerHull.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
                 _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
