@@ -177,7 +177,7 @@ namespace FishingTrawler
 
         private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null)
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null || _isTripEnding)
             {
                 return;
             }
@@ -212,6 +212,18 @@ namespace FishingTrawler
 
                 // Update water level (from leaks) every second
                 _trawlerHull.RecaculateWaterLevel();
+
+                if (_trawlerHull.waterLevel == 100)
+                {
+                    // End trip due to flooding
+                    Game1.player.currentLocation.playSound("fishEscape");
+                    Game1.player.CanMove = false;
+                    Game1.addHUDMessage(new HUDMessage("The ship has taken on too much water! Murphy quickly returns to port before it can sink.", null));
+                    DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
+
+                    _isTripEnding = true;
+                    return;
+                }
             }
         }
 

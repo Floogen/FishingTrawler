@@ -342,7 +342,7 @@ namespace FishingTrawler.GameLocations
             else
             {
                 // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
-                fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() + (isEngineFailing ? -1 : 1);
+                fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() + (isEngineFailing ? -1 : 2);
                 if (fishCaughtQuantity < 0)
                 {
                     fishCaughtQuantity = 0;
