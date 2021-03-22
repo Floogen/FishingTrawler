@@ -56,7 +56,7 @@ namespace FishingTrawler.Objects
             Vector2 player_position = Game1.player.Position;
             int player_direction = Game1.player.facingDirection;
             StringBuilder event_string = new StringBuilder();
-            event_string.Append("/-1000 -1000/farmer 0 0 0/playMusic none/skippable");
+            event_string.Append("/-1000 -1000/farmer 0 0 0/playMusic none");
             event_string.Append("/fade/warp farmer -100 -100/pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000");
             event_string.Append("/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/end position 87 35");
             //event_string.Append("/move Willy 0 -3 0/pause 500/locationSpecificCommand open_gate/viewport move 0 -1 1000/pause 500/move Willy 0 -2 3/move Willy -1 0 1/locationSpecificCommand path_player 6 5 2/move Willy 1 0 2/move Willy 0 1 2/pause 250/playSound clubhit/animate Willy false false 500 27/locationSpecificCommand retract_plank/jump Willy 4/pause 750/move Willy 0 -1 0/locationSpecificCommand close_gate/pause 200/move Willy 3 0 1/locationSpecificCommand offset_willy/move Willy 1 0 1");
