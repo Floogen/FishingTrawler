@@ -6,6 +6,18 @@
       "Target": "Maps/Beach",
       "AddWarps": [
         "84 40 Custom_FishingTrawler 39 25"
+      ],
+      "MapTiles": [
+        {
+          "Position": {
+            "X": 87,
+            "Y": 38
+          },
+          "Layer": "Back",
+          "SetProperties": {
+            "TouchAction": "FishingTrawler_Depart"
+          }
+        }
       ]
     }
   ]

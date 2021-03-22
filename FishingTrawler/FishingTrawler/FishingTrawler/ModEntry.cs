@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using FishingTrawler.API;
 using FishingTrawler.GameLocations;
+using FishingTrawler.Objects;
 using FishingTrawler.Objects.Tools;
 using FishingTrawler.Patches.Locations;
 using FishingTrawler.UI;
@@ -28,6 +29,9 @@ namespace FishingTrawler
         internal static int fishingTripTimer;
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
+
+        // Trawler object related
+        internal static Trawler trawlerObject;
 
         // Trawler map / texture related
         private TrawlerHull _trawlerHull;
@@ -84,6 +88,7 @@ namespace FishingTrawler
 
                 // Apply our patches
                 new BeachPatch(monitor).Apply(harmony);
+                new GameLocationPatch(monitor).Apply(harmony);
             }
             catch (Exception e)
             {
@@ -333,6 +338,9 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
+            // Create the trawler object for the beach
+            trawlerObject = new Trawler(Game1.getLocationFromName("Beach"));
+
             // Add the surface location
             TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
             Game1.locations.Add(surfaceLocation);

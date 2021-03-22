@@ -284,7 +284,7 @@ namespace FishingTrawler.GameLocations
             else
             {
                 // For each leak, add 1 to the water level
-                ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count());
+                ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count() * 2);
             }
 
             //ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);

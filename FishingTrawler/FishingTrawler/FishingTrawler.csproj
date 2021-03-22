@@ -65,6 +65,7 @@
     <Compile Include="FishingTrawler\Objects\Trawler.cs" />
     <Compile Include="FishingTrawler\ModEntry.cs" />
     <Compile Include="FishingTrawler\ModResources.cs" />
+    <Compile Include="FishingTrawler\Patches\Locations\GameLocationPatch.cs" />
     <Compile Include="FishingTrawler\Patches\Locations\BeachPatch.cs" />
     <Compile Include="FishingTrawler\Patches\Patch.cs" />
     <Compile Include="FishingTrawler\UI\TrawlerUI.cs" />
