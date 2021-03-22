@@ -30,8 +30,9 @@ namespace FishingTrawler
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
 
-        // Trawler object related
+        // Trawler beach map related
         internal static Trawler trawlerObject;
+        internal static Chest rewardChest;
 
         // Trawler map / texture related
         private TrawlerHull _trawlerHull;
@@ -39,10 +40,11 @@ namespace FishingTrawler
         private TrawlerCabin _trawlerCabin;
         private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
-        // Location names
+        // Location names, reward chest mod data
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
         private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
+        private const string REWARD_CHEST_DATA_KEY = "FishingTrawler_RewardChest";
 
         // Notificiation messages
         private readonly KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>("This ship is falling apart!", 10);
@@ -339,7 +341,20 @@ namespace FishingTrawler
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             // Create the trawler object for the beach
-            trawlerObject = new Trawler(Game1.getLocationFromName("Beach"));
+            Beach beach = Game1.getLocationFromName("Beach") as Beach;
+            trawlerObject = new Trawler(beach);
+
+            Vector2 rewardChestPosition = new Vector2(-100, -100);
+            Farm farm = Game1.getLocationFromName("Farm") as Farm;
+            rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
+            if (rewardChest is null)
+            {
+                Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Debug);
+                rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
+                rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
+
+                farm.setObject(rewardChestPosition, rewardChest);
+            }
 
             // Add the surface location
             TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };

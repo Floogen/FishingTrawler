@@ -63,12 +63,16 @@ namespace FishingTrawler.Patches.Locations
                     {
                         ModEntry.trawlerObject._boatDirection = 1;
                     }
-                    if (ModEntry.trawlerObject._boatOffset >= 200)
+                    if (ModEntry.trawlerObject._boatOffset >= 150)
                     {
                         __result = true;
                         return;
                     }
                     __result = false;
+                    return;
+                case "close_gate":
+                    ModEntry.trawlerObject._closeGate = true;
+                    __result = true;
                     return;
             }
         }

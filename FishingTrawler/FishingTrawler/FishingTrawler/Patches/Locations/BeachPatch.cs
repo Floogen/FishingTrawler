@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using xTile.Tiles;
 
 namespace FishingTrawler.Patches.Locations
 {
@@ -24,9 +25,34 @@ namespace FishingTrawler.Patches.Locations
 
         internal override void Apply(HarmonyInstance harmony)
         {
+            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.checkAction), new[] { typeof(xTile.Dimensions.Location), typeof(xTile.Dimensions.Rectangle), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(CheckActionPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.cleanupBeforePlayerExit), null), postfix: new HarmonyMethod(GetType(), nameof(CleanupBeforePlayerExitPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.draw), new[] { typeof(SpriteBatch) }), postfix: new HarmonyMethod(GetType(), nameof(DrawPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.UpdateWhenCurrentLocation), new[] { typeof(GameTime) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPatch)));
+        }
+
+        internal static void CheckActionPatch(Beach __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
+        {
+            if (__result)
+            {
+                return;
+            }
+            Tile tile = __instance.map.GetLayer("Buildings").PickTile(new xTile.Dimensions.Location(tileLocation.X * 64, tileLocation.Y * 64), viewport.Size);
+            if (tile is null || !tile.Properties.ContainsKey("CustomAction"))
+            {
+                return;
+            }
+
+            switch (tile.Properties["CustomAction"].ToString())
+            {
+                case "TrawlerRewardStorage":
+                    __result = true;
+                    __instance.playSound("fishSlap");
+                    ModEntry.rewardChest.ShowMenu();
+                    break;
+                default:
+                    break;
+            }
         }
 
         internal static void CleanupBeforePlayerExitPatch(Beach __instance)
@@ -43,9 +69,15 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            b.Draw(boatTexture, Game1.GlobalToLocal(ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 720f / 10000f);
-            // Overlay for glass port
-            //b.Draw(boatTexture, Game1.GlobalToLocal(Game1.viewport, Trawler.GetTrawlerPosition() + new Vector2(8f, 0f) * 4f), new Rectangle(0, 160, 128, 96), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, (720f + 408f) / 10000f);
+            b.Draw(boatTexture, Game1.GlobalToLocal(ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+            if (ModEntry.trawlerObject._closeGate)
+            {
+                b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(107f, 16f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(251, 32, 18, 15), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+            }
+            else
+            {
+                b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(106f, 7f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(282, 23, 4, 24), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+            }
         }
 
         internal static void UpdateWhenCurrentLocationPatch(Beach __instance, GameTime time)
@@ -110,7 +142,7 @@ namespace FishingTrawler.Patches.Locations
                     return;
                 }
                 Vector2 position = new Vector2(158f, -32f) * 4f + trawler.GetTrawlerPosition();
-                TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 1600, 64, 128), 200f, 9, 1, position, flicker: false, flipped: false, 1f, 0.025f, Color.White, 1f, 0.025f, 0f, 0f);
+                TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 1600, 64, 128), 200f, 9, 1, position, flicker: false, flipped: false, 1f, 0.025f, Color.Gray, 1f, 0.025f, 0f, 0f);
                 sprite.acceleration = new Vector2(-0.25f, -0.15f);
                 __instance.temporarySprites.Add(sprite);
                 trawler._nextSmoke = 0.2f;
