@@ -27,10 +27,16 @@ namespace FishingTrawler.Patches.Locations
 
             harmony.Patch(AccessTools.Method(_gameLocation, nameof(GameLocation.RunLocationSpecificEventCommand), new[] { typeof(Event), typeof(string), typeof(bool), typeof(string[]) }), postfix: new HarmonyMethod(GetType(), nameof(RunLocationSpecificEventCommandPatch)));
             harmony.Patch(AccessTools.Method(_gameLocation, nameof(GameLocation.performTouchAction), new[] { typeof(string), typeof(Vector2) }), postfix: new HarmonyMethod(GetType(), nameof(PerformTouchActionPatch)));
+            harmony.Patch(AccessTools.Method(_gameLocation, nameof(GameLocation.isActionableTile), new[] { typeof(int), typeof(int), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(IsActionableTilePatch)));
         }
 
-        internal static void RunLocationSpecificEventCommandPatch(Beach __instance, ref bool __result, Event current_event, string command_string, bool first_run, params string[] args)
+        internal static void RunLocationSpecificEventCommandPatch(GameLocation __instance, ref bool __result, Event current_event, string command_string, bool first_run, params string[] args)
         {
+            if (!(__instance is Beach))
+            {
+                return;
+            }
+
             switch (command_string)
             {
                 case "animate_boat_start":
@@ -74,12 +80,19 @@ namespace FishingTrawler.Patches.Locations
                     ModEntry.trawlerObject._closeGate = true;
                     __result = true;
                     return;
+                case "despawn_murphy":
+                    if (ModEntry.murphyNPC != null)
+                    {
+                        ModEntry.murphyNPC = null;
+                    }
+                    __result = true;
+                    return;
             }
         }
 
-        internal static void PerformTouchActionPatch(Beach __instance, string fullActionString, Vector2 playerStandingPosition)
+        internal static void PerformTouchActionPatch(GameLocation __instance, string fullActionString, Vector2 playerStandingPosition)
         {
-            if (Game1.eventUp)
+            if (Game1.eventUp || !(__instance is Beach))
             {
                 return;
             }
@@ -87,6 +100,25 @@ namespace FishingTrawler.Patches.Locations
             if (fullActionString == "FishingTrawler_Depart")
             {
                 ModEntry.trawlerObject.StartDeparture();
+            }
+        }
+
+        internal static void IsActionableTilePatch(GameLocation __instance, ref bool __result, int xTile, int yTile, Farmer who)
+        {
+            if (__result || !(__instance is Beach))
+            {
+                return;
+            }
+
+            string actionProperty = __instance.doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
+            if (actionProperty != null && actionProperty == "TrawlerRewardStorage")
+            {
+                if (!Enumerable.Range(who.getTileX() - 1, 3).Contains(xTile) || !Enumerable.Range(who.getTileY() - 1, 3).Contains(yTile))
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                __result = true;
             }
         }
     }

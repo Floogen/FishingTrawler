@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using xTile.Tiles;
+using System.Reflection;
 
 namespace FishingTrawler.Patches.Locations
 {
@@ -25,10 +26,16 @@ namespace FishingTrawler.Patches.Locations
 
         internal override void Apply(HarmonyInstance harmony)
         {
+            harmony.Patch(AccessTools.Method(_beach, "resetLocalState", null), postfix: new HarmonyMethod(GetType(), nameof(ResetLocationStatePatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.checkAction), new[] { typeof(xTile.Dimensions.Location), typeof(xTile.Dimensions.Rectangle), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(CheckActionPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.cleanupBeforePlayerExit), null), postfix: new HarmonyMethod(GetType(), nameof(CleanupBeforePlayerExitPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.draw), new[] { typeof(SpriteBatch) }), postfix: new HarmonyMethod(GetType(), nameof(DrawPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.UpdateWhenCurrentLocation), new[] { typeof(GameTime) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPatch)));
+        }
+
+        internal static void ResetLocationStatePatch(Beach __instance)
+        {
+            ModEntry.murphyNPC = new NPC(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy") { Portrait = ModResources.murphyPortraitTexture };
         }
 
         internal static void CheckActionPatch(Beach __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -37,6 +44,16 @@ namespace FishingTrawler.Patches.Locations
             {
                 return;
             }
+
+            // Check to see if player is trying to talk to Murphy NPC
+            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && ModEntry.murphyNPC.getTileY() == tileLocation.Y)
+            {
+                ModEntry.murphyNPC.CurrentDialogue.Push(new Dialogue("Ahoy there matey!$h#$b#Still interested in my offer?$n#$e", ModEntry.murphyNPC));
+                Game1.drawDialogue(ModEntry.murphyNPC);
+                //Game1.drawDialogueBox(Game1.parseText("$neutral#Ahoy there matey!"));
+            }
+
+            // Check to see if player is trying to access Trawler's reward chest
             Tile tile = __instance.map.GetLayer("Buildings").PickTile(new xTile.Dimensions.Location(tileLocation.X * 64, tileLocation.Y * 64), viewport.Size);
             if (tile is null || !tile.Properties.ContainsKey("CustomAction"))
             {
@@ -58,30 +75,41 @@ namespace FishingTrawler.Patches.Locations
         internal static void CleanupBeforePlayerExitPatch(Beach __instance)
         {
             ModEntry.trawlerObject.Reset();
+            ModEntry.murphyNPC = null;
         }
 
 
         internal static void DrawPatch(Beach __instance, SpriteBatch b)
         {
             Texture2D boatTexture = ModResources.boatTexture;
-            if (boatTexture is null)
+            if (boatTexture != null)
             {
-                return;
+                b.Draw(boatTexture, Game1.GlobalToLocal(ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+                if (ModEntry.trawlerObject._closeGate)
+                {
+                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(107f, 16f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(251, 32, 18, 15), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                }
+                else
+                {
+                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(106f, 7f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(282, 23, 4, 24), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                }
             }
 
-            b.Draw(boatTexture, Game1.GlobalToLocal(ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
-            if (ModEntry.trawlerObject._closeGate)
+            // Draw the Murphy NPC
+            if (ModEntry.murphyNPC != null)
             {
-                b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(107f, 16f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(251, 32, 18, 15), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
-            }
-            else
-            {
-                b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(106f, 7f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(282, 23, 4, 24), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                ModEntry.murphyNPC.draw(b);
             }
         }
 
         internal static void UpdateWhenCurrentLocationPatch(Beach __instance, GameTime time)
         {
+            // Update the Murphy NPC
+            if (ModEntry.murphyNPC != null)
+            {
+                ModEntry.murphyNPC.update(time, __instance);
+            }
+
             Trawler trawler = ModEntry.trawlerObject;
             if (trawler is null)
             {

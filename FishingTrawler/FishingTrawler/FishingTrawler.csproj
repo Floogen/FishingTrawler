@@ -116,6 +116,14 @@
       <Link>FishingTrawler\assets\Maps\BellsAndWhistles.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\Murphy.png">
+      <Link>FishingTrawler\assets\Characters\Murphy.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\MurphyPortrait.png">
+      <Link>FishingTrawler\assets\Characters\MurphyPortrait.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\Trawler.png">
       <Link>FishingTrawler\assets\Objects\Trawler.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -31,6 +31,7 @@ namespace FishingTrawler
         internal static bool themeSongUpdated;
 
         // Trawler beach map related
+        internal static NPC murphyNPC;
         internal static Trawler trawlerObject;
         internal static Chest rewardChest;
 
@@ -144,8 +145,11 @@ namespace FishingTrawler
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
-                // Give the player their rewards
-                TrawlerRewards.CalculateAndPopulateReward(rewardChest, _trawlerSurface.fishCaughtQuantity, e.Player);
+                // Give the player their rewards, if they left the trawler as expected (warping out early does not give any rewards)
+                if (_isTripEnding)
+                {
+                    TrawlerRewards.CalculateAndPopulateReward(rewardChest, _trawlerSurface.fishCaughtQuantity, e.Player);
+                }
 
                 // Reset the trawler
                 _trawlerHull.Reset();
@@ -357,7 +361,7 @@ namespace FishingTrawler
             rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
             if (rewardChest is null)
             {
-                Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Debug);
+                Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Trace);
                 rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
                 rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
 

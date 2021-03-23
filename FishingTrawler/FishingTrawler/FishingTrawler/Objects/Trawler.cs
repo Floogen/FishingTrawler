@@ -59,7 +59,7 @@ namespace FishingTrawler.Objects
             int player_direction = Game1.player.facingDirection;
             StringBuilder event_string = new StringBuilder();
             event_string.Append("/-1000 -1000/farmer 0 0 0/playMusic none");
-            event_string.Append("/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand close_gate/changeMapTile Back 87 40 14/changeMapTile Buildings 87 41 19/changeMapTile Buildings 87 42 24/changeMapTile Buildings 87 43 4");
+            event_string.Append("/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Back 87 40 14/changeMapTile Buildings 87 41 19/changeMapTile Buildings 87 42 24/changeMapTile Buildings 87 43 4");
             event_string.Append("/fade/viewport 83 38/pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000");
             event_string.Append("/locationSpecificCommand boat_depart/fade/viewport -5000 -5000");
             event_string.Append("/changeMapTile Back 87 40 18/changeMapTile Buildings 87 41 14/changeMapTile Buildings 87 42 19/changeMapTile Buildings 87 43 24");
