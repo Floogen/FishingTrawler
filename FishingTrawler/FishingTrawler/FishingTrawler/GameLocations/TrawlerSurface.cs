@@ -356,7 +356,7 @@ namespace FishingTrawler.GameLocations
         {
             int playerX = who.getStandingX() / 64;
             int playerY = who.getStandingY() / 64;
-            ModEntry.monitor.Log($"{playerX}, {playerY}", LogLevel.Debug);
+
             string actionProperty = this.doesTileHaveProperty(playerX, playerY, "CustomAction", "Back");
             if (actionProperty != null && actionProperty == "EmptyBucketSpot")
             {

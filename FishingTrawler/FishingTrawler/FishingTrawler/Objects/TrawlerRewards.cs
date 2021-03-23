@@ -56,7 +56,20 @@ namespace FishingTrawler.Objects
                 {
                     string[] specificFishData = fishData[Convert.ToInt32(keys[i])].Split('/');
 
-                    if (who.FishingLevel >= Convert.ToInt32(specificFishData[12]))
+                    if (specificFishData[1] == "trap")
+                    {
+                        double chance = Convert.ToDouble(specificFishData[2]);
+                        chance += (double)((float)who.FishingLevel / 50f);
+
+                        chance = Math.Min(chance, 0.89999997615814209);
+                        if (Game1.random.NextDouble() <= chance)
+                        {
+                            caughtFish = true;
+                            rewards.Add(new Object(Convert.ToInt32(keys[i]), 1));
+                            break;
+                        }
+                    }
+                    else if (who.FishingLevel >= Convert.ToInt32(specificFishData[12]))
                     {
                         double chance = Convert.ToDouble(specificFishData[10]);
                         double dropOffAmount = Convert.ToDouble(specificFishData[11]) * chance;
