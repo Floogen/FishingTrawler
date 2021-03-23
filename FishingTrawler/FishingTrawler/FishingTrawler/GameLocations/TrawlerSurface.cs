@@ -80,12 +80,23 @@ namespace FishingTrawler.GameLocations
             }
 
             UpdateFishCaught(fishCaughtOverride: 0);
+
+            // Clear out the TemporaryAnimatedSprite we preserved
+            base.resetLocalState();
         }
 
         protected override void resetLocalState()
         {
             base.critters = new List<Critter>();
+
+            List<TemporaryAnimatedSprite> preservedSprites = new List<TemporaryAnimatedSprite>();
+            foreach (TemporaryAnimatedSprite sprite in base.temporarySprites)
+            {
+                preservedSprites.Add(sprite);
+            }
+
             base.resetLocalState();
+            base.temporarySprites = preservedSprites;
 
             AmbientLocationSounds.addSound(new Vector2(44f, 23f), 2);
         }
@@ -105,6 +116,7 @@ namespace FishingTrawler.GameLocations
 
         public override void cleanupBeforePlayerExit()
         {
+            // TODO: See if we can prevent the temp objects from being deleted if player exists to trawler hull or cabin
             base.cleanupBeforePlayerExit();
         }
 
