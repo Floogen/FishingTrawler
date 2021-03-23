@@ -144,6 +144,9 @@ namespace FishingTrawler
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
+                // Give the player their rewards
+                TrawlerRewards.PopulatePlayerRewards(_trawlerSurface.fishCaughtQuantity, e.Player);
+
                 // Reset the trawler
                 _trawlerHull.Reset();
                 _trawlerSurface.Reset();
@@ -158,6 +161,7 @@ namespace FishingTrawler
                 // Set the theme to null
                 SetTrawlerTheme(null);
 
+                // Finish trip ending logic
                 _isTripEnding = false;
 
                 return;
