@@ -63,7 +63,7 @@ namespace FishingTrawler.Objects
                     {
                         double chance = Convert.ToDouble(specificFishData[2]);
                         chance += (double)((float)who.FishingLevel / 50f);
-                        chance /= 1.5f;  // Reduce chance of trap-based catches by 1.5
+                        chance /= 1.2f;  // Reduce chance of trap-based catches by 1.2
 
                         chance = Math.Min(chance, 0.89999997615814209);
                         if (Game1.random.NextDouble() <= chance)

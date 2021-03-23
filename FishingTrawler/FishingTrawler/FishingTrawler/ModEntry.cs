@@ -232,6 +232,9 @@ namespace FishingTrawler
                     Game1.addHUDMessage(new HUDMessage("The ship has taken on too much water! Murphy quickly returns to port before it can sink.", null));
                     DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
 
+                    // Reduce fishCaughtQuantity due to failed trip
+                    _trawlerSurface.fishCaughtQuantity /= 4;
+
                     _isTripEnding = true;
                     return;
                 }
@@ -348,6 +351,7 @@ namespace FishingTrawler
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
             trawlerObject = new Trawler(beach);
 
+            // Set the reward chest
             Vector2 rewardChestPosition = new Vector2(-100, -100);
             Farm farm = Game1.getLocationFromName("Farm") as Farm;
             rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
