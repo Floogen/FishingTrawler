@@ -1,4 +1,5 @@
 ﻿using StardewValley;
+using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace FishingTrawler.Objects
 
         private static int[] GetEligibleFishIds(bool limitToOceanFish = true)
         {
-            int[] eligibleFishIds = { };
+            List<int> eligibleFishIds = new List<int>();
 
             // Iterate through any valid locations to find the fish eligible for rewarding (fish need to be in season and player must have minimum level for it)
             Dictionary<string, string> locationData = Game1.content.Load<Dictionary<string, string>>("Data\\Locations");
@@ -35,23 +36,25 @@ namespace FishingTrawler.Objects
                     }
                 }
 
-                eligibleFishIds.Union(rawFishDataWithLocation.Keys);
+                eligibleFishIds.AddRange(rawFishDataWithLocation.Keys);
             }
 
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
-            return eligibleFishIds.Union(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !_forbiddenFish.Contains(i))).ToArray();
+            eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !_forbiddenFish.Contains(i)));
+
+            return eligibleFishIds.ToArray();
         }
 
-        private static List<Object> CalculateReward(int[] keys, int amountOfFish, Farmer who)
+        internal static void CalculateAndPopulateReward(Chest rewardChest, int amountOfFish, Farmer who)
         {
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
 
-            List<Object> rewards = new List<Object>();
+            int[] keys = GetEligibleFishIds();
             for (int x = 0; x < amountOfFish; x++)
             {
                 bool caughtFish = false;
-                Utility.Shuffle(Game1.random, keys);
 
+                Utility.Shuffle(Game1.random, keys);
                 for (int i = 0; i < keys.Length; i++)
                 {
                     string[] specificFishData = fishData[Convert.ToInt32(keys[i])].Split('/');
@@ -60,12 +63,13 @@ namespace FishingTrawler.Objects
                     {
                         double chance = Convert.ToDouble(specificFishData[2]);
                         chance += (double)((float)who.FishingLevel / 50f);
+                        chance /= 1.5f;  // Reduce chance of trap-based catches by 1.5
 
                         chance = Math.Min(chance, 0.89999997615814209);
                         if (Game1.random.NextDouble() <= chance)
                         {
                             caughtFish = true;
-                            rewards.Add(new Object(Convert.ToInt32(keys[i]), 1));
+                            rewardChest.addItem(new Object(Convert.ToInt32(keys[i]), 1));
                             break;
                         }
                     }
@@ -80,7 +84,7 @@ namespace FishingTrawler.Objects
                         if (Game1.random.NextDouble() <= chance)
                         {
                             caughtFish = true;
-                            rewards.Add(new Object(Convert.ToInt32(keys[i]), 1));
+                            rewardChest.addItem(new Object(Convert.ToInt32(keys[i]), 1));
                             break;
                         }
                     }
@@ -88,16 +92,9 @@ namespace FishingTrawler.Objects
 
                 if (!caughtFish)
                 {
-                    rewards.Add(new Object(Game1.random.Next(167, 173), 1));
+                    rewardChest.addItem(new Object(Game1.random.Next(167, 173), 1));
                 }
             }
-
-            return rewards;
-        }
-
-        internal static void PopulatePlayerRewards(int amountOfFish, Farmer who)
-        {
-            ModEntry.rewardChest.items.AddRange(CalculateReward(GetEligibleFishIds(), amountOfFish, who));
         }
     }
 }

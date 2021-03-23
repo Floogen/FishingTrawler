@@ -51,8 +51,8 @@ namespace FishingTrawler
         private readonly KeyValuePair<string, int> MESSAGE_LOSING_FISH = new KeyValuePair<string, int>("We're losing fish!", 9);
         private readonly KeyValuePair<string, int> MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>("We're taking on water!", 8);
         private readonly KeyValuePair<string, int> MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>("We've got lots of problems!", 7);
+        private readonly KeyValuePair<string, int> MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>("The engine is failing!", 7);
         private readonly KeyValuePair<string, int> MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>("The nets are torn!", 6);
-        private readonly KeyValuePair<string, int> MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>("The engine is failing!", 6);
         private readonly KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>("We've got a leak!", 5);
 
         // Notification related
@@ -145,7 +145,7 @@ namespace FishingTrawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
                 // Give the player their rewards
-                TrawlerRewards.PopulatePlayerRewards(_trawlerSurface.fishCaughtQuantity, e.Player);
+                TrawlerRewards.CalculateAndPopulateReward(rewardChest, _trawlerSurface.fishCaughtQuantity, e.Player);
 
                 // Reset the trawler
                 _trawlerHull.Reset();
