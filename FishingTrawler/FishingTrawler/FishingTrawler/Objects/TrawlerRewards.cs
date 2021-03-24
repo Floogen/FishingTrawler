@@ -45,11 +45,12 @@ namespace FishingTrawler.Objects
             return eligibleFishIds.ToArray();
         }
 
-        internal static void CalculateAndPopulateReward(Chest rewardChest, int amountOfFish, Farmer who)
+        internal static void CalculateAndPopulateReward(Chest rewardChest, int amountOfFish, Farmer who, int baseXpReduction = 5)
         {
+            int[] keys = GetEligibleFishIds();
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
 
-            int[] keys = GetEligibleFishIds();
+            int xpReward = 3;
             for (int x = 0; x < amountOfFish; x++)
             {
                 bool caughtFish = false;
@@ -70,11 +71,13 @@ namespace FishingTrawler.Objects
                         {
                             caughtFish = true;
                             rewardChest.addItem(new Object(Convert.ToInt32(keys[i]), 1));
+                            xpReward += 5; // Crab pot always give 5 XP per Vanilla
                             break;
                         }
                     }
                     else if (who.FishingLevel >= Convert.ToInt32(specificFishData[12]))
                     {
+                        int difficulty = Convert.ToInt32(specificFishData[1]);
                         double chance = Convert.ToDouble(specificFishData[10]);
                         double dropOffAmount = Convert.ToDouble(specificFishData[11]) * chance;
                         chance -= (double)Math.Max(0, Convert.ToInt32(specificFishData[9]) - 5) * dropOffAmount;
@@ -85,6 +88,7 @@ namespace FishingTrawler.Objects
                         {
                             caughtFish = true;
                             rewardChest.addItem(new Object(Convert.ToInt32(keys[i]), 1));
+                            xpReward += 3 + (difficulty / 3);
                             break;
                         }
                     }
@@ -95,6 +99,9 @@ namespace FishingTrawler.Objects
                     rewardChest.addItem(new Object(Game1.random.Next(167, 173), 1));
                 }
             }
+
+            // Now give XP reward (give 5% of total caught XP)
+            who.gainExperience(1, xpReward % (100 - baseXpReduction));
         }
     }
 }
