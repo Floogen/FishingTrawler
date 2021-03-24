@@ -25,9 +25,15 @@ namespace FishingTrawler.Objects
         {
             string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
 
-            ModEntry.murphyNPC.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Introduction", playerTerm), ModEntry.murphyNPC));
+            if (!who.hasOrWillReceiveMail("FishingTrawler_introductionsMurphy"))
+            {
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Introduction", playerTerm), this));
+
+                Game1.addMailForTomorrow("FishingTrawler_introductionsMurphy", true);
+                return;
+            }
+
             Game1.drawDialogue(ModEntry.murphyNPC);
-            //Game1.drawDialogueBox(Game1.parseText("$neutral#Ahoy there matey!"));
         }
 
         private string GetDialogue(string dialoguePath, string dialogueTitle, object title = null)

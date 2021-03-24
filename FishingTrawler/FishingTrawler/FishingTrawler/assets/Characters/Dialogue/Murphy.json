@@ -1,5 +1,6 @@
 {
   "Player_Male": "laddy",
   "Player_Female": "miss",
-  "Introduction": "Ahoy there {0}!$h#$b#Still interested in my offer?$n#$e"
+  "Introduction": "Ahoy there {0}!$h#$b#You must be @? Willy mentioned you may be stopping by.$n#$e",
+  "Minigame_Explanation": "Test test test"
 }
