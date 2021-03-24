@@ -35,7 +35,7 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void ResetLocationStatePatch(Beach __instance)
         {
-            ModEntry.murphyNPC = new NPC(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy") { Portrait = ModResources.murphyPortraitTexture };
+            ModEntry.murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
         }
 
         internal static void CheckActionPatch(Beach __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -48,9 +48,7 @@ namespace FishingTrawler.Patches.Locations
             // Check to see if player is trying to talk to Murphy NPC
             if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && ModEntry.murphyNPC.getTileY() == tileLocation.Y)
             {
-                ModEntry.murphyNPC.CurrentDialogue.Push(new Dialogue("Ahoy there matey!$h#$b#Still interested in my offer?$n#$e", ModEntry.murphyNPC));
-                Game1.drawDialogue(ModEntry.murphyNPC);
-                //Game1.drawDialogueBox(Game1.parseText("$neutral#Ahoy there matey!"));
+                ModEntry.murphyNPC.DisplayDialogue(who);
             }
 
             // Check to see if player is trying to access Trawler's reward chest

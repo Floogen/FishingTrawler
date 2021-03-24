@@ -31,7 +31,7 @@ namespace FishingTrawler
         internal static bool themeSongUpdated;
 
         // Trawler beach map related
-        internal static NPC murphyNPC;
+        internal static Murphy murphyNPC;
         internal static Trawler trawlerObject;
         internal static Chest rewardChest;
 

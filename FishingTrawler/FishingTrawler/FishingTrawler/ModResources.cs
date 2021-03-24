@@ -13,6 +13,7 @@ namespace FishingTrawler
     {
         internal static string assetFolderPath;
         internal static string murphyTexturePath;
+        internal static string murphyDialoguePath;
 
         internal static Texture2D murphyPortraitTexture;
         internal static Texture2D boatTexture;
@@ -23,6 +24,7 @@ namespace FishingTrawler
         {
             assetFolderPath = helper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
             murphyTexturePath = Path.Combine(assetFolderPath, "Characters", "Murphy.png");
+            murphyDialoguePath = Path.Combine(assetFolderPath, "Characters", "Dialogue", "Murphy.json");
 
             // Load in textures
             murphyPortraitTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Characters", "MurphyPortrait.png"));
