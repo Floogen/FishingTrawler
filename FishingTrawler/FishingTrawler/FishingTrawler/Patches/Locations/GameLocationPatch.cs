@@ -120,6 +120,17 @@ namespace FishingTrawler.Patches.Locations
 
                 __result = true;
             }
+
+            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == xTile && ModEntry.murphyNPC.getTileY() == yTile)
+            {
+                if (!Utility.tileWithinRadiusOfPlayer(xTile, yTile, 1, who))
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                Game1.isSpeechAtCurrentCursorTile = true;
+                __result = true;
+            }
         }
     }
 }
