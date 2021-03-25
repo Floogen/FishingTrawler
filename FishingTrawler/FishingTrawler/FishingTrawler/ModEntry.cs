@@ -67,6 +67,7 @@ namespace FishingTrawler
         private readonly KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>("We've got a leak!", 5);
 
         // Notification related
+        private uint _eventSecondInterval;
         private bool _isTripEnding;
         private bool _isNotificationFading;
         private float _notificationAlpha;
@@ -89,6 +90,7 @@ namespace FishingTrawler
             fishingTripTimer = 0;
 
             // Set up our notification on the trawler
+            _eventSecondInterval = 600;
             _isTripEnding = false;
             _activeNotification = String.Empty;
             _notificationAlpha = 1f;
@@ -298,14 +300,14 @@ namespace FishingTrawler
                 _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
             }
 
-            // Every 3 seconds recalculate the amount of fish caught / lost
+            // Every 5 seconds recalculate the amount of fish caught / lost
             if (e.IsMultipleOf(300))
             {
                 _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
             }
 
-            // Every 10 seconds check for new event (leak, net tearing, etc.) on Trawler
-            if (e.IsMultipleOf(600))
+            // Every random interval check for new event (leak, net tearing, etc.) on Trawler
+            if (e.IsMultipleOf(_eventSecondInterval))
             {
                 string message = String.Empty;
 
@@ -329,6 +331,8 @@ namespace FishingTrawler
                 {
                     _activeNotification = message;
                 }
+
+                _eventSecondInterval = (uint)Game1.random.Next(2, 6) * 100;
             }
         }
 
