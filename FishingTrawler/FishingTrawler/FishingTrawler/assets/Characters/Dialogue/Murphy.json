@@ -1,6 +1,20 @@
 {
   "Player_Male": "laddy",
-  "Player_Female": "miss",
-  "Introduction": "Ahoy there {0}!$h#$b#You must be @? Willy mentioned you may be stopping by.$n#$e",
-  "Minigame_Explanation": "Test test test"
+  "Player_Female": "lassie",
+  "Introduction": "Ahoy there {0}!$h#$b#Ye must be @? Willy mentioned a pal of his would be stopping by.$n#$b#So... ye interested in being a deckhand aboard the ol' Dawnshard?$n#$b#I don't have much to offer as payment, but the share of fish we catch be yers!$h#$e",
+  "Greeting": "Ahoy there {0}!$h#$b#The sea be in our favor today. With Yoba's Blessing we'll make it back in one piece.$n#$e",
+  "Greeting_Rainy": "Ahoy there {0}!$h#$b#The sea be rough today aye, but a couple of seadogs like us will manage.$n#$e",
+  "Options": "Fancy a fishing trip, {0}?",
+  "Confirm_First_Trip": "Since this will be yer first trip, would ye like an explanation of a deckhand's duties?",
+  "Minigame_Explanation_Hull": "The ol' girl has seen better days, much like myself actually.$s#$b#Yer main job as deckhand will be to keep the Dawnshard afloat while we sail around the Fern Islands.$n#$b#Holes are likely to appear in the hull, so be sure to patch 'em up quickly.$n#$b#If we take on too much water, I'll have to turn us around and yer share of the haul will become a pittance.$s#$b#",
+  "Minigame_Explanation_Bailing": "I'll provide ye with a bailin' bucket when we weigh anchor. Use it in the hull to scoop up some water and empty it into the sea to reduce the flooding.$n#$b#",
+  "Minigame_Explanation_Nets": "Yer second duty is to make sure the nets stay in workin' order. They are located on the deck, held by the cranes near the stern.$n#$b#No working nets means no fish for us.$s#$b#",
+  "Minigame_Explanation_Engine": "Lastly is the engine, located in the cabin. The pipes leak steam occasionally and will need to be patched up.$n#$b#A leaking pipe means a failin' engine. A failin' engine means the nets won't catch as many fish. If both the nets and engine fail, we start losin' fish too.$s#$b#",
+  "Minigame_Explanation_Finish": "The full share of the haul be yers if we make it back in one piece. Otherwise, if we turn back early, yer share will be smaller fraction.$n#$b#If yer up for the job, let me know and we'll see about headin' out.$h#$e#",
+  "Reward_Explanation_Flags": "Cor blimey {0}! Is that what I think it is?$u#$b#%Murphy gently takes the flag from you, before examining it closely.$n#$b#This be one of the ancient flags flown by sailors and pirates from times long lost.$n#$b#Many tales are told about these flags and the effects they bestow to the sailors who fly them.$n#$b#I'll give this back {0}, but if ye fancy hoisting it on ol' Dawnshard, or if more of these happen upon ye, do let me know.$h#$e",
+  "After_Trip_Success": "Well done {0}! We'll make a true seadog out of ye.$h#$b#Yer share of the haul is stored in crate to the left!$n#$e",
+  "After_Trip_Failure": "By Yoba's Blessing we made it back in one piece.$s#$b#Don't worry {0}, there is always next time.$n#$e",
+  "Trip_Finished": "Yer itchin' to go on another expedition?$n#$b#Sorry {0}, ye will have to wait til next week. These old bones need some rest.$h#$e",
+  "Full_Inventory": "All hands on de-$n#$b#Oh! Sorry {0}, ye need some room in yer bag for the bailing bucket.$u#$b#Trust me, yer going to need it.$s#$e",
+  "Start_Departure": "All hands on deck! Weigh anchor and let us set sail!"
 }

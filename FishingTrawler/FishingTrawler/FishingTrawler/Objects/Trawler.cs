@@ -82,7 +82,6 @@ namespace FishingTrawler.Objects
             _farmerActor = _beach.currentEvent.getCharacterByName("farmer") as Farmer;
             _farmerActor.Position = player_position;
             _farmerActor.faceDirection(player_direction);
-            //TODO: Use this for Murphy(_beach.currentEvent.getCharacterByName("Willy") as NPC).IsInvisible = false;
         }
 
         internal void OnBoatEventEnd()

@@ -116,7 +116,6 @@ namespace FishingTrawler.GameLocations
 
         public override void cleanupBeforePlayerExit()
         {
-            // TODO: See if we can prevent the temp objects from being deleted if player exists to trawler hull or cabin
             base.cleanupBeforePlayerExit();
         }
 

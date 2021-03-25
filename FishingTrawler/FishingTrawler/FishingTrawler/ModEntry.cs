@@ -41,10 +41,13 @@ namespace FishingTrawler
         private TrawlerCabin _trawlerCabin;
         private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
-        // Location names, reward chest mod data
+        // Location names
         private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
         private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
+
+        // Mod data related
+        internal const string MURPHY_GREETED_TODAY_KEY = "FishingTrawler_MurphyGreeted";
         private const string REWARD_CHEST_DATA_KEY = "FishingTrawler_RewardChest";
 
         // Notificiation messages
@@ -181,6 +184,7 @@ namespace FishingTrawler
                 if (!Game1.player.items.Any(i => i is BailingBucket))
                 {
                     Game1.player.addItemToInventory(new BailingBucket());
+                    Game1.addHUDMessage(new HUDMessage("A bailing bucket has been added to your inventory.", null));
                 }
 
                 // Start the timer (2.5 minute default)
@@ -366,6 +370,12 @@ namespace FishingTrawler
                 rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
 
                 farm.setObject(rewardChestPosition, rewardChest);
+            }
+
+            // Set Farmer moddata used for this mod
+            if (!Game1.player.modData.ContainsKey(MURPHY_GREETED_TODAY_KEY) || Game1.player.modData[MURPHY_GREETED_TODAY_KEY].ToLower() == "true")
+            {
+                Game1.player.modData.Add(MURPHY_GREETED_TODAY_KEY, "false");
             }
 
             // Add the surface location

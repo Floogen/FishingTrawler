@@ -62,6 +62,13 @@ namespace FishingTrawler.Patches.Locations
             {
                 case "TrawlerRewardStorage":
                     __result = true;
+
+                    if (ModEntry.rewardChest.items.Count() == 0)
+                    {
+                        Game1.drawDialogueBox("The fishing crate is empty.");
+                        break;
+                    }
+
                     __instance.playSound("fishSlap");
                     ModEntry.rewardChest.ShowMenu();
                     break;
@@ -174,6 +181,5 @@ namespace FishingTrawler.Patches.Locations
                 trawler._nextSmoke = 0.2f;
             }
         }
-
     }
 }

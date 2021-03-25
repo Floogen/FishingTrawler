@@ -97,9 +97,9 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            if (fullActionString == "FishingTrawler_Depart")
+            if (fullActionString == "FishingTrawler_AttemptBoard")
             {
-                ModEntry.trawlerObject.StartDeparture();
+                Game1.drawDialogueBox("You should speak to the captain before boarding his ship!");
             }
         }
 
