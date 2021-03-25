@@ -374,8 +374,16 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            // Create the trawler object for the beach
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
+
+            // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
+            if (!Game1.player.mailReceived.Contains("FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+            {
+                Helper.Content.AssetEditors.Add(new IntroMail());
+                Game1.MasterPlayer.mailbox.Add("FishingTrawler_WillyIntroducesMurphy");
+            }
+
+            // Create the trawler object for the beach
             trawlerObject = new Trawler(beach);
 
             // Set the reward chest
@@ -392,16 +400,26 @@ namespace FishingTrawler
             }
 
             // Set Farmer moddata used for this mod
-            if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY) || Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true")
+            if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY))
             {
                 Game1.player.modData.Add(MURPHY_WAS_GREETED_TODAY_KEY, "false");
             }
+            else if (Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true")
+            {
+                Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
+            }
 
-            if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY) || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_ISLAND)
+            if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
             {
                 Game1.player.modData.Add(MURPHY_SAILED_TODAY_KEY, "false");
                 Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
                 Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
+            }
+            else if (Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_ISLAND)
+            {
+                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
+                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
+                Game1.player.modData[MURPHY_FINISHED_TALKING_KEY] = "false";
             }
 
             // Add the surface location
@@ -605,6 +623,16 @@ namespace FishingTrawler
                 default:
                     return false;
             }
+        }
+
+        internal static bool ShouldMurphyAppear(GameLocation location)
+        {
+            if (Game1.player.mailReceived.Contains("FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

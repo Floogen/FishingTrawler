@@ -25,14 +25,13 @@ namespace FishingTrawler.Objects
         {
             string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
 
-            // TODO: Need to create letter from Willy and add it as condition for Murphy to appear.
-            if (!who.hasOrWillReceiveMail("FishingTrawler_introductionsMurphy"))
+            if (!who.hasOrWillReceiveMail("FishingTrawler_IntroductionsMurphy"))
             {
                 this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Introduction", playerTerm), this));
                 Game1.drawDialogue(this);
 
                 who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
-                Game1.addMailForTomorrow("FishingTrawler_introductionsMurphy", true);
+                Game1.addMailForTomorrow("FishingTrawler_IntroductionsMurphy", true);
             }
             else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false")
             {

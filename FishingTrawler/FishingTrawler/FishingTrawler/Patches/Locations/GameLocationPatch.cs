@@ -99,7 +99,7 @@ namespace FishingTrawler.Patches.Locations
 
             if (fullActionString == "FishingTrawler_AttemptBoard")
             {
-                Game1.drawDialogueBox("You should speak to the captain before boarding his ship!");
+                Game1.drawObjectDialogue("You should speak to the captain before boarding his ship!");
             }
         }
 

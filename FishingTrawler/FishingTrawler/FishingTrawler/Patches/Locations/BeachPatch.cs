@@ -35,7 +35,10 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void ResetLocationStatePatch(Beach __instance)
         {
-            ModEntry.murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
+            if (ModEntry.ShouldMurphyAppear(__instance))
+            {
+                ModEntry.murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
+            }
         }
 
         internal static void CheckActionPatch(Beach __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -86,6 +89,12 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void DrawPatch(Beach __instance, SpriteBatch b)
         {
+            if (!ModEntry.ShouldMurphyAppear(__instance))
+            {
+                // Skip this draw patch if Murphy isn't here today
+                return;
+            }
+
             Texture2D boatTexture = ModResources.boatTexture;
             if (boatTexture != null)
             {
