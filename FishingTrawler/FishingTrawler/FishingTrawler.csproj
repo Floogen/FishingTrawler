@@ -75,8 +75,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\BeachPatch.tmx">
-      <Link>[CP] FishingTrawler\assets\BeachPatch.tmx</Link>
+    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\BeachPatchEmpty.tmx">
+      <Link>[CP] FishingTrawler\assets\BeachPatchEmpty.tmx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\BeachPatchMurphy.tmx">
+      <Link>[CP] FishingTrawler\assets\BeachPatchMurphy.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\FishingTrawler.tmx">

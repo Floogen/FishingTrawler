@@ -101,6 +101,11 @@ namespace FishingTrawler.Patches.Locations
             {
                 Game1.drawObjectDialogue("You should speak to the captain before boarding his ship!");
             }
+
+            if (fullActionString == "FishingTrawler_NoMurphy")
+            {
+                Game1.drawObjectDialogue("Walking the plank doesn't seem like such a great idea...");
+            }
         }
 
         internal static void IsActionableTilePatch(GameLocation __instance, ref bool __result, int xTile, int yTile, Farmer who)
@@ -112,6 +117,16 @@ namespace FishingTrawler.Patches.Locations
 
             string actionProperty = __instance.doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
             if (actionProperty != null && actionProperty == "TrawlerRewardStorage")
+            {
+                if (!Enumerable.Range(who.getTileX() - 1, 3).Contains(xTile) || !Enumerable.Range(who.getTileY() - 1, 3).Contains(yTile))
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                __result = true;
+            }
+
+            if (actionProperty != null && actionProperty == "TrawlerNote")
             {
                 if (!Enumerable.Range(who.getTileX() - 1, 3).Contains(xTile) || !Enumerable.Range(who.getTileY() - 1, 3).Contains(yTile))
                 {

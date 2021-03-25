@@ -102,13 +102,6 @@ namespace FishingTrawler.Objects
             }
             this.Reset();
             this._boatEvent = null;
-
-            return;
-            // TODO: Implement this letter for details on rewards / flags?
-            if (!Game1.player.hasOrWillReceiveMail("FishingTrawler_goneOnTrawlerTrip"))
-            {
-                Game1.addMailForTomorrow("FishingTrawler_goneOnTrawlerTrip");
-            }
         }
 
     }

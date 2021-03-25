@@ -68,12 +68,21 @@ namespace FishingTrawler.Patches.Locations
 
                     if (ModEntry.rewardChest.items.Count() == 0)
                     {
-                        Game1.drawDialogueBox("The fishing crate is empty.");
+                        Game1.drawObjectDialogue("The fishing crate is empty.");
                         break;
                     }
 
                     __instance.playSound("fishSlap");
                     ModEntry.rewardChest.ShowMenu();
+                    break;
+                case "TrawlerNote":
+                    if (!who.mailReceived.Contains("FishingTrawler_WillyIntroducesMurphy"))
+                    {
+                        Game1.drawObjectDialogue("There's a note here...#You can't read the handwriting.");
+                        break;
+                    }
+
+                    Game1.drawObjectDialogue("There's a note here...#It is from Murphy! It says he will be docked every Wednesday and to speak with him before nightfall if you wish to go on a fishing trip.");
                     break;
                 default:
                     break;

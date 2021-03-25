@@ -1,7 +1,7 @@
 {
   "Player_Male": "laddy",
   "Player_Female": "lassie",
-  "Introduction": "Ahoy there {0}!$h#$b#Ye must be @? Willy mentioned a pal of his would be stopping by.$n#$b#So, ye interested in being a deckhand aboard the ol' Dawnshard?$n#$b#I don't have much to offer as payment, but the share of fish we catch be yers!$h#$e",
+  "Introduction": "Ahoy there {0}!$h#$b#Ye must be @? Willy mentioned a pal of his would be stopping by.$n#$b#So yer interested in being a deckhand aboard the ol' Dawnshard?$n#$b#I don't have much to offer as payment, but the share of fish we catch be yers!$h#$e",
   "Greeting": "Ahoy there {0}!$h#$b#The sea be in our favor today. With Yoba's Blessing we'll make it back in one piece.$n#$e",
   "Greeting_Rainy": "Ahoy there {0}!$h#$b#The sea be rough today aye, but a couple of seadogs like us will manage.$n#$e",
   "Options": "Fancy a fishing trip, {0}?",
