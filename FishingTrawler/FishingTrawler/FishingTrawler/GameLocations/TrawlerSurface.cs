@@ -38,7 +38,7 @@ namespace FishingTrawler.GameLocations
         private float _nextSmoke = 0f;
         private const int CLOUD_ID = 1010101;
         private const int GROUND_ID = 2020202;
-        private const int TRAWLER_TILESHEET_INDEX = 2;
+        private const int TRAWLER_TILESHEET_INDEX = 3;
 
         internal TrawlerSurface()
         {
