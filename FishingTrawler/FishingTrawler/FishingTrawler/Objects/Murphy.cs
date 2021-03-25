@@ -25,21 +25,16 @@ namespace FishingTrawler.Objects
         {
             string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
 
-            if (!who.modData.ContainsKey(ModEntry.MURPHY_GREETED_TODAY_KEY))
-            {
-                who.modData.Add(ModEntry.MURPHY_GREETED_TODAY_KEY, "false");
-            }
-
             // TODO: Need to create letter from Willy and add it as condition for Murphy to appear.
             if (!who.hasOrWillReceiveMail("FishingTrawler_introductionsMurphy"))
             {
                 this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Introduction", playerTerm), this));
                 Game1.drawDialogue(this);
 
-                who.modData[ModEntry.MURPHY_GREETED_TODAY_KEY] = "true";
+                who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
                 Game1.addMailForTomorrow("FishingTrawler_introductionsMurphy", true);
             }
-            else if (who.modData[ModEntry.MURPHY_GREETED_TODAY_KEY].ToLower() == "false")
+            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false")
             {
                 if (Game1.isRaining || Game1.isSnowing)
                 {
@@ -53,15 +48,28 @@ namespace FishingTrawler.Objects
                     Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
 
-                who.modData[ModEntry.MURPHY_GREETED_TODAY_KEY] = "true";
+                who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
             }
-            else if (who.modData[ModEntry.MURPHY_GREETED_TODAY_KEY].ToLower() == "true")
+            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
                 // Show questions
                 AskQuestionAfterGreeting();
             }
+            else if (who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "false")
+            {
+                string tripState = who.modData[ModEntry.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "Successful" : "Failure";
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, String.Concat("After_Trip_", tripState), playerTerm), this));
+                Game1.drawDialogue(this);
 
-            // TODO: Implement dialogue for flag identification / rewards
+                who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY] = "true";
+            }
+            else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
+            {
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Trip_Finished", playerTerm), this));
+                Game1.drawDialogue(this);
+            }
+
+            // TODO: Implement dialogue for flag identification / adding to boat
         }
 
         private void ConfirmFirstTrip(Farmer who)

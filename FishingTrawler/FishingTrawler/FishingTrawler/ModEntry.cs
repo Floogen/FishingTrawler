@@ -46,9 +46,16 @@ namespace FishingTrawler
         private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
         private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
 
+        // Day to appear settings
+        private const string DAY_TO_APPEAR_TOWN = "Wed";
+        private const string DAY_TO_APPEAR_ISLAND = "Sun";
+
         // Mod data related
-        internal const string MURPHY_GREETED_TODAY_KEY = "FishingTrawler_MurphyGreeted";
         private const string REWARD_CHEST_DATA_KEY = "FishingTrawler_RewardChest";
+        internal const string MURPHY_WAS_GREETED_TODAY_KEY = "FishingTrawler_MurphyGreeted";
+        internal const string MURPHY_SAILED_TODAY_KEY = "FishingTrawler_MurphySailedToday";
+        internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "FishingTrawler_MurphyTripSuccessful";
+        internal const string MURPHY_FINISHED_TALKING_KEY = "FishingTrawler_MurphyFinishedTalking";
 
         // Notificiation messages
         private readonly KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>("This ship is falling apart!", 10);
@@ -234,6 +241,10 @@ namespace FishingTrawler
 
                 if (_trawlerHull.waterLevel == 100)
                 {
+                    // Set the status as failed
+                    Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
+                    Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "true";
+
                     // End trip due to flooding
                     Game1.player.currentLocation.playSound("fishEscape");
                     Game1.player.CanMove = false;
@@ -263,6 +274,10 @@ namespace FishingTrawler
             }
             else
             {
+                // Set the status as successful
+                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "true";
+                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "true";
+
                 // End trip due to timer finishing
                 Game1.player.currentLocation.playSound("trainWhistle");
                 Game1.player.CanMove = false;
@@ -373,9 +388,16 @@ namespace FishingTrawler
             }
 
             // Set Farmer moddata used for this mod
-            if (!Game1.player.modData.ContainsKey(MURPHY_GREETED_TODAY_KEY) || Game1.player.modData[MURPHY_GREETED_TODAY_KEY].ToLower() == "true")
+            if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY) || Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true")
             {
-                Game1.player.modData.Add(MURPHY_GREETED_TODAY_KEY, "false");
+                Game1.player.modData.Add(MURPHY_WAS_GREETED_TODAY_KEY, "false");
+            }
+
+            if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY) || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_ISLAND)
+            {
+                Game1.player.modData.Add(MURPHY_SAILED_TODAY_KEY, "false");
+                Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
+                Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
             }
 
             // Add the surface location
