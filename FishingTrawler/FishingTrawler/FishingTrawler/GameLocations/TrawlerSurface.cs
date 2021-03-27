@@ -305,8 +305,8 @@ namespace FishingTrawler.GameLocations
             if (flagType == FlagType.Unknown)
             {
                 // Clear the flag
-                this.setMapTile(39, 21, -1, "AlwaysFront", null, FLAGS_TILESHEET_INDEX);
-                this.setMapTile(40, 21 - 1, -1, "AlwaysFront", null, FLAGS_TILESHEET_INDEX);
+                this.setMapTile(39, 21, -1, "Flags", null, FLAGS_TILESHEET_INDEX);
+                this.setMapTile(40, 21 - 1, -1, "Flags", null, FLAGS_TILESHEET_INDEX);
                 return;
             }
 
