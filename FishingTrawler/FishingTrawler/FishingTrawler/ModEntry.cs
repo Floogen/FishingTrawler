@@ -6,6 +6,7 @@ using System.Reflection;
 using FishingTrawler.API;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Objects;
+using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Tools;
 using FishingTrawler.Patches.Locations;
 using FishingTrawler.UI;
@@ -25,7 +26,6 @@ namespace FishingTrawler
     {
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
-        internal static string bailingBucketKey;
         internal static int fishingTripTimer;
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
@@ -51,11 +51,14 @@ namespace FishingTrawler
         private const string DAY_TO_APPEAR_ISLAND = "Sun";
 
         // Mod data related
-        private const string REWARD_CHEST_DATA_KEY = "FishingTrawler_RewardChest";
-        internal const string MURPHY_WAS_GREETED_TODAY_KEY = "FishingTrawler_MurphyGreeted";
-        internal const string MURPHY_SAILED_TODAY_KEY = "FishingTrawler_MurphySailedToday";
-        internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "FishingTrawler_MurphyTripSuccessful";
-        internal const string MURPHY_FINISHED_TALKING_KEY = "FishingTrawler_MurphyFinishedTalking";
+        private const string REWARD_CHEST_DATA_KEY = "PeacefulEnd.FishingTrawler_RewardChest";
+        internal const string MURPHY_WAS_GREETED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphyGreeted";
+        internal const string MURPHY_SAILED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphySailedToday";
+        internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "PeacefulEnd.FishingTrawler_MurphyTripSuccessful";
+        internal const string MURPHY_FINISHED_TALKING_KEY = "PeacefulEnd.FishingTrawler_MurphyFinishedTalking";
+
+        internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
+        internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
 
         // Notificiation messages
         private readonly KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>("This ship is falling apart!", 10);
@@ -83,7 +86,6 @@ namespace FishingTrawler
             modHelper = helper;
 
             // Load in our assets
-            bailingBucketKey = $"{ModManifest.UniqueID}/bailing-bucket";
             ModResources.SetUpAssets(helper);
 
             // Initialize the timer for fishing trip
@@ -377,10 +379,10 @@ namespace FishingTrawler
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
 
             // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
-            if (!Game1.player.mailReceived.Contains("FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+            if (!Game1.player.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
             {
                 Helper.Content.AssetEditors.Add(new IntroMail());
-                Game1.MasterPlayer.mailbox.Add("FishingTrawler_WillyIntroducesMurphy");
+                Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
             }
 
             // Create the trawler object for the beach
@@ -441,21 +443,15 @@ namespace FishingTrawler
 
             // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
             // However, in the situations it does happen this will prevent crashes
-
-            // For every player, add the BailingBucket Tool (if they had previously)
             foreach (Farmer farmer in Game1.getAllFarmers())
             {
-                foreach (MilkPail pail in farmer.Items.Where(i => i != null && i.modData.ContainsKey(bailingBucketKey)))
-                {
-                    farmer.removeItemFromInventory(pail);
-                    farmer.addItemToInventory(new BailingBucket() { modData = pail.modData });
-                }
+                ModResources.Convert(farmer);
             }
 
             // Check every location for a chest and then re-add any previous BailingBuckets
             foreach (GameLocation location in Game1.locations)
             {
-                ConvertStoredBailingBuckets(location, true);
+                ModResources.ConvertBaseItemsToCustom(location);
 
                 if (location is BuildableGameLocation)
                 {
@@ -467,7 +463,7 @@ namespace FishingTrawler
                             continue;
                         }
 
-                        ConvertStoredBailingBuckets(indoorLocation, true);
+                        ModResources.ConvertBaseItemsToCustom(indoorLocation);
                     }
                 }
             }
@@ -486,17 +482,13 @@ namespace FishingTrawler
             // For every player, replace any BailingBucket with MilkPail
             foreach (Farmer farmer in Game1.getAllFarmers())
             {
-                foreach (BailingBucket bucket in farmer.Items.Where(i => i != null && i is BailingBucket))
-                {
-                    farmer.removeItemFromInventory(bucket);
-                    farmer.addItemToInventory(new MilkPail() { modData = bucket.modData });
-                }
+                ModResources.ConvertInventoryCustomItemsToBase(farmer);
             }
 
             // Check every location for a chest and then replace any BailingBucket with MilkPail
             foreach (GameLocation location in Game1.locations)
             {
-                ConvertStoredBailingBuckets(location);
+                ModResources.ConvertCustomItemsToBase(location);
 
                 if (location is BuildableGameLocation)
                 {
@@ -508,30 +500,7 @@ namespace FishingTrawler
                             continue;
                         }
 
-                        ConvertStoredBailingBuckets(indoorLocation);
-                    }
-                }
-            }
-        }
-
-        private void ConvertStoredBailingBuckets(GameLocation location, bool inverse = false)
-        {
-            foreach (Chest chest in location.Objects.Pairs.Where(o => o.Value != null && o.Value is Chest).Select(o => o.Value))
-            {
-                if (inverse)
-                {
-                    foreach (MilkPail pail in chest.items.Where(i => i != null && i.modData.ContainsKey(bailingBucketKey)).ToList())
-                    {
-                        chest.items.Remove(pail);
-                        chest.items.Add(new BailingBucket() { modData = pail.modData });
-                    }
-                }
-                else
-                {
-                    foreach (BailingBucket bucket in chest.items.Where(i => i != null && i is BailingBucket).ToList())
-                    {
-                        chest.items.Remove(bucket);
-                        chest.items.Add(new MilkPail() { modData = bucket.modData });
+                        ModResources.ConvertCustomItemsToBase(indoorLocation);
                     }
                 }
             }
@@ -627,7 +596,7 @@ namespace FishingTrawler
 
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.player.mailReceived.Contains("FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+            if (Game1.player.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
             {
                 return true;
             }
