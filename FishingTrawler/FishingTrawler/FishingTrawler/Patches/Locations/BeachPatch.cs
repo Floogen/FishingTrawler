@@ -49,7 +49,7 @@ namespace FishingTrawler.Patches.Locations
             }
 
             // Check to see if player is trying to talk to Murphy NPC
-            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && ModEntry.murphyNPC.getTileY() == tileLocation.Y && ModEntry.murphyNPC.CurrentDialogue.Count == 0)
+            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && ModEntry.murphyNPC.getTileY() == tileLocation.Y)
             {
                 ModEntry.murphyNPC.DisplayDialogue(who);
             }
