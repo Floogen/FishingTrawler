@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using xTile.Tiles;
 using System.Reflection;
+using FishingTrawler.Objects.Rewards;
 
 namespace FishingTrawler.Patches.Locations
 {
@@ -48,10 +49,10 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            // Check to see if player is trying to talk to Murphy NPC
             if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && ModEntry.murphyNPC.getTileY() == tileLocation.Y)
             {
-                ModEntry.murphyNPC.DisplayDialogue(who);
+                __result = ModEntry.murphyNPC.checkAction(who, __instance);
+                return;
             }
 
             // Check to see if player is trying to access Trawler's reward chest

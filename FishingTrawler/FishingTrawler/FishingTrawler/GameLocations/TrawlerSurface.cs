@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FishingTrawler.Objects.Rewards;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
@@ -28,6 +29,7 @@ namespace FishingTrawler.GameLocations
         private Rectangle _rockWithTreeSource = new Rectangle(48, 16, 96, 96);
 
         // Mini-game stat related
+        internal FlagType hoistedFlag;
         internal int fishCaughtQuantity;
         private List<Location> _netRipLocations;
 

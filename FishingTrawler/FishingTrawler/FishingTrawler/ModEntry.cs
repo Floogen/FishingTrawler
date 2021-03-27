@@ -30,6 +30,9 @@ namespace FishingTrawler
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
 
+        // FlagType
+        private static FlagType _hoistedFlag;
+
         // Trawler beach map related
         internal static Murphy murphyNPC;
         internal static Trawler trawlerObject;
@@ -56,9 +59,12 @@ namespace FishingTrawler
         internal const string MURPHY_SAILED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphySailedToday";
         internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "PeacefulEnd.FishingTrawler_MurphyTripSuccessful";
         internal const string MURPHY_FINISHED_TALKING_KEY = "PeacefulEnd.FishingTrawler_MurphyFinishedTalking";
+        internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
 
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
+
+        internal const string HOISTED_FLAG_KEY = "PeacefulEnd.FishingTrawler_HoistedFlag";
 
         // Notificiation messages
         private readonly KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>("This ship is falling apart!", 10);
@@ -402,6 +408,15 @@ namespace FishingTrawler
             }
 
             // Set Farmer moddata used for this mod
+            if (!Game1.player.modData.ContainsKey(HOISTED_FLAG_KEY))
+            {
+                Game1.player.modData.Add(HOISTED_FLAG_KEY, FlagType.Unknown.ToString());
+            }
+            else
+            {
+                SetHoistedFlag(Enum.TryParse(Game1.player.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown);
+            }
+
             if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY))
             {
                 Game1.player.modData.Add(MURPHY_WAS_GREETED_TODAY_KEY, "false");
@@ -422,6 +437,12 @@ namespace FishingTrawler
                 Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
                 Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
                 Game1.player.modData[MURPHY_FINISHED_TALKING_KEY] = "false";
+            }
+
+            // One time event, do not renew
+            if (!Game1.player.modData.ContainsKey(MURPHY_HAS_SEEN_FLAG_KEY))
+            {
+                Game1.player.modData.Add(MURPHY_HAS_SEEN_FLAG_KEY, "false");
             }
 
             // Add the surface location
@@ -602,6 +623,17 @@ namespace FishingTrawler
             }
 
             return false;
+        }
+
+        internal static FlagType GetHoistedFlag()
+        {
+            return _hoistedFlag;
+        }
+
+        internal static void SetHoistedFlag(FlagType flagType)
+        {
+            // TODO: Implement flag effects
+            _hoistedFlag = flagType;
         }
     }
 }

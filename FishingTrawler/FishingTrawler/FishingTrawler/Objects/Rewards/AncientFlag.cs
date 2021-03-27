@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Locations;
 using StardewValley.Objects;
 
 namespace FishingTrawler.Objects.Rewards
@@ -27,7 +28,8 @@ namespace FishingTrawler.Objects.Rewards
     {
         private Texture2D _flagTexture;
         private Rectangle _sourceRectangle;
-        private FlagType _flagType;
+
+        internal readonly FlagType flagType;
 
         // Using Pirate Flag id (1900) as base vanilla object
         public AncientFlag(FlagType flagType) : this(flagType, Vector2.Zero)
@@ -39,7 +41,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             this._flagTexture = ModResources.ancientFlagsTexture;
             this._sourceRectangle = new Rectangle(32 * (int)flagType % _flagTexture.Width, 32 * (int)flagType / _flagTexture.Width * 32, 32, 32);
-            this._flagType = flagType;
+            this.flagType = flagType;
 
             this.modData.Add(ModEntry.ANCIENT_FLAG_KEY, flagType.ToString());
         }
@@ -70,19 +72,31 @@ namespace FishingTrawler.Objects.Rewards
             }
         }
 
+        public override void drawPlacementBounds(SpriteBatch spriteBatch, GameLocation location)
+        {
+            if (location is Beach)
+            {
+                // Draw nothing to avoid covering up Murphy when attempting to give him an ancient flag
+                return;
+            }
+
+            base.drawPlacementBounds(spriteBatch, location);
+        }
+
+
         protected override string loadDisplayName()
         {
-            return GetFlagName(this._flagType);
+            return GetFlagName(this.flagType);
         }
 
         public override string getDescription()
         {
-            return Game1.parseText(GetFlagDescription(this._flagType), Game1.smallFont, this.getDescriptionWidth());
+            return Game1.parseText(GetFlagDescription(this.flagType), Game1.smallFont, this.getDescriptionWidth());
         }
 
         public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
         {
-            if (this._flagType is FlagType.Unknown)
+            if (this.flagType is FlagType.Unknown)
             {
                 Game1.showRedMessage("You need to identify the flag before placing it on walls!");
                 return false;
@@ -91,7 +105,7 @@ namespace FishingTrawler.Objects.Rewards
             return base.placementAction(location, x, y, who);
         }
 
-        private string GetFlagName(FlagType flagType)
+        internal static string GetFlagName(FlagType flagType)
         {
             switch (flagType)
             {
