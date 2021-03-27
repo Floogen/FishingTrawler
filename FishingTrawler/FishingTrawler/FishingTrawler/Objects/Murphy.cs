@@ -235,6 +235,14 @@ namespace FishingTrawler.Objects
             Game1.afterDialogues = TakeAndIdentifyFlag;
         }
 
+        private void SayGoodbye(Farmer who)
+        {
+            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "GoodBye", playerTerm), this));
+            Game1.drawDialogue(this);
+        }
+
         private void ShowMoreQuestions(Farmer who)
         {
             string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
@@ -299,6 +307,9 @@ namespace FishingTrawler.Objects
                     break;
                 case "GotQuestion":
                     Game1.afterDialogues = delegate () { this.ShowMoreQuestions(who); };
+                    break;
+                case "NeverMind":
+                    Game1.afterDialogues = delegate () { this.SayGoodbye(who); };
                     break;
             }
         }

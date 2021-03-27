@@ -20,9 +20,10 @@
   "How_To_Hoist_Flag": "Yer lookin' to hoist up one of them ancient flags eh?$n#$b#Hand one over to me and I'll make sure it is flyin' proper when we take off.$h#$e",
   "What_Flag_Is_Hoisted_None": "Ol' Dawnshard isn't flyin' any flag at the moment.",
   "What_Flag_Is_Hoisted": "Currently ol' Dawnshard is flyin' {0}.",
-  "Identify_Flag": "Aye {0}?$n#$b#Blimey! Ye managed to find another flag?$u#$b#%Murphy gently takes the flag from you, before examining it closely.$n#$b#This be another one of them ancient flags for sure. The sea truly favors ye {0}!$n#$b#I'll give this back, but if ye fancy hoisting it on ol' Dawnshard, or if more of these happen upon ye, do let me know.$h#$e",
+  "Identify_Flag": "Eh {0}?$n#$b#Blimey! Ye managed to find another flag?$u#$b#%Murphy gently takes the flag from you, before examining it closely.$n#$b#This be another one of them ancient flags for sure. The sea truly favors ye {0}!$n#$b#I'll give this back, but if ye fancy hoisting it on ol' Dawnshard, or if more of these happen upon ye, do let me know.$h#$e",
   "Given_Flag_To_Hoist": "This flag will make a fine addition to the Dawnshard!$h#$b#I'll have it hoisted proper when we head out to sea {0}.",
   "Given_Flag_To_Hoist_Return_Old": "This flag will make a fine addition to the Dawnshard!$n#$b#I'll have it hoisted proper when we head out to sea {0}.$h#$b#Oh! Before I forget, here is the previous flag we had flyin'.$n#$e",
   "Remove_Current_Flag": "Ye want yer flag back {0}?$n#$b#The ship will feel a wee bit bland without it, but here ye go!$h#$e",
-  "More_Questions": "What can I help ye with, {0}?"
+  "More_Questions": "What can I help ye with, {0}?",
+  "GoodBye": "Let me know if ye need anything else, {0}.$h#$e"
 }
