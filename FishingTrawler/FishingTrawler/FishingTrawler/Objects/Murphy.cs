@@ -177,7 +177,11 @@ namespace FishingTrawler.Objects
             }
             if (Game1.player.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
             {
-                answers.Add(new Response("WhatFlag", "What flag is hoisted on the trawler?"));
+                answers.Add(new Response("WhatFlag", "What flag is the trawler flying?"));
+            }
+            if (ModEntry.GetHoistedFlag() != FlagType.Unknown)
+            {
+                answers.Add(new Response("GetFlag", "Could I have my flag back?"));
             }
             if (PlayerHasUnidentifiedFlagInInventory(Game1.player))
             {
@@ -223,6 +227,17 @@ namespace FishingTrawler.Objects
             Game1.drawDialogue(this);
         }
 
+        private void RemoveHoistedFlag(Farmer who)
+        {
+            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Remove_Current_Flag", playerTerm), this));
+            Game1.drawDialogue(this);
+
+            Game1.player.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
+            ModEntry.SetHoistedFlag(FlagType.Unknown);
+        }
+
         private void IdentifyFlag(Farmer who)
         {
             string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
@@ -261,6 +276,9 @@ namespace FishingTrawler.Objects
                     break;
                 case "WhatFlag":
                     Game1.afterDialogues = delegate () { this.WhatFlagIsHoisted(who); };
+                    break;
+                case "GetFlag":
+                    Game1.afterDialogues = delegate () { this.RemoveHoistedFlag(who); };
                     break;
                 case "IdentifyFlag":
                     Game1.afterDialogues = delegate () { this.IdentifyFlag(who); };
