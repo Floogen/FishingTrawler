@@ -85,7 +85,7 @@ namespace FishingTrawler.Objects.Rewards
             if (this._flagType is FlagType.Unknown)
             {
                 Game1.showRedMessage("You need to identify the flag before placing it on walls!");
-                //return false;
+                return false;
             }
 
             return base.placementAction(location, x, y, who);
