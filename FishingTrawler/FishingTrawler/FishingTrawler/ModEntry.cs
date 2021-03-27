@@ -492,6 +492,9 @@ namespace FishingTrawler
 
         private void OnSaving(object sender, SavingEventArgs e)
         {
+            // Save the current hoisted flag
+            Game1.player.modData[HOISTED_FLAG_KEY] = _hoistedFlag.ToString();
+
             // Offload the custom locations
             Game1.locations.Remove(_trawlerHull);
             Game1.locations.Remove(_trawlerSurface);
@@ -634,7 +637,6 @@ namespace FishingTrawler
         {
             // Updating the player's modData for which flag is hoisted
             _hoistedFlag = flagType;
-            Game1.player.modData[HOISTED_FLAG_KEY] = flagType.ToString();
 
             // TODO: Apply flag benefits
 

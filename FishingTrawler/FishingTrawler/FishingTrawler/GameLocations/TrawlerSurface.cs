@@ -40,6 +40,7 @@ namespace FishingTrawler.GameLocations
         private float _nextSmoke = 0f;
         private const int CLOUD_ID = 1010101;
         private const int GROUND_ID = 2020202;
+        private const int FLAGS_TILESHEET_INDEX = 2;
         private const int TRAWLER_TILESHEET_INDEX = 3;
 
         internal TrawlerSurface()
@@ -286,6 +287,31 @@ namespace FishingTrawler.GameLocations
 
             ModEntry.monitor.Log("Called [IsNetRipped] on tile that doesn't have IsRipped property on AlwaysFront layer, returning false!", LogLevel.Trace);
             return false;
+        }
+
+        private int[] GetFlagTileIndexes(int startingIndex)
+        {
+            List<int> indexes = new List<int>();
+            for (int offset = 0; offset < 8; offset++)
+            {
+                indexes.Add(startingIndex + 20 * offset);
+            }
+
+            return indexes.ToArray();
+        }
+
+        public void SetFlagTexture(FlagType flagType)
+        {
+            if (flagType == FlagType.Unknown)
+            {
+                // Clear the flag
+                this.setMapTile(39, 21, -1, "AlwaysFront", null, FLAGS_TILESHEET_INDEX);
+                this.setMapTile(40, 21 - 1, -1, "AlwaysFront", null, FLAGS_TILESHEET_INDEX);
+                return;
+            }
+
+            this.setAnimatedMapTile(39, 21, GetFlagTileIndexes(2 * (int)flagType), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
+            this.setAnimatedMapTile(40, 21, GetFlagTileIndexes(2 * (int)flagType + 1), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
         }
 
         public void AttemptCreateNetRip()
