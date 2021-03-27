@@ -445,7 +445,7 @@ namespace FishingTrawler
             // However, in the situations it does happen this will prevent crashes
             foreach (Farmer farmer in Game1.getAllFarmers())
             {
-                ModResources.Convert(farmer);
+                ModResources.ConvertInventoryBaseItemsToCustom(farmer);
             }
 
             // Check every location for a chest and then re-add any previous BailingBuckets

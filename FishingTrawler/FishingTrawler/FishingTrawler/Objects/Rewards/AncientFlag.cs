@@ -38,7 +38,7 @@ namespace FishingTrawler.Objects.Rewards
         public AncientFlag(FlagType flagType, Vector2 tile) : base(1900, tile)
         {
             this._flagTexture = ModResources.ancientFlagsTexture;
-            this._sourceRectangle = new Rectangle(0, 0, 32, 32);
+            this._sourceRectangle = new Rectangle(32 * (int)flagType % _flagTexture.Width, 32 * (int)flagType / _flagTexture.Width * 32, 32, 32);
             this._flagType = flagType;
 
             this.modData.Add(ModEntry.ANCIENT_FLAG_KEY, flagType.ToString());
