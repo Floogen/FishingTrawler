@@ -77,7 +77,7 @@ namespace FishingTrawler.Patches.Locations
                     ModEntry.rewardChest.ShowMenu();
                     break;
                 case "TrawlerNote":
-                    if (!who.mailReceived.Contains("FishingTrawler_WillyIntroducesMurphy"))
+                    if (!who.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
                     {
                         Game1.drawObjectDialogue("There's a note here...#You can't read the handwriting.");
                         break;
