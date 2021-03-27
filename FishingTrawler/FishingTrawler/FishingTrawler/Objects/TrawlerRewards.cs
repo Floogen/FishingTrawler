@@ -1,5 +1,7 @@
-﻿using StardewValley;
+﻿using FishingTrawler.Objects.Rewards;
+using StardewValley;
 using StardewValley.Objects;
+using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +11,38 @@ using Object = StardewValley.Object;
 
 namespace FishingTrawler.Objects
 {
-    internal static class TrawlerRewards
+    internal class TrawlerRewards
     {
-        private static readonly int[] _forbiddenFish = new int[] { 159, 160, 163, 775, 682, 898, 899, 900, 901 };
+        private readonly int[] _forbiddenFish = new int[] { 159, 160, 163, 775, 682, 898, 899, 900, 901 };
 
-        private static int[] GetEligibleFishIds(bool limitToOceanFish = true)
+        private Chest _rewardChest;
+        private Farmer _farmer;
+
+        internal float fishCatchChanceOffset;  // Higher this number is, the more unlikely the player is to get harder to catch fish (default 0)
+        internal bool isGambling; // If true, the rewards will have 50% of being doubled (along with XP), but 25% of losing it all
+        internal bool hasMermaidsBlessing; // If true, 5% chance of consuming fish but getting treasure chest rewards instead
+        internal bool hasPatronSaint; // If true, 25% chance of consuming fish but gives full XP
+        internal bool hasWorldly; // If true, allows catching of non-ocean fish
+
+        public TrawlerRewards(Chest rewardChest)
+        {
+            _rewardChest = rewardChest;
+            _farmer = Game1.player; // Main player will get XP by default, though it can be overridden
+
+            fishCatchChanceOffset = 0f;
+            isGambling = false;
+            hasMermaidsBlessing = false;
+            hasPatronSaint = false;
+            hasWorldly = false;
+        }
+
+        private int[] GetEligibleFishIds(bool allowCatchingOfNonOceanFish = false)
         {
             List<int> eligibleFishIds = new List<int>();
 
             // Iterate through any valid locations to find the fish eligible for rewarding (fish need to be in season and player must have minimum level for it)
             Dictionary<string, string> locationData = Game1.content.Load<Dictionary<string, string>>("Data\\Locations");
-            foreach (GameLocation location in Game1.locations.Where(l => l.Name == (limitToOceanFish ? "Beach" : l.Name)))
+            foreach (GameLocation location in Game1.locations.Where(l => l.Name == (allowCatchingOfNonOceanFish ? l.Name : "Beach")))
             {
                 if (!locationData.ContainsKey(location.Name))
                 {
@@ -45,15 +68,267 @@ namespace FishingTrawler.Objects
             return eligibleFishIds.ToArray();
         }
 
-        internal static void CalculateAndPopulateReward(Chest rewardChest, int amountOfFish, Farmer who, int baseXpReduction = 5)
+        private int AttemptGamble(int amountOfFish)
         {
-            int[] keys = GetEligibleFishIds();
+            if (Game1.random.NextDouble() <= 0.5)
+            {
+                Game1.addHUDMessage(new HUDMessage("The Gamber's Crest doubled your haul!", null));
+                return amountOfFish *= 2;
+            }
+
+            if (Game1.random.NextDouble() <= 0.25)
+            {
+                Game1.addHUDMessage(new HUDMessage("The Gamber's Crest took your haul!", null));
+                return 0;
+            }
+
+            Game1.addHUDMessage(new HUDMessage("The Gamber's Crest left your haul untouched.", null));
+            return amountOfFish;
+        }
+
+        private void AddMermaidTreasure(int clearWaterDistance)
+        {
+            List<Item> treasures = new List<Item>();
+
+            float chance = 1f;
+            while (Game1.random.NextDouble() <= (double)chance)
+            {
+                chance *= 0.4f;
+                switch (Game1.random.Next(4))
+                {
+                    case 0:
+                        {
+                            if (clearWaterDistance >= 5 && Game1.random.NextDouble() < 0.03)
+                            {
+                                treasures.Add(new Object(386, Game1.random.Next(1, 3)));
+                                break;
+                            }
+                            List<int> possibles = new List<int>();
+                            if (clearWaterDistance >= 4)
+                            {
+                                possibles.Add(384);
+                            }
+                            if (clearWaterDistance >= 3 && (possibles.Count == 0 || Game1.random.NextDouble() < 0.6))
+                            {
+                                possibles.Add(380);
+                            }
+                            if (possibles.Count == 0 || Game1.random.NextDouble() < 0.6)
+                            {
+                                possibles.Add(378);
+                            }
+                            if (possibles.Count == 0 || Game1.random.NextDouble() < 0.6)
+                            {
+                                possibles.Add(388);
+                            }
+                            if (possibles.Count == 0 || Game1.random.NextDouble() < 0.6)
+                            {
+                                possibles.Add(390);
+                            }
+                            possibles.Add(382);
+                            treasures.Add(new Object(possibles.ElementAt(Game1.random.Next(possibles.Count)), Game1.random.Next(2, 7) * ((!(Game1.random.NextDouble() < 0.05 + (double)(int)_farmer.luckLevel * 0.015)) ? 1 : 2)));
+                            if (Game1.random.NextDouble() < 0.05 + (double)_farmer.LuckLevel * 0.03)
+                            {
+                                treasures.Last().Stack *= 2;
+                            }
+                            break;
+                        }
+                    case 1:
+                        if (clearWaterDistance >= 4 && Game1.random.NextDouble() < 0.1 && _farmer.FishingLevel >= 6)
+                        {
+                            treasures.Add(new Object(687, 1));
+                        }
+                        else if (Game1.random.NextDouble() < 0.25 && _farmer.craftingRecipes.ContainsKey("Wild Bait"))
+                        {
+                            treasures.Add(new Object(774, 5 + ((Game1.random.NextDouble() < 0.25) ? 5 : 0)));
+                        }
+                        else if (_farmer.FishingLevel >= 6)
+                        {
+                            treasures.Add(new Object(685, 1));
+                        }
+                        else
+                        {
+                            treasures.Add(new Object(685, 10));
+                        }
+                        break;
+                    case 2:
+                        if (Game1.random.NextDouble() < 0.1 && (int)Game1.netWorldState.Value.LostBooksFound < 21 && _farmer != null && _farmer.hasOrWillReceiveMail("lostBookFound"))
+                        {
+                            treasures.Add(new Object(102, 1));
+                        }
+                        else if (_farmer.archaeologyFound.Count() > 0)
+                        {
+                            if (Game1.random.NextDouble() < 0.25 && _farmer.FishingLevel > 1)
+                            {
+                                treasures.Add(new Object(Game1.random.Next(585, 588), 1));
+                            }
+                            else if (Game1.random.NextDouble() < 0.5 && _farmer.FishingLevel > 1)
+                            {
+                                treasures.Add(new Object(Game1.random.Next(103, 120), 1));
+                            }
+                            else
+                            {
+                                treasures.Add(new Object(535, 1));
+                            }
+                        }
+                        else
+                        {
+                            treasures.Add(new Object(382, Game1.random.Next(1, 3)));
+                        }
+                        break;
+                    case 3:
+                        switch (Game1.random.Next(3))
+                        {
+                            case 0:
+                                if (clearWaterDistance >= 4)
+                                {
+                                    treasures.Add(new Object(537 + ((Game1.random.NextDouble() < 0.4) ? Game1.random.Next(-2, 0) : 0), Game1.random.Next(1, 4)));
+                                }
+                                else if (clearWaterDistance >= 3)
+                                {
+                                    treasures.Add(new Object(536 + ((Game1.random.NextDouble() < 0.4) ? (-1) : 0), Game1.random.Next(1, 4)));
+                                }
+                                else
+                                {
+                                    treasures.Add(new Object(535, Game1.random.Next(1, 4)));
+                                }
+                                if (Game1.random.NextDouble() < 0.05 + (double)_farmer.LuckLevel * 0.03)
+                                {
+                                    treasures.Last().Stack *= 2;
+                                }
+                                break;
+                            case 1:
+                                if (_farmer.FishingLevel < 2)
+                                {
+                                    treasures.Add(new Object(382, Game1.random.Next(1, 4)));
+                                    break;
+                                }
+                                if (clearWaterDistance >= 4)
+                                {
+                                    treasures.Add(new Object((Game1.random.NextDouble() < 0.3) ? 82 : ((Game1.random.NextDouble() < 0.5) ? 64 : 60), Game1.random.Next(1, 3)));
+                                }
+                                else if (clearWaterDistance >= 3)
+                                {
+                                    treasures.Add(new Object((Game1.random.NextDouble() < 0.3) ? 84 : ((Game1.random.NextDouble() < 0.5) ? 70 : 62), Game1.random.Next(1, 3)));
+                                }
+                                else
+                                {
+                                    treasures.Add(new Object((Game1.random.NextDouble() < 0.3) ? 86 : ((Game1.random.NextDouble() < 0.5) ? 66 : 68), Game1.random.Next(1, 3)));
+                                }
+                                if (Game1.random.NextDouble() < 0.028 * (double)((float)clearWaterDistance / 5f))
+                                {
+                                    treasures.Add(new Object(72, 1));
+                                }
+                                if (Game1.random.NextDouble() < 0.05)
+                                {
+                                    treasures.Last().Stack *= 2;
+                                }
+                                break;
+                            case 2:
+                                {
+                                    if (_farmer.FishingLevel < 2)
+                                    {
+                                        treasures.Add(new Object(770, Game1.random.Next(1, 4)));
+                                        break;
+                                    }
+                                    float luckModifier = (1f + (float)_farmer.DailyLuck) * ((float)clearWaterDistance / 5f);
+                                    if (Game1.random.NextDouble() < 0.05 * (double)luckModifier && !_farmer.specialItems.Contains(14))
+                                    {
+                                        treasures.Add(new MeleeWeapon(14)
+                                        {
+                                            specialItem = true
+                                        });
+                                    }
+                                    if (Game1.random.NextDouble() < 0.05 * (double)luckModifier && !_farmer.specialItems.Contains(51))
+                                    {
+                                        treasures.Add(new MeleeWeapon(51)
+                                        {
+                                            specialItem = true
+                                        });
+                                    }
+                                    if (Game1.random.NextDouble() < 0.07 * (double)luckModifier)
+                                    {
+                                        switch (Game1.random.Next(3))
+                                        {
+                                            case 0:
+                                                treasures.Add(new Ring(516 + ((Game1.random.NextDouble() < (double)((float)_farmer.LuckLevel / 11f)) ? 1 : 0)));
+                                                break;
+                                            case 1:
+                                                treasures.Add(new Ring(518 + ((Game1.random.NextDouble() < (double)((float)_farmer.LuckLevel / 11f)) ? 1 : 0)));
+                                                break;
+                                            case 2:
+                                                treasures.Add(new Ring(Game1.random.Next(529, 535)));
+                                                break;
+                                        }
+                                    }
+                                    if (Game1.random.NextDouble() < 0.02 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Object(166, 1));
+                                    }
+                                    if (_farmer.FishingLevel > 5 && Game1.random.NextDouble() < 0.001 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Object(74, 1));
+                                    }
+                                    if (Game1.random.NextDouble() < 0.01 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Object(127, 1));
+                                    }
+                                    if (Game1.random.NextDouble() < 0.01 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Object(126, 1));
+                                    }
+                                    if (Game1.random.NextDouble() < 0.01 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Ring(527));
+                                    }
+                                    if (Game1.random.NextDouble() < 0.01 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Boots(Game1.random.Next(504, 514)));
+                                    }
+                                    if (Game1.MasterPlayer.mailReceived.Contains("Farm_Eternal") && Game1.random.NextDouble() < 0.01 * (double)luckModifier)
+                                    {
+                                        treasures.Add(new Object(928, 1));
+                                    }
+                                    if (treasures.Count == 1)
+                                    {
+                                        treasures.Add(new Object(72, 1));
+                                    }
+                                    break;
+                                }
+                        }
+                        break;
+                }
+            }
+            if (treasures.Count == 0)
+            {
+                _rewardChest.addItem(new Object(685, Game1.random.Next(1, 4) * 5));
+            }
+
+            // Add the determined rewards
+            foreach (var item in treasures)
+            {
+                _rewardChest.addItem(item);
+            }
+        }
+
+        internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
+        {
+            int[] keys = GetEligibleFishIds(hasWorldly);
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
 
-            int xpReward = 3;
+            if (isGambling)
+            {
+                amountOfFish = AttemptGamble(amountOfFish);
+            }
+
+            float totalRewardXP = 3f;
             for (int x = 0; x < amountOfFish; x++)
             {
+                int minWaterDistance = 1; // Used for Mermaid's Blessing, using min distance required to catch fish (traps are 1 distance)
+                float caughtXP = 0f;
                 bool caughtFish = false;
+
+                int randomQuantity = Math.Min(Game1.random.Next(1, amountOfFish), 99);
+                Item selectedReward = new Object(Game1.random.Next(167, 173), randomQuantity); // Default is random trash item
 
                 Utility.Shuffle(Game1.random, keys);
                 for (int i = 0; i < keys.Length; i++)
@@ -63,45 +338,83 @@ namespace FishingTrawler.Objects
                     if (specificFishData[1] == "trap")
                     {
                         double chance = Convert.ToDouble(specificFishData[2]);
-                        chance += (double)((float)who.FishingLevel / 50f);
+                        chance += (double)((float)_farmer.FishingLevel / 50f);
                         chance /= 1.2f;  // Reduce chance of trap-based catches by 1.2
 
                         chance = Math.Min(chance, 0.89999997615814209);
                         if (Game1.random.NextDouble() <= chance)
                         {
                             caughtFish = true;
-                            rewardChest.addItem(new Object(Convert.ToInt32(keys[i]), 1));
-                            xpReward += 5; // Crab pot always give 5 XP per Vanilla
-                            break;
+                            selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
+                            caughtXP = 5f * randomQuantity; // Crab pot always give 5 XP per Vanilla
+                            continue;
                         }
                     }
-                    else if (who.FishingLevel >= Convert.ToInt32(specificFishData[12]))
+                    else if (_farmer.FishingLevel >= Convert.ToInt32(specificFishData[12]))
                     {
                         int difficulty = Convert.ToInt32(specificFishData[1]);
                         double chance = Convert.ToDouble(specificFishData[10]);
                         double dropOffAmount = Convert.ToDouble(specificFishData[11]) * chance;
-                        chance -= (double)Math.Max(0, Convert.ToInt32(specificFishData[9]) - 5) * dropOffAmount;
-                        chance += (double)((float)who.FishingLevel / 50f);
+                        minWaterDistance = Convert.ToInt32(specificFishData[9]);
+                        chance -= (double)Math.Max(0, minWaterDistance - 5) * dropOffAmount;
+                        chance += (double)((float)_farmer.FishingLevel / 50f);
 
                         chance = Math.Min(chance, 0.89999997615814209);
-                        if (Game1.random.NextDouble() <= chance)
+                        if (Game1.random.NextDouble() <= chance - fishCatchChanceOffset)
                         {
                             caughtFish = true;
-                            rewardChest.addItem(new Object(Convert.ToInt32(keys[i]), 1));
-                            xpReward += 3 + (difficulty / 3);
-                            break;
+                            selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
+                            caughtXP = (3f + (difficulty / 3)) * randomQuantity;
+                            continue;
                         }
                     }
                 }
 
+                // Check if no fish was selected, if so then give trash
                 if (!caughtFish)
                 {
-                    rewardChest.addItem(new Object(Game1.random.Next(167, 173), 1));
+                    _rewardChest.addItem(selectedReward);
+                    amountOfFish -= randomQuantity;
+                    continue;
                 }
+
+                // Check if a consuming flag ability is active
+                if (hasMermaidsBlessing || hasPatronSaint)
+                {
+                    if (hasMermaidsBlessing && Game1.random.NextDouble() <= 0.05)
+                    {
+                        AddMermaidTreasure(minWaterDistance);
+                        continue;
+                    }
+
+                    if (hasPatronSaint && Game1.random.NextDouble() <= 0.25)
+                    {
+                        totalRewardXP += caughtXP + caughtXP * ((100 - baseXpReduction) / 100);
+                        continue;
+                    }
+                }
+
+                // Add selected fish if it hasn't been consumed
+                _rewardChest.addItem(selectedReward);
+                amountOfFish -= randomQuantity;
+                totalRewardXP += caughtXP;
             }
 
             // Now give XP reward (give 5% of total caught XP)
-            who.gainExperience(1, xpReward % (100 - baseXpReduction));
+            ModEntry.monitor.Log($"{_farmer.experiencePoints[1]}", StardewModdingAPI.LogLevel.Debug);
+            _farmer.gainExperience(1, (int)(totalRewardXP % (100 - baseXpReduction)));
+            ModEntry.monitor.Log($"{_farmer.experiencePoints[1]}", StardewModdingAPI.LogLevel.Debug);
+
+            // See if this run generates an unidentified ancient flag
+            if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
+            {
+                _rewardChest.addItem(new AncientFlag());
+            }
+        }
+
+        internal void SetPlayerToGetXP(Farmer player)
+        {
+            _farmer = player;
         }
     }
 }

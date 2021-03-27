@@ -25,6 +25,8 @@ namespace FishingTrawler.GameLocations
         private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
 
         internal int waterLevel;
+        internal bool areLeaksEnabled;
+        internal bool hasWeakHull;
 
         internal TrawlerHull()
         {
@@ -34,6 +36,8 @@ namespace FishingTrawler.GameLocations
         internal TrawlerHull(string mapPath, string name) : base(mapPath, name)
         {
             waterLevel = 0;
+            areLeaksEnabled = true;
+            hasWeakHull = false;
             _hullHoleLocations = new List<Location>();
 
             Layer buildingsLayer = this.map.GetLayer("Buildings");
@@ -238,7 +242,7 @@ namespace FishingTrawler.GameLocations
 
             List<Location> validHoleLocations = _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ToList();
 
-            if (validHoleLocations.Count() == 0)
+            if (validHoleLocations.Count() == 0 || !areLeaksEnabled)
             {
                 return;
             }
@@ -272,6 +276,14 @@ namespace FishingTrawler.GameLocations
             }
         }
 
+        public void ForceAllHolesToLeak()
+        {
+            for (int x = 0; x < _hullHoleLocations.Count(loc => !IsHoleLeaking(loc.X, loc.Y)); x++)
+            {
+                AttemptCreateHullLeak();
+            }
+        }
+
         public void RecaculateWaterLevel(int waterLevelOverride = -1)
         {
             // Should be called from ModEntry.OnOneSecondUpdateTicking (at X second interval)
@@ -283,7 +295,7 @@ namespace FishingTrawler.GameLocations
             }
             else
             {
-                // For each leak, add 1 to the water level
+                // For each leak, add 2 to the water level
                 ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count() * 2);
             }
 

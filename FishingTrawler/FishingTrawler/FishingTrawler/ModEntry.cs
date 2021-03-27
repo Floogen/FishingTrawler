@@ -30,8 +30,8 @@ namespace FishingTrawler
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
 
-        // FlagType
         private static FlagType _hoistedFlag;
+        private static TrawlerRewards _trawlerRewards;
 
         // Trawler beach map related
         internal static Murphy murphyNPC;
@@ -168,7 +168,8 @@ namespace FishingTrawler
                 // Give the player their rewards, if they left the trawler as expected (warping out early does not give any rewards)
                 if (_isTripEnding)
                 {
-                    TrawlerRewards.CalculateAndPopulateReward(rewardChest, _trawlerSurface.fishCaughtQuantity, e.Player);
+                    _trawlerRewards.SetPlayerToGetXP(e.Player);
+                    _trawlerRewards.CalculateAndPopulateReward(_trawlerSurface.fishCaughtQuantity);
                 }
 
                 // Reset the trawler
@@ -204,11 +205,49 @@ namespace FishingTrawler
                     Game1.addHUDMessage(new HUDMessage("A bailing bucket has been added to your inventory.", null));
                 }
 
+                // Start the timer (2.5 minute default)
+                fishingTripTimer = 150000; //150000
+
                 // Set flag data
                 _trawlerSurface.SetFlagTexture(_hoistedFlag);
 
-                // Start the timer (2.5 minute default)
-                fishingTripTimer = 150000;
+                // Apply flag benefits
+                switch (_hoistedFlag)
+                {
+                    case FlagType.Parley:
+                        // Disable all leaks, but reduce fish catch chance by 25% during reward calculations (e.g. more chance of junk / lower quality fish)
+                        _trawlerHull.areLeaksEnabled = false;
+                        _trawlerRewards.fishCatchChanceOffset = 0.25f;
+                        break;
+                    case FlagType.JollyRoger:
+                        // Quadruples net output 
+                        _trawlerSurface.fishCaughtMultiplier = 4;
+                        _trawlerHull.hasWeakHull = true;
+                        break;
+                    case FlagType.GamblersCrest:
+                        // 50% of doubling chest, 25% of getting nothing
+                        _trawlerRewards.isGambling = true;
+                        break;
+                    case FlagType.MermaidsBlessing:
+                        // 5% of fish getting consumed, but gives random fishing chest reward
+                        _trawlerRewards.hasMermaidsBlessing = true;
+                        break;
+                    case FlagType.PatronSaint:
+                        // 25% of fish getting consumed, but gives full XP
+                        _trawlerRewards.hasPatronSaint = true;
+                        break;
+                    case FlagType.SharksFin:
+                        // Adds one extra minute to timer, allowing for more fish haul
+                        fishingTripTimer += 60000;
+                        break;
+                    case FlagType.Worldly:
+                        // Allows catching of non-ocean fish
+                        _trawlerRewards.hasWorldly = true;
+                        break;
+                    default:
+                        // Do nothing
+                        break;
+                }
 
                 return;
             }
@@ -343,7 +382,7 @@ namespace FishingTrawler
                     _activeNotification = message;
                 }
 
-                _eventSecondInterval = (uint)Game1.random.Next(2, 6) * 100;
+                _eventSecondInterval = (uint)Game1.random.Next(1, 5) * 100;
             }
         }
 
@@ -409,6 +448,9 @@ namespace FishingTrawler
 
                 farm.setObject(rewardChestPosition, rewardChest);
             }
+
+            // Create the TrawlerReward class
+            _trawlerRewards = new TrawlerRewards(rewardChest);
 
             // Set Farmer moddata used for this mod
             if (!Game1.player.modData.ContainsKey(HOISTED_FLAG_KEY))
@@ -571,9 +613,14 @@ namespace FishingTrawler
                 }
 
                 // Default hull breaking event
-                if (!_trawlerHull.AreAllHolesLeaking())
+                if (!_trawlerHull.AreAllHolesLeaking() && _trawlerHull.areLeaksEnabled)
                 {
                     _trawlerHull.AttemptCreateHullLeak();
+                    if (_trawlerHull.hasWeakHull)
+                    {
+                        _trawlerHull.ForceAllHolesToLeak();
+                    }
+
                     possibleMessages.Add(_trawlerHull.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
 
                     executedEvents++;
@@ -640,9 +687,6 @@ namespace FishingTrawler
         {
             // Updating the player's modData for which flag is hoisted
             _hoistedFlag = flagType;
-
-            // TODO: Apply flag benefits
-
         }
     }
 }

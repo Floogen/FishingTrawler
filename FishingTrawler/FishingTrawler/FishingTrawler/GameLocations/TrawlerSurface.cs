@@ -31,6 +31,7 @@ namespace FishingTrawler.GameLocations
         // Mini-game stat related
         internal FlagType hoistedFlag;
         internal int fishCaughtQuantity;
+        internal int fishCaughtMultiplier;
         private List<Location> _netRipLocations;
 
         // Speed related offsets
@@ -54,6 +55,7 @@ namespace FishingTrawler.GameLocations
             base.critters = new List<Critter>();
 
             fishCaughtQuantity = 0;
+            fishCaughtMultiplier = 1;
             _netRipLocations = new List<Location>();
 
             Layer alwaysFrontLayer = this.map.GetLayer("AlwaysFront");
@@ -381,7 +383,7 @@ namespace FishingTrawler.GameLocations
             else
             {
                 // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
-                fishCaughtQuantity += _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() + (isEngineFailing ? -1 : 2);
+                fishCaughtQuantity += (_netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() * fishCaughtMultiplier) + (isEngineFailing ? -1 : 2);
                 if (fishCaughtQuantity < 0)
                 {
                     fishCaughtQuantity = 0;
