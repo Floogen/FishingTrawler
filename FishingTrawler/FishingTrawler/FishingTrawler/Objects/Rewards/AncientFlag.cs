@@ -32,6 +32,11 @@ namespace FishingTrawler.Objects.Rewards
         internal readonly FlagType flagType;
 
         // Using Pirate Flag id (1900) as base vanilla object
+        public AncientFlag() : this(FlagType.Unknown, Vector2.Zero)
+        {
+
+        }
+
         public AncientFlag(FlagType flagType) : this(flagType, Vector2.Zero)
         {
 
