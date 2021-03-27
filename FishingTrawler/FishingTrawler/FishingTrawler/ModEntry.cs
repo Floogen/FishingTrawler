@@ -204,6 +204,9 @@ namespace FishingTrawler
                     Game1.addHUDMessage(new HUDMessage("A bailing bucket has been added to your inventory.", null));
                 }
 
+                // Set flag data
+                _trawlerSurface.SetFlagTexture(_hoistedFlag);
+
                 // Start the timer (2.5 minute default)
                 fishingTripTimer = 150000;
 
