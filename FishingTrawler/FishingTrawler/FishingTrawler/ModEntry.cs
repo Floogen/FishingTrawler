@@ -632,8 +632,12 @@ namespace FishingTrawler
 
         internal static void SetHoistedFlag(FlagType flagType)
         {
-            // TODO: Implement flag effects
+            // Updating the player's modData for which flag is hoisted
             _hoistedFlag = flagType;
+            Game1.player.modData[HOISTED_FLAG_KEY] = flagType.ToString();
+
+            // TODO: Apply flag benefits
+
         }
     }
 }
