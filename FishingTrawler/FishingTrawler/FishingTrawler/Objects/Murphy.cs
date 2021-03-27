@@ -167,27 +167,15 @@ namespace FishingTrawler.Objects
 
             List<Response> answers = new List<Response>()
             {
-                new Response("StartTrip", "I'm ready to set sail!"),
-                new Response("MinigameExplanation", "What does a deckhand do?")
+                new Response("StartTrip", "I'm ready to set sail!")
             };
 
-            if (PlayerHasIdentifiedFlagInInventory(Game1.player))
-            {
-                answers.Add(new Response("WantToHoist", "I'd like to hoist a flag."));
-            }
-            if (Game1.player.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
-            {
-                answers.Add(new Response("WhatFlag", "What flag is the trawler flying?"));
-            }
-            if (ModEntry.GetHoistedFlag() != FlagType.Unknown)
-            {
-                answers.Add(new Response("GetFlag", "Could I have my flag back?"));
-            }
             if (PlayerHasUnidentifiedFlagInInventory(Game1.player))
             {
                 answers.Add(new Response("IdentifyFlag", "I found another flag!"));
             }
 
+            answers.Add(new Response("GotQuestion", "I've got some questions."));
             answers.Add(new Response("NoDeparture", "Maybe another time."));
 
             this.currentLocation.createQuestionDialogue(GetDialogue(ModResources.murphyDialoguePath, "Options", playerTerm), answers.ToArray(), OnPlayerResponse, this);
@@ -247,6 +235,32 @@ namespace FishingTrawler.Objects
             Game1.afterDialogues = TakeAndIdentifyFlag;
         }
 
+        private void ShowMoreQuestions(Farmer who)
+        {
+            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            List<Response> answers = new List<Response>()
+            {
+                new Response("MinigameExplanation", "What does a deckhand do?")
+            };
+
+            if (PlayerHasIdentifiedFlagInInventory(Game1.player))
+            {
+                answers.Add(new Response("WantToHoist", "I'd like to hoist a flag."));
+            }
+            if (Game1.player.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
+            {
+                answers.Add(new Response("WhatFlag", "What flag is the trawler flying?"));
+            }
+            if (ModEntry.GetHoistedFlag() != FlagType.Unknown)
+            {
+                answers.Add(new Response("GetFlag", "Could I have my flag back?"));
+            }
+
+            answers.Add(new Response("NeverMind", "Actually never mind."));
+
+            this.currentLocation.createQuestionDialogue(GetDialogue(ModResources.murphyDialoguePath, "More_Questions", playerTerm), answers.ToArray(), OnPlayerResponse, this);
+        }
+
         private void OnPlayerResponse(Farmer who, string answer)
         {
             switch (answer)
@@ -282,6 +296,9 @@ namespace FishingTrawler.Objects
                     break;
                 case "IdentifyFlag":
                     Game1.afterDialogues = delegate () { this.IdentifyFlag(who); };
+                    break;
+                case "GotQuestion":
+                    Game1.afterDialogues = delegate () { this.ShowMoreQuestions(who); };
                     break;
             }
         }
