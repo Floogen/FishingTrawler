@@ -24,7 +24,7 @@ namespace FishingTrawler.Objects.Tools
 
         public BailingBucket() : base()
         {
-            this.modData.Add(ModEntry.bailingBucketKey, "true");
+            this.modData.Add(ModEntry.BAILING_BUCKET_KEY, "true");
         }
 
         public override Item getOne()
