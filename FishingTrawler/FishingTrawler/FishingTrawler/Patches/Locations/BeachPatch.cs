@@ -49,7 +49,7 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && ModEntry.murphyNPC.getTileY() == tileLocation.Y)
+            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && Enumerable.Range(ModEntry.murphyNPC.getTileY() - 1, 3).Contains(tileLocation.Y))
             {
                 __result = ModEntry.murphyNPC.checkAction(who, __instance);
                 return;
