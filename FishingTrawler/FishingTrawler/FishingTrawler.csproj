@@ -57,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FishingTrawler\API\ApiManager.cs" />
-    <Compile Include="FishingTrawler\API\Interfaces\IJsonAssetApi.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerCabin.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerHull.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
@@ -159,7 +158,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="FishingTrawler\API\Interfaces\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Pathoschild.Stardew.ModBuildConfig.3.2.2\build\Pathoschild.Stardew.ModBuildConfig.targets" Condition="Exists('..\packages\Pathoschild.Stardew.ModBuildConfig.3.2.2\build\Pathoschild.Stardew.ModBuildConfig.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

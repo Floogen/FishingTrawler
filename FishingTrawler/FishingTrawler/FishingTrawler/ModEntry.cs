@@ -411,15 +411,7 @@ namespace FishingTrawler
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            // Check if spacechase0's JsonAssets is in the current mod list
-            if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
-            {
-                Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
-                ApiManager.HookIntoJsonAssets(Helper);
-
-                // Add the bailing bucket asset (weapon) and rewards
-                ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, _trawlerItemsPath));
-            }
+            // May hook into Content Patcher's API for tokens
         }
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
