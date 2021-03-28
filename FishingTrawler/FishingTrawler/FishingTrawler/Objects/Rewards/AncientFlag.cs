@@ -144,7 +144,7 @@ namespace FishingTrawler.Objects.Rewards
                 case FlagType.GamblersCrest:
                     return "Has a 50% chance of doubling the amount of fish caught, but a 25% chance of consuming all the fish.";
                 case FlagType.MermaidsBlessing:
-                    return "Has a 5% chance of consuming a fish, but gives a random fishing chest reward.";
+                    return "Has a 10% chance of consuming a fish, but gives a random fishing chest reward.";
                 case FlagType.PatronSaint:
                     return "Has a 25% chance of consuming a fish, but gives the full XP for catching it.";
                 case FlagType.SharksFin:

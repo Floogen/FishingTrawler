@@ -390,7 +390,7 @@ namespace FishingTrawler.Objects
                 // Check if a consuming flag ability is active
                 for (int i = 0; i < randomQuantity; i++)
                 {
-                    if (hasMermaidsBlessing && Game1.random.NextDouble() <= 0.05)
+                    if (hasMermaidsBlessing && Game1.random.NextDouble() <= 0.10)
                     {
                         AddMermaidTreasure(minWaterDistance);
                         selectedReward.Stack--;
