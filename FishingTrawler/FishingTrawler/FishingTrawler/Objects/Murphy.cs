@@ -107,7 +107,7 @@ namespace FishingTrawler.Objects
 
             if (who.CurrentItem != null && who.CurrentItem is AncientFlag ancientFlag)
             {
-                if (ancientFlag.flagType == FlagType.Unknown)
+                if (ancientFlag.FlagType == FlagType.Unknown)
                 {
                     return;
                 }
@@ -131,7 +131,7 @@ namespace FishingTrawler.Objects
                 }
 
                 Game1.drawDialogue(this);
-                ModEntry.SetHoistedFlag(ancientFlag.flagType);
+                ModEntry.SetHoistedFlag(ancientFlag.FlagType);
             }
         }
 
@@ -344,7 +344,7 @@ namespace FishingTrawler.Objects
             int uniqueFlagTypes = Enum.GetNames(typeof(FlagType)).Length;
 
             // Remove the ancient flag, then add the randomly identified one
-            AncientFlag ancientFlag = Game1.player.items.FirstOrDefault(i => i is AncientFlag && (i as AncientFlag).flagType == FlagType.Unknown) as AncientFlag;
+            AncientFlag ancientFlag = Game1.player.items.FirstOrDefault(i => i is AncientFlag && (i as AncientFlag).FlagType == FlagType.Unknown) as AncientFlag;
 
             Game1.player.removeItemFromInventory(ancientFlag);
             Game1.player.addItemByMenuIfNecessary(new AncientFlag((FlagType)Game1.random.Next(1, uniqueFlagTypes)));

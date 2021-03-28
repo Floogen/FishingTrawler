@@ -38,6 +38,9 @@ namespace FishingTrawler
             ancientFlagsTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Flags.png"));
             bucketTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
             uiTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
+
+            // Set any static Texture assets
+            AncientFlag.flagTexture = ancientFlagsTexture;
         }
 
         internal static void ConvertCustomItemsToBase(GameLocation location)

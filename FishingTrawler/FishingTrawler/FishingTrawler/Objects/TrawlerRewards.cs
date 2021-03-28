@@ -325,7 +325,7 @@ namespace FishingTrawler.Objects
             if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
             {
                 ModEntry.monitor.Log($"Player got lucky and was rewarded an ancient flag!", StardewModdingAPI.LogLevel.Trace);
-                _rewardChest.addItem(new AncientFlag());
+                _rewardChest.addItem(new AncientFlag(FlagType.Unknown));
             }
 
             float bonusXP = 0f;
