@@ -320,6 +320,15 @@ namespace FishingTrawler.Objects
                 amountOfFish = AttemptGamble(amountOfFish);
             }
 
+            // See if this run generates an unidentified ancient flag
+            ModEntry.monitor.Log($"{amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", StardewModdingAPI.LogLevel.Trace);
+            if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
+            {
+                ModEntry.monitor.Log($"Player got lucky and was rewarded an ancient flag!", StardewModdingAPI.LogLevel.Trace);
+                _rewardChest.addItem(new AncientFlag());
+            }
+
+            float bonusXP = 0f;
             float totalRewardXP = 3f;
             for (int x = 0; x < amountOfFish; x++)
             {
@@ -327,7 +336,7 @@ namespace FishingTrawler.Objects
                 float caughtXP = 0f;
                 bool caughtFish = false;
 
-                int randomQuantity = Math.Min(Game1.random.Next(1, amountOfFish), 99);
+                int randomQuantity = Math.Min(Game1.random.Next(1, amountOfFish / 3), 99);
                 Item selectedReward = new Object(Game1.random.Next(167, 173), randomQuantity); // Default is random trash item
 
                 Utility.Shuffle(Game1.random, keys);
@@ -346,7 +355,7 @@ namespace FishingTrawler.Objects
                         {
                             caughtFish = true;
                             selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
-                            caughtXP = 5f * randomQuantity; // Crab pot always give 5 XP per Vanilla
+                            caughtXP = 5f; // Crab pot always give 5 XP per Vanilla
                             continue;
                         }
                     }
@@ -364,7 +373,7 @@ namespace FishingTrawler.Objects
                         {
                             caughtFish = true;
                             selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
-                            caughtXP = (3f + (difficulty / 3)) * randomQuantity;
+                            caughtXP = 3f + (difficulty / 3);
                             continue;
                         }
                     }
@@ -379,36 +388,41 @@ namespace FishingTrawler.Objects
                 }
 
                 // Check if a consuming flag ability is active
-                if (hasMermaidsBlessing || hasPatronSaint)
+                for (int i = 0; i < randomQuantity; i++)
                 {
                     if (hasMermaidsBlessing && Game1.random.NextDouble() <= 0.05)
                     {
                         AddMermaidTreasure(minWaterDistance);
+                        selectedReward.Stack--;
                         continue;
                     }
 
                     if (hasPatronSaint && Game1.random.NextDouble() <= 0.25)
                     {
-                        totalRewardXP += caughtXP + caughtXP * ((100 - baseXpReduction) / 100);
+                        bonusXP += caughtXP * ((100 - baseXpReduction) / 100f);
+                        selectedReward.Stack--;
                         continue;
                     }
                 }
 
                 // Add selected fish if it hasn't been consumed
-                _rewardChest.addItem(selectedReward);
-                amountOfFish -= randomQuantity;
-                totalRewardXP += caughtXP;
+                if (selectedReward.Stack > 0)
+                {
+                    _rewardChest.addItem(selectedReward);
+                    amountOfFish -= randomQuantity;
+                    totalRewardXP += caughtXP * randomQuantity;
+                }
             }
 
             // Now give XP reward (give 5% of total caught XP)
-            ModEntry.monitor.Log($"{_farmer.experiencePoints[1]}", StardewModdingAPI.LogLevel.Debug);
-            _farmer.gainExperience(1, (int)(totalRewardXP % (100 - baseXpReduction)));
-            ModEntry.monitor.Log($"{_farmer.experiencePoints[1]}", StardewModdingAPI.LogLevel.Debug);
+            // TODO: Test controller
+            // TOOD: Test local multiplayer
+            _farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
 
-            // See if this run generates an unidentified ancient flag
-            if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
+            ModEntry.monitor.Log($"Gve player {bonusXP} bonus XP", StardewModdingAPI.LogLevel.Trace);
+            if (bonusXP > 0f)
             {
-                _rewardChest.addItem(new AncientFlag());
+                Game1.addHUDMessage(new HUDMessage($"The Patron Saint flag gifted you {bonusXP} bonus XP!", null));
             }
         }
 
