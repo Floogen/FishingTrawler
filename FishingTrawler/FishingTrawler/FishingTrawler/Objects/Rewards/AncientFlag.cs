@@ -148,7 +148,7 @@ namespace FishingTrawler.Objects.Rewards
                 case FlagType.PatronSaint:
                     return "Has a 25% chance of consuming a fish, but gives the full XP for catching it.";
                 case FlagType.SharksFin:
-                    return "Extends the fishing trawler trip by a minute, allowing for more time to catch fish.";
+                    return "Extends the fishing trawler trip by one minute, allowing for more time to catch fish.";
                 case FlagType.Worldly:
                     return "Allows the trawler to catch fish not normally available in the ocean.";
                 default:
