@@ -335,7 +335,7 @@ namespace FishingTrawler.Objects
             int uniqueFlagTypes = Enum.GetNames(typeof(FlagType)).Length;
 
             // Remove the ancient flag, then add the randomly identified one
-            AncientFlag ancientFlag = Game1.player.items.FirstOrDefault(i => i.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && i.modData[ModEntry.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString()) as AncientFlag;
+            AncientFlag ancientFlag = Game1.player.items.FirstOrDefault(i => i is AncientFlag && (i as AncientFlag).flagType == FlagType.Unknown) as AncientFlag;
 
             Game1.player.removeItemFromInventory(ancientFlag);
             Game1.player.addItemByMenuIfNecessary(new AncientFlag((FlagType)Game1.random.Next(1, uniqueFlagTypes)));
