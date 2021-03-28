@@ -124,7 +124,10 @@ namespace FishingTrawler.Objects
                 else
                 {
                     this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Given_Flag_To_Hoist_Return_Old", playerTerm), this));
-                    Game1.player.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
+                    who.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
+
+                    // Set their toolbar to one to avoid player accidentally giving back the flag they just got?
+                    who.CurrentToolIndex = 0;
                 }
 
                 Game1.drawDialogue(this);

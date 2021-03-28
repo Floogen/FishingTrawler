@@ -229,7 +229,7 @@ namespace FishingTrawler
                         _trawlerRewards.isGambling = true;
                         break;
                     case FlagType.MermaidsBlessing:
-                        // 5% of fish getting consumed, but gives random fishing chest reward
+                        // 10% of fish getting consumed, but gives random fishing chest reward
                         _trawlerRewards.hasMermaidsBlessing = true;
                         break;
                     case FlagType.PatronSaint:
