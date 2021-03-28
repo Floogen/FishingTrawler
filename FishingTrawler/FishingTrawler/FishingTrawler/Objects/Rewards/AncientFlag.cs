@@ -133,25 +133,24 @@ namespace FishingTrawler.Objects.Rewards
             }
         }
 
-        // TODO: Fill these in with description of their effects
         private string GetFlagDescription(FlagType flagType)
         {
             switch (flagType)
             {
                 case FlagType.Parley:
-                    return "Parley Flag";
+                    return "Prevents leaks from occuring, but lowers reward quality by 25%.";
                 case FlagType.JollyRoger:
-                    return "Jolly Roger";
+                    return "Quadruples the fishing net output, but any time a leak occurs all holes will leak.";
                 case FlagType.GamblersCrest:
-                    return "The Gambler's Crest";
+                    return "Has a 50% chance of doubling the amount of fish caught, but a 25% chance of consuming all the fish.";
                 case FlagType.MermaidsBlessing:
-                    return "Mermaid's Blessing";
+                    return "Has a 5% chance of consuming a fish, but gives a random fishing chest reward.";
                 case FlagType.PatronSaint:
-                    return "The Patron Saint";
+                    return "Has a 25% chance of consuming a fish, but gives the full XP for catching it.";
                 case FlagType.SharksFin:
-                    return "The Shark's Fin";
+                    return "Extends the fishing trawler trip by a minute, allowing for more time to catch fish.";
                 case FlagType.Worldly:
-                    return "Worldly Flag";
+                    return "Allows the trawler to catch fish not normally available in the ocean.";
                 default:
                     return "An ancient flag that faintly shimmers with magic.\n\nPerhaps Murphy would know more about it?";
             }
