@@ -12,6 +12,7 @@ using FishingTrawler.Patches.Locations;
 using FishingTrawler.UI;
 using Harmony;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -388,24 +389,51 @@ namespace FishingTrawler
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (!e.IsDown(SButton.MouseRight) || !Context.IsWorldReady || Game1.activeClickableMenu != null)
+            if ((!e.IsDown(SButton.MouseRight) && !e.IsDown(Buttons.A.ToSButton())) || !Context.IsWorldReady || Game1.activeClickableMenu != null)
             {
                 return;
             }
 
-            if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
+            if (e.IsDown(Buttons.A.ToSButton()))
             {
-                _trawlerHull.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
+                {
+                    for (int y = 0; y < 4; y++)
+                    {
+                        _trawlerHull.AttemptPlugLeak((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
+                    }
+                }
+                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
+                {
+                    for (int y = 0; y < 3; y++)
+                    {
+                        _trawlerSurface.AttemptFixNet((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
+                    }
+                }
+                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
+                {
+                    for (int y = 0; y < 3; y++)
+                    {
+                        _trawlerCabin.AttemptPlugLeak((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
+                    }
+                }
             }
-            else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
+            else
             {
-                // Attempt two checks, in case the user clicks above the rope
-                _trawlerSurface.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
-                _trawlerSurface.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1, Game1.player);
-            }
-            else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
-            {
-                _trawlerCabin.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
+                {
+                    _trawlerHull.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                }
+                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
+                {
+                    // Attempt two checks, in case the user clicks above the rope
+                    _trawlerSurface.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                    _trawlerSurface.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1, Game1.player);
+                }
+                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
+                {
+                    _trawlerCabin.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+                }
             }
         }
 
