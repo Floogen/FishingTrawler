@@ -75,6 +75,12 @@ namespace FishingTrawler.Objects
 
                 who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY] = "true";
             }
+            else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true" && PlayerHasUnidentifiedFlagInInventory(who))
+            {
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Identify_Flag", playerTerm), this));
+                Game1.drawDialogue(this);
+                Game1.afterDialogues = TakeAndIdentifyFlag;
+            }
             else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
             {
                 this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Trip_Finished", playerTerm), this));
