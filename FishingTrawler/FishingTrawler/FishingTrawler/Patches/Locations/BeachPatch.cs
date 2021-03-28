@@ -134,6 +134,16 @@ namespace FishingTrawler.Patches.Locations
                 ModEntry.murphyNPC.update(time, __instance);
             }
 
+            // Update the appearance of the reward chest
+            if (ModEntry.rewardChest.items.Count() == 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 10)
+            {
+                SwapRewardChestTiles(__instance, 10);
+            }
+            else if (ModEntry.rewardChest.items.Count() > 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 0)
+            {
+                SwapRewardChestTiles(__instance, 0);
+            }
+
             Trawler trawler = ModEntry.trawlerObject;
             if (trawler is null)
             {
@@ -198,6 +208,15 @@ namespace FishingTrawler.Patches.Locations
                 sprite.acceleration = new Vector2(-0.25f, -0.15f);
                 __instance.temporarySprites.Add(sprite);
                 trawler._nextSmoke = 0.2f;
+            }
+        }
+
+        private static void SwapRewardChestTiles(GameLocation location, int startingOffset)
+        {
+            for (int x = 0; x < 3; x++)
+            {
+                location.setMapTileIndex(82 + x, 37, startingOffset + x, "Buildings");
+                location.setMapTileIndex(82 + x, 38, startingOffset + x + 5, "Buildings"); // Offsetting by 5 for second row from tilesheet
             }
         }
     }

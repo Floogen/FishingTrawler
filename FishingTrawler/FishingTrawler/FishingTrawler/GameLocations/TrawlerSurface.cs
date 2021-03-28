@@ -29,7 +29,6 @@ namespace FishingTrawler.GameLocations
         private Rectangle _rockWithTreeSource = new Rectangle(48, 16, 96, 96);
 
         // Mini-game stat related
-        internal FlagType hoistedFlag;
         internal int fishCaughtQuantity;
         internal int fishCaughtMultiplier;
         private List<Location> _netRipLocations;
