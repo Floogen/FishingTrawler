@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
+using PyTK.CustomElementHandler;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FishingTrawler.Objects.Tools
 {
-    internal class BailingBucket : MilkPail
+    internal class BailingBucket : MilkPail, ISaveElement
     {
         private const string DISPLAY_NAME = "Bailing Bucket";
         private readonly NetEvent0 _finishEvent = new NetEvent0();
@@ -25,6 +26,21 @@ namespace FishingTrawler.Objects.Tools
         public BailingBucket() : base()
         {
             this.modData.Add(ModEntry.BAILING_BUCKET_KEY, "true");
+        }
+
+        public object getReplacement()
+        {
+            return new MilkPail();
+        }
+
+        public Dictionary<string, string> getAdditionalSaveData()
+        {
+            return new Dictionary<string, string>();
+        }
+
+        public void rebuild(Dictionary<string, string> additionalSaveData, object replacement)
+        {
+            this.modData = (replacement as MilkPail).modData;
         }
 
         public override Item getOne()

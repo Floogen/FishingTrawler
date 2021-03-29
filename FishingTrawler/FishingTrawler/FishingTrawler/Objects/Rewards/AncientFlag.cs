@@ -9,6 +9,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Objects;
+using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Objects.Rewards
 {
@@ -24,7 +25,7 @@ namespace FishingTrawler.Objects.Rewards
         Worldly
     }
 
-    public class AncientFlag : StardewValley.Objects.Furniture
+    public class AncientFlag : Furniture, ISaveElement, ICustomObject
     {
         internal static Texture2D flagTexture;
 
@@ -57,6 +58,35 @@ namespace FishingTrawler.Objects.Rewards
             flagTexture = ModResources.ancientFlagsTexture;
             base.defaultSourceRect.Value = new Rectangle(32 * (int)flagType % flagTexture.Width, 32 * (int)flagType / flagTexture.Width * 32, 32, 32);
             base.modData.Add(ModEntry.ANCIENT_FLAG_KEY, flagType.ToString());
+        }
+
+        public object getReplacement()
+        {
+            return new Furniture(1900, base.TileLocation) { modData = this.modData };
+        }
+
+        public Dictionary<string, string> getAdditionalSaveData()
+        {
+            //saveData.Add("something", "myValue");
+            return new Dictionary<string, string>(); ;
+        }
+
+        public void rebuild(Dictionary<string, string> additionalSaveData, object replacement)
+        {
+            // Unused
+        }
+
+        public ICustomObject recreate(Dictionary<string, string> additionalSaveData, object replacement)
+        {
+            Furniture baseFlag = (replacement as Furniture);
+            flagTexture = ModResources.ancientFlagsTexture;
+            base.defaultSourceRect.Value = new Rectangle(32 * (int)this.FlagType % flagTexture.Width, 32 * (int)this.FlagType / flagTexture.Width * 32, 32, 32);
+
+            if (baseFlag.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && Enum.TryParse(baseFlag.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+            {
+                return new AncientFlag(flagType, baseFlag.TileLocation);
+            }
+            return new AncientFlag(FlagType.Unknown, baseFlag.TileLocation);
         }
 
         public override void draw(SpriteBatch spriteBatch, int x, int y, float alpha = 1f)

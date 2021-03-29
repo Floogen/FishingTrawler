@@ -125,7 +125,7 @@ namespace FishingTrawler
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
-            helper.Events.GameLoop.Saving += this.OnSaving;
+            helper.Events.GameLoop.DayEnding += this.OnDayEnding;
 
             // Hook into Display related events
             helper.Events.Display.RenderingHud += this.OnRenderingHud;
@@ -526,36 +526,9 @@ namespace FishingTrawler
             _trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
             _trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
             _trawlerCabin = Game1.getLocationFromName(TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
-
-            // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
-            // However, in the situations it does happen this will prevent crashes
-            foreach (Farmer farmer in Game1.getAllFarmers())
-            {
-                ModResources.ConvertInventoryBaseItemsToCustom(farmer);
-            }
-
-            // Check every location for a chest and then re-add any previous BailingBuckets
-            foreach (GameLocation location in Game1.locations)
-            {
-                ModResources.ConvertBaseItemsToCustom(location);
-
-                if (location is BuildableGameLocation)
-                {
-                    foreach (Building building in (location as BuildableGameLocation).buildings)
-                    {
-                        GameLocation indoorLocation = building.indoors.Value;
-                        if (indoorLocation is null)
-                        {
-                            continue;
-                        }
-
-                        ModResources.ConvertBaseItemsToCustom(indoorLocation);
-                    }
-                }
-            }
         }
 
-        private void OnSaving(object sender, SavingEventArgs e)
+        private void OnDayEnding(object sender, DayEndingEventArgs e)
         {
             // Save the current hoisted flag
             Game1.player.modData[HOISTED_FLAG_KEY] = _hoistedFlag.ToString();
@@ -564,35 +537,6 @@ namespace FishingTrawler
             Game1.locations.Remove(_trawlerHull);
             Game1.locations.Remove(_trawlerSurface);
             Game1.locations.Remove(_trawlerCabin);
-
-            // Note: This shouldn't be necessary, as the player shouldn't normally be able to take the BailingBucket outside the Trawler
-            // However, in the situations it does happen this will prevent crashes
-
-            // For every player, replace any BailingBucket with MilkPail
-            foreach (Farmer farmer in Game1.getAllFarmers())
-            {
-                ModResources.ConvertInventoryCustomItemsToBase(farmer);
-            }
-
-            // Check every location for a chest and then replace any BailingBucket with MilkPail
-            foreach (GameLocation location in Game1.locations)
-            {
-                ModResources.ConvertCustomItemsToBase(location);
-
-                if (location is BuildableGameLocation)
-                {
-                    foreach (Building building in (location as BuildableGameLocation).buildings)
-                    {
-                        GameLocation indoorLocation = building.indoors.Value;
-                        if (indoorLocation is null)
-                        {
-                            continue;
-                        }
-
-                        ModResources.ConvertCustomItemsToBase(indoorLocation);
-                    }
-                }
-            }
         }
 
         private string CreateTrawlerEventsAndGetMessage()
