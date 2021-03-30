@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Netcode;
 using StardewValley;
 using System;
 using System.Collections.Generic;
@@ -52,28 +53,52 @@ namespace FishingTrawler.Objects
             this._closeGate = false;
         }
 
+        internal void TriggerDepartureEvent()
+        {
+            string id = _beach.currentEvent is null ? "Empty" : _beach.currentEvent.id.ToString();
+            ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {_beach.currentEvent is null} | {id}", StardewModdingAPI.LogLevel.Trace);
+
+            Game1.player.locationBeforeForcedEvent.Value = "Custom_TrawlerCabin";
+            Farmer farmerActor = (Game1.player.NetFields.Root as NetRoot<Farmer>).Clone().Value;
+
+            Action performForcedEvent = delegate
+            {
+                Game1.warpingForForcedRemoteEvent = true;
+                Game1.player.completelyStopAnimatingOrDoingAction();
+
+                farmerActor.currentLocation = _beach;
+                farmerActor.completelyStopAnimatingOrDoingAction();
+                farmerActor.UsingTool = false;
+                farmerActor.items.Clear();
+                farmerActor.hidden.Value = false;
+                Event @event = Game1.currentLocation.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, farmerActor);
+                @event.showWorldCharacters = false;
+                @event.showGroundObjects = true;
+                @event.ignoreObjectCollisions = false;
+                Game1.currentLocation.startEvent(@event);
+                Game1.warpingForForcedRemoteEvent = false;
+                string value = Game1.player.locationBeforeForcedEvent.Value;
+                Game1.player.locationBeforeForcedEvent.Value = null;
+                @event.setExitLocation("Custom_TrawlerCabin", 8, 5);
+                Game1.player.locationBeforeForcedEvent.Value = value;
+                Game1.player.orientationBeforeEvent = 0;
+            };
+            Game1.remoteEventQueue.Add(performForcedEvent);
+        }
+
         internal void StartDeparture()
         {
-            List<Farmer> farmersToDepart = _beach.farmers.ToList();
+            Rectangle zoneOfDeparture = new Rectangle(82, 26, 10, 16);
+            List<Farmer> farmersToDepart = _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY())).ToList();
 
-            xTile.Dimensions.Rectangle viewport = Game1.viewport;
-            Vector2 player_position = Game1.player.Position;
-            int player_direction = Game1.player.facingDirection;
+            ModEntry.claimedBoat = true;
+            ModEntry.numberOfDeckhands = farmersToDepart.Count();
+            ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", StardewModdingAPI.LogLevel.Debug);
 
-            _boatEvent = _beach.findEventById(ModEntry.BOAT_DEPART_EVENT_ID); // TODO: Change the first four digits to the mod's Nexus ID
-            _boatEvent.showWorldCharacters = false;
-            _boatEvent.showGroundObjects = true;
-            _boatEvent.ignoreObjectCollisions = false;
+            TriggerDepartureEvent();
 
-            Event boatEvent = this._boatEvent;
-            boatEvent.onEventFinished = (Action)Delegate.Combine(boatEvent.onEventFinished, new Action(OnBoatEventEnd));
-            _beach.currentEvent = this._boatEvent;
-            _boatEvent.checkForNextCommand(_beach, Game1.currentGameTime);
-
-            Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, 0);
-
-            Game1.eventUp = true;
-            Game1.viewport = viewport;
+            // Send out trigger event to relevant players
+            ModEntry.AlertPlayersOfDeparture(farmersToDepart);
         }
 
         internal void OnBoatEventEnd()
@@ -94,14 +119,6 @@ namespace FishingTrawler.Objects
             }
             this.Reset();
             this._boatEvent = null;
-        }
-
-        internal static void WarpToCabinAtEnd()
-        {
-            if (Game1.player.currentLocation.Name != "Custom_TrawlerCabin")
-            {
-                Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, false);
-            }
         }
     }
 }

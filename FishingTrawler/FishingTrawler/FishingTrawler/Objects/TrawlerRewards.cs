@@ -17,6 +17,8 @@ namespace FishingTrawler.Objects
 
         private Chest _rewardChest;
         private Farmer _farmer;
+        private int _xpCached;
+        private int _numberOfParticipants;
 
         internal float fishCatchChanceOffset;  // Higher this number is, the more unlikely the player is to get harder to catch fish (default 0)
         internal bool isGambling; // If true, the rewards will have 50% of being doubled (along with XP), but 25% of losing it all
@@ -28,6 +30,21 @@ namespace FishingTrawler.Objects
         {
             _rewardChest = rewardChest;
             _farmer = Game1.player; // Main player will get XP by default, though it can be overridden
+            _xpCached = 0;
+            _numberOfParticipants = 0;
+
+            fishCatchChanceOffset = 0f;
+            isGambling = false;
+            hasMermaidsBlessing = false;
+            hasPatronSaint = false;
+            hasWorldly = false;
+        }
+
+        public void Reset(Farmer farmer)
+        {
+            _farmer = farmer;
+            _xpCached = 0;
+            _numberOfParticipants = 0;
 
             fishCatchChanceOffset = 0f;
             isGambling = false;
@@ -310,11 +327,15 @@ namespace FishingTrawler.Objects
             }
         }
 
-        internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
+        internal void CalculateAndPopulateReward(int numberOfDeckhands, int amountOfFish, int baseXpReduction = 5)
         {
             int[] keys = GetEligibleFishIds(hasWorldly);
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
 
+            // Multiply the fish caught by number of deckhands
+            amountOfFish *= numberOfDeckhands;
+
+            // Attempt gamble, if the effect is active
             if (isGambling)
             {
                 amountOfFish = AttemptGamble(amountOfFish);
@@ -336,7 +357,7 @@ namespace FishingTrawler.Objects
                 float caughtXP = 0f;
                 bool caughtFish = false;
 
-                int randomQuantity = Math.Min(Game1.random.Next(1, amountOfFish / 3), 99);
+                int randomQuantity = Math.Min(Game1.random.Next(0, amountOfFish / 3), 99);
                 Item selectedReward = new Object(Game1.random.Next(167, 173), randomQuantity); // Default is random trash item
 
                 Utility.Shuffle(Game1.random, keys);
@@ -415,20 +436,20 @@ namespace FishingTrawler.Objects
             }
 
             // Now give XP reward (give 5% of total caught XP)
-            // TODO: Test controller
-            // TOOD: Test local multiplayer
-            _farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
+            //_farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
+            _numberOfParticipants = numberOfDeckhands;
+            _xpCached = (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP);
 
-            ModEntry.monitor.Log($"Gve player {bonusXP} bonus XP", StardewModdingAPI.LogLevel.Trace);
+            ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP", StardewModdingAPI.LogLevel.Trace);
             if (bonusXP > 0f)
             {
                 Game1.addHUDMessage(new HUDMessage($"The Patron Saint flag gifted you {bonusXP} bonus XP!", null));
             }
         }
 
-        internal void SetPlayerToGetXP(Farmer player)
+        internal void GetFishingXP(Farmer player)
         {
-            _farmer = player;
+            player.gainExperience(1, _xpCached / _numberOfParticipants);
         }
     }
 }

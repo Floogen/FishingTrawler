@@ -88,11 +88,6 @@ namespace FishingTrawler.Patches.Locations
                     __result = true;
                     return;
                 case "warp_to_cabin":
-                    if (Context.IsMultiplayer)
-                    {
-                        // TODO: Try to fix the draw stutter that occurs with this (e.g. you briefly see the beach before it warps)
-                        __instance.currentEvent.onEventFinished = (Action)Delegate.Combine(__instance.currentEvent.onEventFinished, new Action(Trawler.WarpToCabinAtEnd));
-                    }
                     __result = true;
                     return;
             }

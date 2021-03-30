@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using FishingTrawler.API;
 using FishingTrawler.GameLocations;
+using FishingTrawler.Multiplayer;
 using FishingTrawler.Objects;
 using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Tools;
@@ -27,9 +28,12 @@ namespace FishingTrawler
     {
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
+        internal static IManifest manifest;
         internal static int fishingTripTimer;
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
+        internal static bool claimedBoat;
+        internal static int numberOfDeckhands;
 
         private static FlagType _hoistedFlag;
         private static TrawlerRewards _trawlerRewards;
@@ -92,6 +96,7 @@ namespace FishingTrawler
             // Set up the monitor and helper
             monitor = Monitor;
             modHelper = helper;
+            manifest = ModManifest;
 
             // Load in our assets
             ModResources.SetUpAssets(helper);
@@ -140,6 +145,15 @@ namespace FishingTrawler
 
             // Hook into Multiplayer related
             helper.Events.Multiplayer.PeerConnected += this.OnPeerConnected;
+            helper.Events.Multiplayer.ModMessageReceived += this.OnModMessageReceived;
+        }
+
+        private void OnModMessageReceived(object sender, ModMessageReceivedEventArgs e)
+        {
+            if (e.FromModID == this.ModManifest.UniqueID && e.Type == nameof(DepartureMessage))
+            {
+                trawlerObject.TriggerDepartureEvent();
+            }
         }
 
         private void OnPeerConnected(object sender, PeerConnectedEventArgs e)
@@ -179,17 +193,27 @@ namespace FishingTrawler
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
-                // Give the player their rewards, if they left the trawler as expected (warping out early does not give any rewards)
-                if (_isTripEnding)
+                if (claimedBoat)
                 {
-                    _trawlerRewards.SetPlayerToGetXP(e.Player);
-                    _trawlerRewards.CalculateAndPopulateReward(_trawlerSurface.fishCaughtQuantity);
-                }
+                    foreach (Farmer farmer in GetFarmersOnTrawler())
+                    {
+                        farmer.warpFarmer(new Warp(0, 0, "Beach", 86, 38, false));
+                    }
 
-                // Reset the trawler
-                _trawlerHull.Reset();
-                _trawlerSurface.Reset();
-                _trawlerCabin.Reset();
+                    // Give the player(s) their rewards, if they left the trawler as expected (warping out early does not give any rewards)
+                    if (_isTripEnding)
+                    {
+                        _trawlerRewards.CalculateAndPopulateReward(numberOfDeckhands, _trawlerSurface.fishCaughtQuantity);
+                    }
+
+                    // Reset the trawler
+                    _trawlerHull.Reset();
+                    _trawlerSurface.Reset();
+                    _trawlerCabin.Reset();
+
+                    // Set the theme to null
+                    SetTrawlerTheme(null);
+                }
 
                 // Take away any bailing buckets
                 foreach (BailingBucket bucket in Game1.player.Items.Where(i => i != null && i is BailingBucket))
@@ -197,11 +221,14 @@ namespace FishingTrawler
                     Game1.player.removeItemFromInventory(bucket);
                 }
 
-                // Set the theme to null
-                SetTrawlerTheme(null);
+                // Get XP reward
+                _trawlerRewards.GetFishingXP(e.Player);
 
                 // Finish trip ending logic
                 _isTripEnding = false;
+
+                numberOfDeckhands = 0;
+                claimedBoat = false;
 
                 return;
             }
@@ -219,48 +246,55 @@ namespace FishingTrawler
                     Game1.addHUDMessage(new HUDMessage("A bailing bucket has been added to your inventory.", null));
                 }
 
-                // Start the timer (2.5 minute default)
-                fishingTripTimer = 150000; //150000
-
-                // Set flag data
-                _trawlerSurface.SetFlagTexture(_hoistedFlag);
-
-                // Apply flag benefits
-                switch (_hoistedFlag)
+                if (claimedBoat)
                 {
-                    case FlagType.Parley:
-                        // Disable all leaks, but reduce fish catch chance by 25% during reward calculations (e.g. more chance of junk / lower quality fish)
-                        _trawlerHull.areLeaksEnabled = false;
-                        _trawlerRewards.fishCatchChanceOffset = 0.25f;
-                        break;
-                    case FlagType.JollyRoger:
-                        // Quadruples net output 
-                        _trawlerSurface.fishCaughtMultiplier = 4;
-                        _trawlerHull.hasWeakHull = true;
-                        break;
-                    case FlagType.GamblersCrest:
-                        // 50% of doubling chest, 25% of getting nothing
-                        _trawlerRewards.isGambling = true;
-                        break;
-                    case FlagType.MermaidsBlessing:
-                        // 10% of fish getting consumed, but gives random fishing chest reward
-                        _trawlerRewards.hasMermaidsBlessing = true;
-                        break;
-                    case FlagType.PatronSaint:
-                        // 25% of fish getting consumed, but gives full XP
-                        _trawlerRewards.hasPatronSaint = true;
-                        break;
-                    case FlagType.SharksFin:
-                        // Adds one extra minute to timer, allowing for more fish haul
-                        fishingTripTimer += 60000;
-                        break;
-                    case FlagType.Worldly:
-                        // Allows catching of non-ocean fish
-                        _trawlerRewards.hasWorldly = true;
-                        break;
-                    default:
-                        // Do nothing
-                        break;
+                    // Clear any previous reward data, set the head deckhand (which determines fishing level for reward calc)
+                    _trawlerRewards.Reset(Game1.player);
+
+                    // Start the timer (2.5 minute default)
+                    fishingTripTimer = 60000; //150000
+                    _trawlerSurface.fishCaughtQuantity = 100;
+
+                    // Set flag data
+                    _trawlerSurface.SetFlagTexture(_hoistedFlag);
+
+                    // Apply flag benefits
+                    switch (_hoistedFlag)
+                    {
+                        case FlagType.Parley:
+                            // Disable all leaks, but reduce fish catch chance by 25% during reward calculations (e.g. more chance of junk / lower quality fish)
+                            _trawlerHull.areLeaksEnabled = false;
+                            _trawlerRewards.fishCatchChanceOffset = 0.25f;
+                            break;
+                        case FlagType.JollyRoger:
+                            // Quadruples net output 
+                            _trawlerSurface.fishCaughtMultiplier = 4;
+                            _trawlerHull.hasWeakHull = true;
+                            break;
+                        case FlagType.GamblersCrest:
+                            // 50% of doubling chest, 25% of getting nothing
+                            _trawlerRewards.isGambling = true;
+                            break;
+                        case FlagType.MermaidsBlessing:
+                            // 10% of fish getting consumed, but gives random fishing chest reward
+                            _trawlerRewards.hasMermaidsBlessing = true;
+                            break;
+                        case FlagType.PatronSaint:
+                            // 25% of fish getting consumed, but gives full XP
+                            _trawlerRewards.hasPatronSaint = true;
+                            break;
+                        case FlagType.SharksFin:
+                            // Adds one extra minute to timer, allowing for more fish haul
+                            fishingTripTimer += 60000;
+                            break;
+                        case FlagType.Worldly:
+                            // Allows catching of non-ocean fish
+                            _trawlerRewards.hasWorldly = true;
+                            break;
+                        default:
+                            // Do nothing
+                            break;
+                    }
                 }
 
                 return;
@@ -269,21 +303,9 @@ namespace FishingTrawler
 
         private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null || _isTripEnding)
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || _isTripEnding)
             {
                 return;
-            }
-
-            if (_isNotificationFading)
-            {
-                _notificationAlpha -= 0.1f;
-            }
-
-            if (_notificationAlpha < 0f)
-            {
-                _activeNotification = String.Empty;
-                _isNotificationFading = false;
-                _notificationAlpha = 1f;
             }
 
             // Every quarter of a second play leaking sound, if there is a leak
@@ -291,54 +313,133 @@ namespace FishingTrawler
             {
                 if (Game1.player.currentLocation is TrawlerHull && _trawlerHull.HasLeak())
                 {
-                    _trawlerHull.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
+                    Game1.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
                 }
             }
 
-            if (e.IsMultipleOf(150))
+            if (claimedBoat)
             {
-                if (!String.IsNullOrEmpty(_activeNotification))
+                if (Game1.activeClickableMenu != null && !Context.IsMultiplayer)
                 {
-                    _isNotificationFading = true;
-                }
-
-                // Update water level (from leaks) every second
-                _trawlerHull.RecaculateWaterLevel();
-
-                if (_trawlerHull.waterLevel == 100)
-                {
-                    // Set the status as failed
-                    Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
-                    Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "true";
-
-                    // End trip due to flooding
-                    Game1.player.currentLocation.playSound("fishEscape");
-                    Game1.player.CanMove = false;
-                    Game1.addHUDMessage(new HUDMessage("The ship has taken on too much water! Murphy quickly returns to port before it can sink.", null));
-                    DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
-
-                    // Reduce fishCaughtQuantity due to failed trip
-                    _trawlerSurface.fishCaughtQuantity /= 4;
-
-                    _isTripEnding = true;
+                    // Allow pausing in singleplayer via menu
                     return;
                 }
+
+                if (_isNotificationFading)
+                {
+                    _notificationAlpha -= 0.1f;
+                }
+
+                if (_notificationAlpha < 0f)
+                {
+                    _activeNotification = String.Empty;
+                    _isNotificationFading = false;
+                    _notificationAlpha = 1f;
+                }
+
+
+                if (e.IsMultipleOf(150))
+                {
+                    if (!String.IsNullOrEmpty(_activeNotification))
+                    {
+                        _isNotificationFading = true;
+                    }
+
+                    // Update water level (from leaks) every second
+                    _trawlerHull.RecaculateWaterLevel();
+
+                    if (_trawlerHull.waterLevel == 100)
+                    {
+                        // Reduce fishCaughtQuantity due to failed trip
+                        _trawlerSurface.fishCaughtQuantity /= 4;
+                        DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
+                    }
+                }
+            }
+
+            if (_trawlerHull.waterLevel == 100)
+            {
+                // Set the status as failed
+                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
+                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "true";
+
+                // End trip due to flooding
+                Game1.player.currentLocation.playSound("fishEscape");
+                Game1.player.CanMove = false;
+                Game1.addHUDMessage(new HUDMessage("The ship has taken on too much water! Murphy quickly returns to port before it can sink.", null));
+
+                _isTripEnding = true;
             }
         }
 
         private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || Game1.activeClickableMenu != null || _isTripEnding)
+            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || _isTripEnding)
             {
                 return;
             }
 
-            // Iterate the fishing trip timer
-            if (fishingTripTimer > 0f)
+            if (claimedBoat)
             {
-                fishingTripTimer -= 1000;
+                if (Game1.activeClickableMenu != null && !Context.IsMultiplayer)
+                {
+                    // Allow pausing in singleplayer via menu
+                    return;
+                }
+
+                // Iterate the fishing trip timer
+                if (fishingTripTimer > 0f)
+                {
+                    fishingTripTimer -= 1000;
+                }
+
+                // Update the track if needed
+                if (themeSongUpdated)
+                {
+                    themeSongUpdated = false;
+
+                    _trawlerCabin.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                    _trawlerHull.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                    _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                }
+
+                // Every 5 seconds recalculate the amount of fish caught / lost
+                if (e.IsMultipleOf(300))
+                {
+                    _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
+                }
+
+                // Every random interval check for new event (leak, net tearing, etc.) on Trawler
+                if (e.IsMultipleOf(_eventSecondInterval))
+                {
+                    string message = String.Empty;
+
+                    // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
+                    if (Game1.random.NextDouble() < 0.05)
+                    {
+                        message = "The sea favors us today!";
+                    }
+                    else
+                    {
+                        message = CreateTrawlerEventsAndGetMessage();
+                    }
+
+                    // Check for empty string 
+                    if (String.IsNullOrEmpty(message))
+                    {
+                        message = "Ah the smell of the sea...";
+                    }
+
+                    if (_activeNotification != message)
+                    {
+                        _activeNotification = message;
+                    }
+
+                    _eventSecondInterval = (uint)Game1.random.Next(1, 5) * 100;
+                }
             }
-            else
+
+            if (fishingTripTimer <= 0f)
             {
                 // Set the status as successful
                 Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "true";
@@ -347,56 +448,14 @@ namespace FishingTrawler
                 // End trip due to timer finishing
                 Game1.player.currentLocation.playSound("trainWhistle");
                 Game1.player.CanMove = false;
-                Game1.addHUDMessage(new HUDMessage("The trip was a success! Murphy starts heading back to port.", null));
-                DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2000);
 
                 _isTripEnding = true;
-                return;
-            }
 
-            // Update the track if needed
-            if (themeSongUpdated)
-            {
-                themeSongUpdated = false;
-
-                _trawlerCabin.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-                _trawlerHull.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-                _trawlerSurface.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-            }
-
-            // Every 5 seconds recalculate the amount of fish caught / lost
-            if (e.IsMultipleOf(300))
-            {
-                _trawlerSurface.UpdateFishCaught(_trawlerCabin.AreAllPipesLeaking());
-            }
-
-            // Every random interval check for new event (leak, net tearing, etc.) on Trawler
-            if (e.IsMultipleOf(_eventSecondInterval))
-            {
-                string message = String.Empty;
-
-                // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
-                if (Game1.random.NextDouble() < 0.05)
+                if (claimedBoat)
                 {
-                    message = "The sea favors us today!";
+                    Game1.addHUDMessage(new HUDMessage("The trip was a success! Murphy starts heading back to port.", null));
+                    DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2000);
                 }
-                else
-                {
-                    message = CreateTrawlerEventsAndGetMessage();
-                }
-
-                // Check for empty string 
-                if (String.IsNullOrEmpty(message))
-                {
-                    message = "Ah the smell of the sea...";
-                }
-
-                if (_activeNotification != message)
-                {
-                    _activeNotification = message;
-                }
-
-                _eventSecondInterval = (uint)Game1.random.Next(1, 5) * 100;
             }
         }
 
@@ -457,22 +516,19 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
+            Beach beach = Game1.getLocationFromName("Beach") as Beach;
+
             // Set Farmer moddata used for this mod
             EstablishPlayerData();
 
             if (Context.IsMainPlayer)
             {
-                Beach beach = Game1.getLocationFromName("Beach") as Beach;
-
                 // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
                 if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
                 {
                     Helper.Content.AssetEditors.Add(new IntroMail());
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
                 }
-
-                // Create the trawler object for the beach
-                trawlerObject = new Trawler(beach);
 
                 // Set the reward chest
                 Vector2 rewardChestPosition = new Vector2(-100, -100);
@@ -489,9 +545,10 @@ namespace FishingTrawler
 
                 // Create the TrawlerReward class
                 _trawlerRewards = new TrawlerRewards(rewardChest);
+
+                // Create the trawler object for the beach
+                trawlerObject = new Trawler(beach);
             }
-
-
 
             // Add the surface location
             TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
@@ -505,10 +562,17 @@ namespace FishingTrawler
             TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
             Game1.locations.Add(cabinLocation);
 
+
             // Verify our locations were added and establish our location variables
             _trawlerHull = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
             _trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
             _trawlerCabin = Game1.getLocationFromName(TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
+
+
+            // TODO: Sync area changes via broadcasts
+            // Reset ownership of boat, deckhands
+            claimedBoat = false;
+            numberOfDeckhands = 0;
         }
 
         private void OnDayEnding(object sender, DayEndingEventArgs e)
@@ -589,6 +653,11 @@ namespace FishingTrawler
 
             // Select highest priority item (priority == default_priority_level * frequency)
             return amountOfEvents == 0 ? "Yoba be praised!" : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
+        }
+
+        internal static void AlertPlayersOfDeparture(List<Farmer> farmersToAlert)
+        {
+            modHelper.Multiplayer.SendMessage(new DepartureMessage(), nameof(DepartureMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
         }
 
         internal static void SetTrawlerTheme(string songName)
@@ -674,6 +743,11 @@ namespace FishingTrawler
             {
                 Game1.player.modData.Add(MURPHY_HAS_SEEN_FLAG_KEY, "false");
             }
+        }
+
+        internal List<Farmer> GetFarmersOnTrawler()
+        {
+            return Game1.getAllFarmers().Where(f => IsValidTrawlerLocation(f.currentLocation)).ToList();
         }
     }
 }
