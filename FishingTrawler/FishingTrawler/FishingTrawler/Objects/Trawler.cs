@@ -70,6 +70,8 @@ namespace FishingTrawler.Objects
             _beach.currentEvent = this._boatEvent;
             _boatEvent.checkForNextCommand(_beach, Game1.currentGameTime);
 
+            Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, 0);
+
             Game1.eventUp = true;
             Game1.viewport = viewport;
         }
@@ -96,7 +98,10 @@ namespace FishingTrawler.Objects
 
         internal static void WarpToCabinAtEnd()
         {
-            Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, false);
+            if (Game1.player.currentLocation.Name != "Custom_TrawlerCabin")
+            {
+                Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, false);
+            }
         }
     }
 }
