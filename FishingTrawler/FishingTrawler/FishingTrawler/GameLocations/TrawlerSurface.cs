@@ -43,7 +43,7 @@ namespace FishingTrawler.GameLocations
         private const int FLAGS_TILESHEET_INDEX = 2;
         private const int TRAWLER_TILESHEET_INDEX = 3;
 
-        internal TrawlerSurface()
+        public TrawlerSurface()
         {
 
         }

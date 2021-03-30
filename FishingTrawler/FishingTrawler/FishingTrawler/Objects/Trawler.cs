@@ -54,34 +54,24 @@ namespace FishingTrawler.Objects
 
         internal void StartDeparture()
         {
+            List<Farmer> farmersToDepart = _beach.farmers.ToList();
+
             xTile.Dimensions.Rectangle viewport = Game1.viewport;
             Vector2 player_position = Game1.player.Position;
             int player_direction = Game1.player.facingDirection;
-            StringBuilder event_string = new StringBuilder();
-            event_string.Append("/-1000 -1000/farmer 0 0 0/playMusic none");
-            event_string.Append("/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Back 87 40 14/changeMapTile Buildings 87 41 19/changeMapTile Buildings 87 42 24/changeMapTile Buildings 87 43 4");
-            event_string.Append("/fade/viewport 83 38/pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000");
-            event_string.Append("/locationSpecificCommand boat_depart/fade/viewport -5000 -5000");
-            event_string.Append("/changeMapTile Back 87 40 18/changeMapTile Buildings 87 41 14/changeMapTile Buildings 87 42 19/changeMapTile Buildings 87 43 24");
-            event_string.Append("/end position 87 35");
 
-            _boatEvent = new Event(event_string.ToString(), 411203900, Game1.player) // TODO: Change the first four digits to the mod's Nexus ID
-            {
-                showWorldCharacters = true,
-                showGroundObjects = true,
-                ignoreObjectCollisions = false
-            };
-            event_string = null;
+            _boatEvent = _beach.findEventById(ModEntry.BOAT_DEPART_EVENT_ID); // TODO: Change the first four digits to the mod's Nexus ID
+            _boatEvent.showWorldCharacters = false;
+            _boatEvent.showGroundObjects = true;
+            _boatEvent.ignoreObjectCollisions = false;
+
             Event boatEvent = this._boatEvent;
             boatEvent.onEventFinished = (Action)Delegate.Combine(boatEvent.onEventFinished, new Action(OnBoatEventEnd));
             _beach.currentEvent = this._boatEvent;
             _boatEvent.checkForNextCommand(_beach, Game1.currentGameTime);
-            Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, 0);
+
             Game1.eventUp = true;
             Game1.viewport = viewport;
-            _farmerActor = _beach.currentEvent.getCharacterByName("farmer") as Farmer;
-            _farmerActor.Position = player_position;
-            _farmerActor.faceDirection(player_direction);
         }
 
         internal void OnBoatEventEnd()
@@ -104,5 +94,9 @@ namespace FishingTrawler.Objects
             this._boatEvent = null;
         }
 
+        internal static void WarpToCabinAtEnd()
+        {
+            Game1.warpFarmer("Custom_TrawlerCabin", 8, 5, false);
+        }
     }
 }

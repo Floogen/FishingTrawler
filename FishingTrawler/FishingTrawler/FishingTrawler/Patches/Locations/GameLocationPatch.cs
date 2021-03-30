@@ -87,6 +87,10 @@ namespace FishingTrawler.Patches.Locations
                     }
                     __result = true;
                     return;
+                case "warp_to_cabin":
+                    __instance.currentEvent.onEventFinished = (Action)Delegate.Combine(__instance.currentEvent.onEventFinished, new Action(Trawler.WarpToCabinAtEnd));
+                    __result = true;
+                    return;
             }
         }
 

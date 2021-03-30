@@ -51,6 +51,7 @@ namespace FishingTrawler
         private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
 
         // Day to appear settings
+        internal const int BOAT_DEPART_EVENT_ID = 411203900;
         private const string DAY_TO_APPEAR_TOWN = "Wed";
         private const string DAY_TO_APPEAR_ISLAND = "Sun";
 
@@ -136,6 +137,18 @@ namespace FishingTrawler
 
             // Hook into MouseClicked
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+
+            // Hook into Multiplayer related
+            helper.Events.Multiplayer.PeerConnected += this.OnPeerConnected;
+        }
+
+        private void OnPeerConnected(object sender, PeerConnectedEventArgs e)
+        {
+            if (!Context.IsMainPlayer)
+            {
+                // Set Farmer moddata used for this mod
+                EstablishPlayerData();
+            }
         }
 
         private void OnRenderingHud(object sender, RenderingHudEventArgs e)
@@ -444,71 +457,41 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            Beach beach = Game1.getLocationFromName("Beach") as Beach;
-
-            // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
-            if (!Game1.player.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
-            {
-                Helper.Content.AssetEditors.Add(new IntroMail());
-                Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
-            }
-
-            // Create the trawler object for the beach
-            trawlerObject = new Trawler(beach);
-
-            // Set the reward chest
-            Vector2 rewardChestPosition = new Vector2(-100, -100);
-            Farm farm = Game1.getLocationFromName("Farm") as Farm;
-            rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
-            if (rewardChest is null)
-            {
-                Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Trace);
-                rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
-                rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
-
-                farm.setObject(rewardChestPosition, rewardChest);
-            }
-
-            // Create the TrawlerReward class
-            _trawlerRewards = new TrawlerRewards(rewardChest);
-
             // Set Farmer moddata used for this mod
-            if (!Game1.player.modData.ContainsKey(HOISTED_FLAG_KEY))
+            EstablishPlayerData();
+
+            if (Context.IsMainPlayer)
             {
-                Game1.player.modData.Add(HOISTED_FLAG_KEY, FlagType.Unknown.ToString());
-            }
-            else
-            {
-                SetHoistedFlag(Enum.TryParse(Game1.player.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown);
+                Beach beach = Game1.getLocationFromName("Beach") as Beach;
+
+                // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
+                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+                {
+                    Helper.Content.AssetEditors.Add(new IntroMail());
+                    Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
+                }
+
+                // Create the trawler object for the beach
+                trawlerObject = new Trawler(beach);
+
+                // Set the reward chest
+                Vector2 rewardChestPosition = new Vector2(-100, -100);
+                Farm farm = Game1.getLocationFromName("Farm") as Farm;
+                rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
+                if (rewardChest is null)
+                {
+                    Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Trace);
+                    rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
+                    rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
+
+                    farm.setObject(rewardChestPosition, rewardChest);
+                }
+
+                // Create the TrawlerReward class
+                _trawlerRewards = new TrawlerRewards(rewardChest);
             }
 
-            if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY))
-            {
-                Game1.player.modData.Add(MURPHY_WAS_GREETED_TODAY_KEY, "false");
-            }
-            else if (Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true")
-            {
-                Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
-            }
 
-            if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
-            {
-                Game1.player.modData.Add(MURPHY_SAILED_TODAY_KEY, "false");
-                Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
-                Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
-            }
-            else if (Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_ISLAND)
-            {
-                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
-                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
-                Game1.player.modData[MURPHY_FINISHED_TALKING_KEY] = "false";
-            }
-
-            // One time event, do not renew
-            if (!Game1.player.modData.ContainsKey(MURPHY_HAS_SEEN_FLAG_KEY))
-            {
-                Game1.player.modData.Add(MURPHY_HAS_SEEN_FLAG_KEY, "false");
-            }
 
             // Add the surface location
             TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
@@ -634,7 +617,7 @@ namespace FishingTrawler
 
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.player.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
             {
                 return true;
             }
@@ -651,6 +634,46 @@ namespace FishingTrawler
         {
             // Updating the player's modData for which flag is hoisted
             _hoistedFlag = flagType;
+        }
+
+        private void EstablishPlayerData()
+        {
+            if (!Game1.player.modData.ContainsKey(HOISTED_FLAG_KEY))
+            {
+                Game1.player.modData.Add(HOISTED_FLAG_KEY, FlagType.Unknown.ToString());
+            }
+            else
+            {
+                SetHoistedFlag(Enum.TryParse(Game1.player.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown);
+            }
+
+            if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY))
+            {
+                Game1.player.modData.Add(MURPHY_WAS_GREETED_TODAY_KEY, "false");
+            }
+            else if (Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true")
+            {
+                Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
+            }
+
+            if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
+            {
+                Game1.player.modData.Add(MURPHY_SAILED_TODAY_KEY, "false");
+                Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
+                Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
+            }
+            else if (Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_ISLAND)
+            {
+                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
+                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
+                Game1.player.modData[MURPHY_FINISHED_TALKING_KEY] = "false";
+            }
+
+            // One time event, do not renew
+            if (!Game1.player.modData.ContainsKey(MURPHY_HAS_SEEN_FLAG_KEY))
+            {
+                Game1.player.modData.Add(MURPHY_HAS_SEEN_FLAG_KEY, "false");
+            }
         }
     }
 }

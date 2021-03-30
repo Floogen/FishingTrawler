@@ -28,7 +28,7 @@ namespace FishingTrawler.GameLocations
         internal bool areLeaksEnabled;
         internal bool hasWeakHull;
 
-        internal TrawlerHull()
+        public TrawlerHull()
         {
 
         }

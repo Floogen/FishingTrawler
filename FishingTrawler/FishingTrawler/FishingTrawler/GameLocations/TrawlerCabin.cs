@@ -18,7 +18,7 @@ namespace FishingTrawler.GameLocations
         private List<Location> _cabinPipeLocations;
         private const int CABIN_TILESHEET_INDEX = 2;
 
-        internal TrawlerCabin()
+        public TrawlerCabin()
         {
 
         }
