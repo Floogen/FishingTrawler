@@ -183,7 +183,7 @@ namespace FishingTrawler.Patches.Locations
                     Vector2 position2 = Utility.getRandomPositionInThisRectangle(back_rectangle, Game1.random);
                     TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, position2, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                     sprite2.acceleration = new Vector2(-0.25f * (float)Math.Sign(trawler._boatDirection), 0f);
-                    __instance.temporarySprites.Add(sprite2);
+                    ModEntry.multiplayer.broadcastSprites(__instance, sprite2);
                     trawler._nextBubble = 0.01f;
                 }
                 if (trawler._nextSlosh > 0f)

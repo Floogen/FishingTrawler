@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FishingTrawler.Multiplayer
+namespace FishingTrawler.Messages
 {
     internal class DepartureMessage
     {

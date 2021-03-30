@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using FishingTrawler.API;
 using FishingTrawler.GameLocations;
-using FishingTrawler.Multiplayer;
+using FishingTrawler.Messages;
 using FishingTrawler.Objects;
 using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Tools;
@@ -29,6 +29,7 @@ namespace FishingTrawler
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
         internal static IManifest manifest;
+        internal static Multiplayer multiplayer;
         internal static int fishingTripTimer;
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
@@ -97,6 +98,7 @@ namespace FishingTrawler
             monitor = Monitor;
             modHelper = helper;
             manifest = ModManifest;
+            multiplayer = helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
 
             // Load in our assets
             ModResources.SetUpAssets(helper);
@@ -421,6 +423,7 @@ namespace FishingTrawler
                     }
                     else
                     {
+                        // TODO: Sync area changes via broadcasts
                         message = CreateTrawlerEventsAndGetMessage();
                     }
 
@@ -568,8 +571,6 @@ namespace FishingTrawler
             _trawlerSurface = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
             _trawlerCabin = Game1.getLocationFromName(TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
 
-
-            // TODO: Sync area changes via broadcasts
             // Reset ownership of boat, deckhands
             claimedBoat = false;
             numberOfDeckhands = 0;
