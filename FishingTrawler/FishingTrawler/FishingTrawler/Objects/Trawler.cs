@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Netcode;
+using StardewModdingAPI;
 using StardewValley;
 using System;
 using System.Collections.Generic;
@@ -56,34 +57,53 @@ namespace FishingTrawler.Objects
         internal void TriggerDepartureEvent()
         {
             string id = _beach.currentEvent is null ? "Empty" : _beach.currentEvent.id.ToString();
-            ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {_beach.currentEvent is null} | {id}", StardewModdingAPI.LogLevel.Trace);
+            ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {_beach.currentEvent is null} | {id}", LogLevel.Trace);
 
-            Game1.player.locationBeforeForcedEvent.Value = "Custom_TrawlerCabin";
-            Farmer farmerActor = (Game1.player.NetFields.Root as NetRoot<Farmer>).Clone().Value;
-
-            Action performForcedEvent = delegate
+            if (Context.IsMultiplayer)
             {
-                Game1.warpingForForcedRemoteEvent = true;
-                Game1.player.completelyStopAnimatingOrDoingAction();
+                Game1.player.locationBeforeForcedEvent.Value = "Custom_TrawlerCabin";
+                Farmer farmerActor = (Game1.player.NetFields.Root as NetRoot<Farmer>).Clone().Value;
 
-                farmerActor.currentLocation = _beach;
-                farmerActor.completelyStopAnimatingOrDoingAction();
-                farmerActor.UsingTool = false;
-                farmerActor.items.Clear();
-                farmerActor.hidden.Value = false;
-                Event @event = Game1.currentLocation.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, farmerActor);
-                @event.showWorldCharacters = false;
-                @event.showGroundObjects = true;
-                @event.ignoreObjectCollisions = false;
-                Game1.currentLocation.startEvent(@event);
-                Game1.warpingForForcedRemoteEvent = false;
-                string value = Game1.player.locationBeforeForcedEvent.Value;
-                Game1.player.locationBeforeForcedEvent.Value = null;
-                @event.setExitLocation("Custom_TrawlerCabin", 8, 5);
-                Game1.player.locationBeforeForcedEvent.Value = value;
-                Game1.player.orientationBeforeEvent = 0;
-            };
-            Game1.remoteEventQueue.Add(performForcedEvent);
+                Action performForcedEvent = delegate
+                {
+                    Game1.warpingForForcedRemoteEvent = true;
+                    Game1.player.completelyStopAnimatingOrDoingAction();
+
+                    farmerActor.currentLocation = _beach;
+                    farmerActor.completelyStopAnimatingOrDoingAction();
+                    farmerActor.UsingTool = false;
+                    farmerActor.items.Clear();
+                    farmerActor.hidden.Value = false;
+                    Event @event = Game1.currentLocation.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, farmerActor);
+                    @event.showWorldCharacters = false;
+                    @event.showGroundObjects = true;
+                    @event.ignoreObjectCollisions = false;
+                    Game1.currentLocation.startEvent(@event);
+                    Game1.warpingForForcedRemoteEvent = false;
+                    string value = Game1.player.locationBeforeForcedEvent.Value;
+                    Game1.player.locationBeforeForcedEvent.Value = null;
+                    @event.setExitLocation("Custom_TrawlerCabin", 8, 5);
+                    Game1.player.locationBeforeForcedEvent.Value = value;
+                    Game1.player.orientationBeforeEvent = 0;
+                };
+                Game1.remoteEventQueue.Add(performForcedEvent);
+
+                return;
+            }
+
+            _boatEvent = _beach.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, Game1.player); // TODO: Change the first four digits to the mod's Nexus ID
+            _boatEvent.showWorldCharacters = false;
+            _boatEvent.showGroundObjects = true;
+            _boatEvent.ignoreObjectCollisions = false;
+            _boatEvent.setExitLocation("Custom_TrawlerCabin", 8, 5);
+            Game1.player.locationBeforeForcedEvent.Value = "Custom_TrawlerCabin";
+
+            Event boatEvent = this._boatEvent;
+            boatEvent.onEventFinished = (Action)Delegate.Combine(boatEvent.onEventFinished, new Action(OnBoatEventEnd));
+            _beach.currentEvent = this._boatEvent;
+            _boatEvent.checkForNextCommand(_beach, Game1.currentGameTime);
+
+            Game1.eventUp = true;
         }
 
         internal void StartDeparture()
@@ -93,12 +113,15 @@ namespace FishingTrawler.Objects
 
             ModEntry.claimedBoat = true;
             ModEntry.numberOfDeckhands = farmersToDepart.Count();
-            ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", StardewModdingAPI.LogLevel.Debug);
+            ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
 
             TriggerDepartureEvent();
 
-            // Send out trigger event to relevant players
-            ModEntry.AlertPlayersOfDeparture(farmersToDepart);
+            if (Context.IsMultiplayer)
+            {
+                // Send out trigger event to relevant players
+                ModEntry.AlertPlayersOfDeparture(farmersToDepart);
+            }
         }
 
         internal void OnBoatEventEnd()
