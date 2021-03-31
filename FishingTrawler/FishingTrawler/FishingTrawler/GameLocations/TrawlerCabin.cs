@@ -134,19 +134,19 @@ namespace FishingTrawler.GameLocations
             return false;
         }
 
-        public void AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
+        public bool AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
             AnimatedTile firstTile = this.map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
             //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
 
             if (firstTile is null)
             {
-                return;
+                return false;
             }
 
             if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfLeak(tileX, tileY, who)))
             {
-                return;
+                return false;
             }
 
             if (firstTile.Properties["CustomAction"] == "RustyPipe" && bool.Parse(firstTile.Properties["IsLeaking"]) is true)
@@ -163,6 +163,8 @@ namespace FishingTrawler.GameLocations
 
                 this.playSound("hammer");
             }
+
+            return true;
         }
 
         private int[] GetPipeLeakingIndexes(int startingIndex)
@@ -176,29 +178,40 @@ namespace FishingTrawler.GameLocations
             return indexes.ToArray();
         }
 
-        public void AttemptCreatePipeLeak()
+        public bool AttemptCreatePipeLeak(int tileX = -1, int tileY = -1)
         {
             List<Location> validPipeLocations = _cabinPipeLocations.Where(loc => !IsPipeLeaking(loc.X, loc.Y)).ToList();
 
             if (validPipeLocations.Count() == 0)
             {
-                return;
+                return false;
             }
 
             // Pick a random valid spot to rip
-            Location netLocation = validPipeLocations.ElementAt(Game1.random.Next(0, validPipeLocations.Count()));
+            Location pipeLocation = validPipeLocations.ElementAt(Game1.random.Next(0, validPipeLocations.Count()));
+            if (tileX != -1 && tileY != -1)
+            {
+                if (!_cabinPipeLocations.Any(loc => !IsPipeLeaking(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY))
+                {
+                    return false;
+                }
+
+                pipeLocation = _cabinPipeLocations.FirstOrDefault(loc => !IsPipeLeaking(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY);
+            }
 
             // Set the net as ripped
-            Tile firstTile = this.map.GetLayer("Buildings").Tiles[netLocation.X, netLocation.Y];
+            Tile firstTile = this.map.GetLayer("Buildings").Tiles[pipeLocation.X, pipeLocation.Y];
             firstTile.Properties["IsLeaking"] = true;
 
-            this.setAnimatedMapTile(netLocation.X, netLocation.Y, GetPipeLeakingIndexes(152), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
-            this.setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetPipeLeakingIndexes(134), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
+            this.setAnimatedMapTile(pipeLocation.X, pipeLocation.Y, GetPipeLeakingIndexes(152), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
+            this.setAnimatedMapTile(pipeLocation.X, pipeLocation.Y - 1, GetPipeLeakingIndexes(134), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
 
             // Copy over the old properties
-            this.map.GetLayer("Buildings").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
+            this.map.GetLayer("Buildings").Tiles[pipeLocation.X, pipeLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
             this.playSound("flameSpell");
+
+            return true;
         }
 
         public bool AreAnyPipesLeaking()
@@ -214,6 +227,14 @@ namespace FishingTrawler.GameLocations
         public int GetLeakingPipesCount()
         {
             return _cabinPipeLocations.Count(loc => IsPipeLeaking(loc.X, loc.Y));
+        }
+
+        public Location GetRandomWorkingPipe()
+        {
+            List<Location> validPipeLocations = _cabinPipeLocations.Where(loc => !IsPipeLeaking(loc.X, loc.Y)).ToList();
+
+            // Pick a random valid spot to burst
+            return _cabinPipeLocations.Where(loc => !IsPipeLeaking(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validPipeLocations.Count()));
         }
     }
 }

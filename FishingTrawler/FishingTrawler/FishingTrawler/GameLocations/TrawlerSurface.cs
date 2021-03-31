@@ -315,7 +315,7 @@ namespace FishingTrawler.GameLocations
             this.setAnimatedMapTile(40, 21, GetFlagTileIndexes(2 * (int)flagType + 1), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
         }
 
-        public void AttemptCreateNetRip()
+        public bool AttemptCreateNetRip(int tileX = -1, int tileY = -1)
         {
             //ModEntry.monitor.Log("Attempting to create net rip...", LogLevel.Trace);
 
@@ -323,11 +323,20 @@ namespace FishingTrawler.GameLocations
 
             if (validNetLocations.Count() == 0)
             {
-                return;
+                return false;
             }
 
             // Pick a random valid spot to rip
             Location netLocation = validNetLocations.ElementAt(Game1.random.Next(0, validNetLocations.Count()));
+            if (tileX != -1 && tileY != -1)
+            {
+                if (!_netRipLocations.Any(loc => !IsNetRipped(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY))
+                {
+                    return false;
+                }
+
+                netLocation = _netRipLocations.FirstOrDefault(loc => !IsNetRipped(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY);
+            }
 
             // Set the net as ripped
             Tile firstTile = this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y];
@@ -340,21 +349,23 @@ namespace FishingTrawler.GameLocations
             this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
             this.playSound("crit");
+
+            return true;
         }
 
-        public void AttemptFixNet(int tileX, int tileY, Farmer who, bool forceRepair = false)
+        public bool AttemptFixNet(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
             AnimatedTile firstTile = this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY] as AnimatedTile;
             //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
 
             if (firstTile is null)
             {
-                return;
+                return false;
             }
 
             if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(who)))
             {
-                return;
+                return false;
             }
 
             if (firstTile.Properties["CustomAction"] == "RippedNet" && bool.Parse(firstTile.Properties["IsRipped"]) is true)
@@ -371,6 +382,8 @@ namespace FishingTrawler.GameLocations
 
                 this.playSound("harvest");
             }
+
+            return false;
         }
 
         public void UpdateFishCaught(bool isEngineFailing = false, int fishCaughtOverride = -1)
@@ -419,6 +432,14 @@ namespace FishingTrawler.GameLocations
         public int GetRippedNetsCount()
         {
             return _netRipLocations.Count(loc => IsNetRipped(loc.X, loc.Y));
+        }
+
+        public Location GetRandomWorkingNet()
+        {
+            List<Location> validNetLocations = _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).ToList();
+
+            // Pick a random valid spot to leak
+            return _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validNetLocations.Count()));
         }
     }
 }

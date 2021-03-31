@@ -163,7 +163,6 @@ namespace FishingTrawler
                     trawlerObject.TriggerDepartureEvent();
                     break;
                 case nameof(TrawlerEventMessage):
-                    Monitor.Log("Got message!", LogLevel.Debug);
                     TrawlerEventMessage message = e.ReadAs<TrawlerEventMessage>();
                     UpdateLocalTrawlerMap(message.EventType, message.Tile, message.IsRepairing);
                     break;
@@ -476,6 +475,7 @@ namespace FishingTrawler
                     for (int y = 0; y < 3; y++)
                     {
                         _trawlerSurface.Value.AttemptFixNet((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
+                        BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
                 else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
@@ -483,6 +483,7 @@ namespace FishingTrawler
                     for (int y = 0; y < 3; y++)
                     {
                         _trawlerCabin.Value.AttemptPlugLeak((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
+                        BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
             }
@@ -498,10 +499,15 @@ namespace FishingTrawler
                     // Attempt two checks, in case the user clicks above the rope
                     _trawlerSurface.Value.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
                     _trawlerSurface.Value.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1, Game1.player);
+
+                    BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y), true, GetFarmersOnTrawler());
+                    BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1), true, GetFarmersOnTrawler());
                 }
                 else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
                 {
                     _trawlerCabin.Value.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
+
+                    BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y), true, GetFarmersOnTrawler());
                 }
             }
         }
@@ -599,7 +605,11 @@ namespace FishingTrawler
             {
                 if (!_trawlerSurface.Value.AreAllNetsRipped() && Game1.random.NextDouble() < 0.35)
                 {
-                    _trawlerSurface.Value.AttemptCreateNetRip();
+                    Location tile = _trawlerSurface.Value.GetRandomWorkingNet();
+
+                    _trawlerSurface.Value.AttemptCreateNetRip(tile.X, tile.Y);
+                    BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
+
                     possibleMessages.Add(_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
 
                     executedEvents++;
@@ -608,7 +618,11 @@ namespace FishingTrawler
 
                 if (!_trawlerCabin.Value.AreAllPipesLeaking() && Game1.random.NextDouble() < 0.25)
                 {
-                    _trawlerCabin.Value.AttemptCreatePipeLeak();
+                    Location tile = _trawlerCabin.Value.GetRandomWorkingPipe();
+
+                    _trawlerCabin.Value.AttemptCreatePipeLeak(tile.X, tile.Y);
+                    BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
+
                     possibleMessages.Add(_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_ENGINE_PROBLEM);
 
                     executedEvents++;
@@ -628,10 +642,10 @@ namespace FishingTrawler
                     }
                     else
                     {
-                        Location hullHole = _trawlerHull.Value.GetRandomPatchedHullHole();
+                        Location tile = _trawlerHull.Value.GetRandomPatchedHullHole();
 
-                        _trawlerHull.Value.AttemptCreateHullLeak(hullHole.X, hullHole.Y);
-                        BroadcastTrawlerEvent(EventType.HullHole, new Vector2(hullHole.X, hullHole.Y), false, GetFarmersOnTrawler());
+                        _trawlerHull.Value.AttemptCreateHullLeak(tile.X, tile.Y);
+                        BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
                     }
 
                     possibleMessages.Add(_trawlerHull.Value.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
@@ -770,10 +784,17 @@ namespace FishingTrawler
 
         internal void UpdateLocalTrawlerMap(EventType eventType, Vector2 tile, bool isRepairing)
         {
+            bool result = false;
             switch (eventType)
             {
                 case EventType.HullHole:
-                    var result = isRepairing ? _trawlerHull.Value.AttemptPlugLeak((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerHull.Value.AttemptCreateHullLeak((int)tile.X, (int)tile.Y);
+                    result = isRepairing ? _trawlerHull.Value.AttemptPlugLeak((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerHull.Value.AttemptCreateHullLeak((int)tile.X, (int)tile.Y);
+                    break;
+                case EventType.EngineFailure:
+                    result = isRepairing ? _trawlerCabin.Value.AttemptPlugLeak((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerCabin.Value.AttemptCreatePipeLeak((int)tile.X, (int)tile.Y);
+                    break;
+                case EventType.NetTear:
+                    result = isRepairing ? _trawlerSurface.Value.AttemptFixNet((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerSurface.Value.AttemptCreateNetRip((int)tile.X, (int)tile.Y);
                     break;
                 default:
                     monitor.Log($"A trawler event tried to sync, but its EventType was not handled: {eventType}", LogLevel.Debug);
