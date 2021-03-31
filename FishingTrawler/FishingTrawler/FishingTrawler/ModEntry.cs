@@ -36,7 +36,6 @@ namespace FishingTrawler
         internal static bool claimedBoat;
         internal static int numberOfDeckhands;
 
-        private static FlagType _hoistedFlag;
         private static TrawlerRewards _trawlerRewards;
 
         // Trawler beach map related
@@ -258,10 +257,10 @@ namespace FishingTrawler
                     _trawlerSurface.fishCaughtQuantity = 100;
 
                     // Set flag data
-                    _trawlerSurface.SetFlagTexture(_hoistedFlag);
+                    _trawlerSurface.SetFlagTexture(GetHoistedFlag());
 
                     // Apply flag benefits
-                    switch (_hoistedFlag)
+                    switch (GetHoistedFlag())
                     {
                         case FlagType.Parley:
                             // Disable all leaks, but reduce fish catch chance by 25% during reward calculations (e.g. more chance of junk / lower quality fish)
@@ -578,9 +577,6 @@ namespace FishingTrawler
 
         private void OnDayEnding(object sender, DayEndingEventArgs e)
         {
-            // Save the current hoisted flag
-            Game1.player.modData[HOISTED_FLAG_KEY] = _hoistedFlag.ToString();
-
             // Offload the custom locations
             Game1.locations.Remove(_trawlerHull);
             Game1.locations.Remove(_trawlerSurface);
@@ -697,13 +693,12 @@ namespace FishingTrawler
 
         internal static FlagType GetHoistedFlag()
         {
-            return _hoistedFlag;
+            return Enum.TryParse(Game1.player.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown;
         }
 
         internal static void SetHoistedFlag(FlagType flagType)
         {
-            // Updating the player's modData for which flag is hoisted
-            _hoistedFlag = flagType;
+            Game1.player.modData[HOISTED_FLAG_KEY] = flagType.ToString();
         }
 
         private void EstablishPlayerData()
