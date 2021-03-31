@@ -16,7 +16,6 @@ namespace FishingTrawler.Objects
         internal int _boatDirection;
         internal int _boatOffset;
         internal Event _boatEvent;
-        internal Farmer _farmerActor;
         internal int nonBlockingPause;
         internal float _nextBubble;
         internal float _nextSlosh;
@@ -61,6 +60,12 @@ namespace FishingTrawler.Objects
 
             if (Context.IsMultiplayer)
             {
+                // Force close menu
+                if (Game1.player.hasMenuOpen)
+                {
+                    Game1.activeClickableMenu = null;
+                }
+
                 Game1.player.locationBeforeForcedEvent.Value = "Custom_TrawlerCabin";
                 Farmer farmerActor = (Game1.player.NetFields.Root as NetRoot<Farmer>).Clone().Value;
 
@@ -108,8 +113,7 @@ namespace FishingTrawler.Objects
 
         internal void StartDeparture()
         {
-            Rectangle zoneOfDeparture = new Rectangle(82, 26, 10, 16);
-            List<Farmer> farmersToDepart = _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY())).ToList();
+            List<Farmer> farmersToDepart = GetFarmersToDepart();
 
             ModEntry.claimedBoat = true;
             ModEntry.numberOfDeckhands = farmersToDepart.Count();
@@ -142,6 +146,12 @@ namespace FishingTrawler.Objects
             }
             this.Reset();
             this._boatEvent = null;
+        }
+
+        internal List<Farmer> GetFarmersToDepart(bool excludeThisPlayer = false)
+        {
+            Rectangle zoneOfDeparture = new Rectangle(82, 26, 10, 16);
+            return _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !excludeThisPlayer || (excludeThisPlayer && f != Game1.player)).ToList();
         }
     }
 }

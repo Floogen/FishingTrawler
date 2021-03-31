@@ -44,6 +44,7 @@ namespace FishingTrawler.Objects
                 {
                     this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Greeting_Rainy", playerTerm), this));
                     Game1.drawDialogue(this);
+                    Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
                 else
                 {
@@ -193,12 +194,17 @@ namespace FishingTrawler.Objects
         private void StartDepartureDialogue(Farmer who)
         {
             string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+
+            // Verify main player has empty spot for bucket
             if (who.freeSpotsInInventory() == 0)
             {
                 this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Full_Inventory", playerTerm), this));
                 Game1.drawDialogue(this);
                 return;
             }
+
+            // Check if any deckhands have open menus
+            //List<Farmer> deckhands = ModEntry.trawlerObject.GetFarmersToDepart(true);
 
             this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Start_Departure", playerTerm), this));
             Game1.afterDialogues = delegate () { ModEntry.trawlerObject.StartDeparture(); };
