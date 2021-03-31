@@ -102,13 +102,12 @@ namespace FishingTrawler.GameLocations
 
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
-            base.UpdateWhenCurrentLocation(time);
-
             Vector2 playerStandingPosition = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
-            if (base.lastTouchActionLocation.Equals(Vector2.Zero) && waterLevel >= MINIMUM_WATER_LEVEL_FOR_FLOOR)
+
+            if (this.lastTouchActionLocation.Equals(Vector2.Zero) && this.map.GetLayer("FloodWater").Properties["@Opacity"] > 0f)
             {
                 string touchActionProperty = this.doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", "FloodWater");
-                base.lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
+                this.lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
                 if (touchActionProperty != null)
                 {
                     if (touchActionProperty == "PlaySound")
@@ -122,11 +121,13 @@ namespace FishingTrawler.GameLocations
 
                         TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, Game1.player.Position, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                         sprite2.acceleration = new Vector2(Game1.player.xVelocity, Game1.player.yVelocity);
-                        base.temporarySprites.Add(sprite2);
+                        ModEntry.multiplayer.broadcastSprites(this, sprite2);
                         this.playSound(soundName);
                     }
                 }
             }
+
+            base.UpdateWhenCurrentLocation(time);
         }
 
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -177,19 +178,24 @@ namespace FishingTrawler.GameLocations
             return false;
         }
 
-        public void AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
+        public bool AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
             AnimatedTile firstTile = this.map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
             //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Trace);
 
             if (firstTile is null)
             {
-                return;
+                return false;
             }
 
             if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfLeak(tileX, tileY, who)))
             {
-                return;
+                return false;
+            }
+
+            if (!firstTile.Properties.ContainsKey("CustomAction") || !firstTile.Properties.ContainsKey("IsLeaking"))
+            {
+                return false;
             }
 
             if (firstTile.Properties["CustomAction"] == "HullHole" && bool.Parse(firstTile.Properties["IsLeaking"]) is true)
@@ -223,6 +229,8 @@ namespace FishingTrawler.GameLocations
                     this.setMapTile(tileX, y, tileIndex, targetLayer, null, TRAWLER_TILESHEET_INDEX);
                 }
             }
+
+            return true;
         }
 
         private int[] GetHullLeakTileIndexes(int startingIndex)
@@ -236,26 +244,35 @@ namespace FishingTrawler.GameLocations
             return indexes.ToArray();
         }
 
-        public void AttemptCreateHullLeak()
+        public bool AttemptCreateHullLeak(int tileX = -1, int tileY = -1)
         {
-            //ModEntry.monitor.Log("Attempting to create hull leak...", LogLevel.Trace);
+            //ModEntry.monitor.Log($"[{Game1.player.Name} | MD: {ModEntry.mainDeckhand.Name}] Attempting to create hull leak... [{tileX}, {tileY}]: {IsHoleLeaking(tileX, tileY)}", LogLevel.Debug);
 
             List<Location> validHoleLocations = _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ToList();
 
             if (validHoleLocations.Count() == 0 || !areLeaksEnabled)
             {
-                return;
+                return false;
             }
 
             // Pick a random valid spot to leak
             Location holeLocation = validHoleLocations.ElementAt(Game1.random.Next(0, validHoleLocations.Count()));
+            if (tileX != -1 && tileY != -1)
+            {
+                if (!_hullHoleLocations.Any(loc => !IsHoleLeaking(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY))
+                {
+                    return false;
+                }
+
+                holeLocation = _hullHoleLocations.FirstOrDefault(loc => !IsHoleLeaking(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY);
+            }
 
             // Set the hole as leaking
             Tile firstTile = this.map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y];
             firstTile.Properties["IsLeaking"] = true;
 
             bool isFirstTile = true;
-            for (int tileY = holeLocation.Y; tileY < 5; tileY++)
+            for (int y = holeLocation.Y; y < 5; y++)
             {
                 if (isFirstTile)
                 {
@@ -269,19 +286,18 @@ namespace FishingTrawler.GameLocations
                     continue;
                 }
 
-                string targetLayer = tileY == 4 ? "Back" : "Buildings";
+                string targetLayer = y == 4 ? "Back" : "Buildings";
 
-                int[] animatedHullTileIndexes = GetHullLeakTileIndexes(this.map.GetLayer(targetLayer).Tiles[holeLocation.X, tileY].TileIndex + 1);
-                this.setAnimatedMapTile(holeLocation.X, tileY, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
+                int[] animatedHullTileIndexes = GetHullLeakTileIndexes(this.map.GetLayer(targetLayer).Tiles[holeLocation.X, y].TileIndex + 1);
+                this.setAnimatedMapTile(holeLocation.X, y, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
             }
+
+            return true;
         }
 
-        public void ForceAllHolesToLeak()
+        public List<Location> GetAllLeakableLocations()
         {
-            for (int x = 0; x < _hullHoleLocations.Count(loc => !IsHoleLeaking(loc.X, loc.Y)); x++)
-            {
-                AttemptCreateHullLeak();
-            }
+            return _hullHoleLocations;
         }
 
         public void RecaculateWaterLevel(int waterLevelOverride = -1)
@@ -298,8 +314,6 @@ namespace FishingTrawler.GameLocations
                 // For each leak, add 2 to the water level
                 ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count() * 2);
             }
-
-            //ModEntry.monitor.Log($"Water level: {waterLevel}", LogLevel.Debug);
 
             // Using PyTK for these layers and opacity
             this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
@@ -328,6 +342,14 @@ namespace FishingTrawler.GameLocations
         public bool AreAllHolesLeaking()
         {
             return _hullHoleLocations.Count(loc => IsHoleLeaking(loc.X, loc.Y)) == _hullHoleLocations.Count();
+        }
+
+        public Location GetRandomPatchedHullHole()
+        {
+            List<Location> validHoleLocations = _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ToList();
+
+            // Pick a random valid spot to leak
+            return _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validHoleLocations.Count()));
         }
     }
 }

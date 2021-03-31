@@ -207,7 +207,7 @@ namespace FishingTrawler.Objects
             //List<Farmer> deckhands = ModEntry.trawlerObject.GetFarmersToDepart(true);
 
             this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Start_Departure", playerTerm), this));
-            Game1.afterDialogues = delegate () { ModEntry.trawlerObject.StartDeparture(); };
+            Game1.afterDialogues = delegate () { ModEntry.trawlerObject.StartDeparture(who); };
             Game1.drawDialogue(this);
         }
 

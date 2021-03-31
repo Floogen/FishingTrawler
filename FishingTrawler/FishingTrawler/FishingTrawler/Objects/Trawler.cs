@@ -111,11 +111,11 @@ namespace FishingTrawler.Objects
             Game1.eventUp = true;
         }
 
-        internal void StartDeparture()
+        internal void StartDeparture(Farmer who)
         {
             List<Farmer> farmersToDepart = GetFarmersToDepart();
 
-            ModEntry.claimedBoat = true;
+            ModEntry.mainDeckhand = who;
             ModEntry.numberOfDeckhands = farmersToDepart.Count();
             ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
 
@@ -148,10 +148,10 @@ namespace FishingTrawler.Objects
             this._boatEvent = null;
         }
 
-        internal List<Farmer> GetFarmersToDepart(bool excludeThisPlayer = false)
+        internal List<Farmer> GetFarmersToDepart()
         {
             Rectangle zoneOfDeparture = new Rectangle(82, 26, 10, 16);
-            return _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !excludeThisPlayer || (excludeThisPlayer && f != Game1.player)).ToList();
+            return _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY())).ToList();
         }
     }
 }
