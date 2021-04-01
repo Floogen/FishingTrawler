@@ -38,7 +38,7 @@ namespace FishingTrawler.Objects
                 who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
                 Game1.addMailForTomorrow("FishingTrawler_IntroductionsMurphy", true);
             }
-            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false")
+            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false" && who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
                 if (Game1.isRaining || Game1.isSnowing)
                 {
@@ -184,6 +184,10 @@ namespace FishingTrawler.Objects
             {
                 answers.Add(new Response("IdentifyFlag", "I found another flag!"));
             }
+            if (Context.IsMultiplayer)
+            {
+                answers.Add(new Response("MultipleDeckhands", "Could I bring some friends along?"));
+            }
 
             answers.Add(new Response("GotQuestion", "I've got some questions."));
             answers.Add(new Response("NoDeparture", "Maybe another time."));
@@ -200,6 +204,13 @@ namespace FishingTrawler.Objects
             {
                 this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Full_Inventory", playerTerm), this));
                 Game1.drawDialogue(this);
+                return;
+            }
+
+            if (ModEntry.GetFarmersOnTrawler().Count > 0)
+            {
+                // Do nothing and bail, as Murphy is being interacted with on beach despite being on Trawler
+                ModEntry.monitor.Log($"{who.Name} tried to start a trip while one already departed!", LogLevel.Trace);
                 return;
             }
 
@@ -248,6 +259,14 @@ namespace FishingTrawler.Objects
             this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Identify_Flag", playerTerm), this));
             Game1.drawDialogue(this);
             Game1.afterDialogues = TakeAndIdentifyFlag;
+        }
+
+        private void MultipleDeckhands(Farmer who)
+        {
+            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Multiple_Deckhands", playerTerm), this));
+            Game1.drawDialogue(this);
         }
 
         private void SayGoodbye(Farmer who)
@@ -319,6 +338,9 @@ namespace FishingTrawler.Objects
                     break;
                 case "IdentifyFlag":
                     Game1.afterDialogues = delegate () { this.IdentifyFlag(who); };
+                    break;
+                case "MultipleDeckhands":
+                    Game1.afterDialogues = delegate () { this.MultipleDeckhands(who); };
                     break;
                 case "GotQuestion":
                     Game1.afterDialogues = delegate () { this.ShowMoreQuestions(who); };

@@ -163,8 +163,12 @@ namespace FishingTrawler
                     trawlerObject.TriggerDepartureEvent();
                     break;
                 case nameof(TrawlerEventMessage):
-                    TrawlerEventMessage message = e.ReadAs<TrawlerEventMessage>();
-                    UpdateLocalTrawlerMap(message.EventType, message.Tile, message.IsRepairing);
+                    TrawlerEventMessage eventMessage = e.ReadAs<TrawlerEventMessage>();
+                    UpdateLocalTrawlerMap(eventMessage.EventType, eventMessage.Tile, eventMessage.IsRepairing);
+                    break;
+                case nameof(WaterLevelSyncMessage):
+                    WaterLevelSyncMessage syncMessage = e.ReadAs<WaterLevelSyncMessage>();
+                    _trawlerHull.Value.RecaculateWaterLevel(syncMessage.WaterLevel);
                     break;
             }
         }
@@ -198,7 +202,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer.Value, _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.waterLevel, _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerCabin.Value.GetLeakingPipesCount());
+            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer.Value, _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerCabin.Value.GetLeakingPipesCount());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -206,6 +210,12 @@ namespace FishingTrawler
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
+                if (murphyNPC is null)
+                {
+                    // Spawn Murphy, if he isn't already there
+                    SpawnMurphy();
+                }
+
                 if (IsMainDeckhand())
                 {
                     // Set the theme to null
@@ -311,7 +321,7 @@ namespace FishingTrawler
                 return;
             }
 
-            if (Context.IsMainPlayer)
+            if (IsMainDeckhand())
             {
                 if (_isNotificationFading)
                 {
@@ -323,6 +333,13 @@ namespace FishingTrawler
                     _activeNotification = String.Empty;
                     _isNotificationFading = false;
                     _notificationAlpha = 1f;
+                }
+
+                if (e.IsMultipleOf(150))
+                {
+                    // Update water level (from leaks) every second
+                    _trawlerHull.Value.RecaculateWaterLevel();
+                    SyncWaterLevel(_trawlerHull.Value.GetWaterLevel(), GetFarmersOnTrawler());
                 }
             }
 
@@ -341,20 +358,12 @@ namespace FishingTrawler
                 {
                     _isNotificationFading = true;
                 }
-
-                // Update water level (from leaks) every second
-                _trawlerHull.Value.RecaculateWaterLevel();
-
-                if (_trawlerHull.Value.waterLevel == 100)
-                {
-                    // Reduce fishCaughtQuantity due to failed trip
-                    _trawlerSurface.Value.fishCaughtQuantity /= 4;
-                }
             }
 
-            if (_trawlerHull.Value.waterLevel == 100)
+            if (_trawlerHull.Value.GetWaterLevel() == 100)
             {
                 Monitor.Log($"Ending trip due to flooding for: {Game1.player.Name}", LogLevel.Warn);
+                _trawlerSurface.Value.fishCaughtQuantity /= 4;
 
                 // Set the status as failed
                 Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
@@ -687,6 +696,14 @@ namespace FishingTrawler
             }
         }
 
+        internal static void SyncWaterLevel(int waterLevel, List<Farmer> farmersToAlert)
+        {
+            if (Context.IsMultiplayer)
+            {
+                modHelper.Multiplayer.SendMessage(new WaterLevelSyncMessage(waterLevel), nameof(WaterLevelSyncMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
+            }
+        }
+
         internal static void SetTrawlerTheme(string songName)
         {
             trawlerThemeSong = songName;
@@ -711,14 +728,24 @@ namespace FishingTrawler
             }
         }
 
+        internal static List<Farmer> GetFarmersOnTrawler()
+        {
+            return Game1.getAllFarmers().Where(f => IsValidTrawlerLocation(f.currentLocation)).ToList();
+        }
+
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN && GetFarmersOnTrawler().Count == 0)
             {
                 return true;
             }
 
             return false;
+        }
+
+        internal static void SpawnMurphy()
+        {
+            murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
         }
 
         internal static bool IsMainDeckhand()
@@ -777,11 +804,6 @@ namespace FishingTrawler
             }
         }
 
-        internal List<Farmer> GetFarmersOnTrawler()
-        {
-            return Game1.getAllFarmers().Where(f => IsValidTrawlerLocation(f.currentLocation)).ToList();
-        }
-
         internal void UpdateLocalTrawlerMap(EventType eventType, Vector2 tile, bool isRepairing)
         {
             bool result = false;
@@ -795,6 +817,10 @@ namespace FishingTrawler
                     break;
                 case EventType.NetTear:
                     result = isRepairing ? _trawlerSurface.Value.AttemptFixNet((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerSurface.Value.AttemptCreateNetRip((int)tile.X, (int)tile.Y);
+                    break;
+                case EventType.BailingWater:
+                    result = true;
+                    _trawlerHull.Value.ChangeWaterLevel(-5);
                     break;
                 default:
                     monitor.Log($"A trawler event tried to sync, but its EventType was not handled: {eventType}", LogLevel.Debug);

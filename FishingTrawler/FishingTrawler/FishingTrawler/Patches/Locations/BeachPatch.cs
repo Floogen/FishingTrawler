@@ -27,18 +27,18 @@ namespace FishingTrawler.Patches.Locations
 
         internal override void Apply(HarmonyInstance harmony)
         {
-            harmony.Patch(AccessTools.Method(_beach, "resetLocalState", null), postfix: new HarmonyMethod(GetType(), nameof(ResetLocationStatePatch)));
+            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.MakeMapModifications), new[] { typeof(bool) }), postfix: new HarmonyMethod(GetType(), nameof(MakeMapModificationsPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.checkAction), new[] { typeof(xTile.Dimensions.Location), typeof(xTile.Dimensions.Rectangle), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(CheckActionPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.cleanupBeforePlayerExit), null), postfix: new HarmonyMethod(GetType(), nameof(CleanupBeforePlayerExitPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.draw), new[] { typeof(SpriteBatch) }), postfix: new HarmonyMethod(GetType(), nameof(DrawPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.UpdateWhenCurrentLocation), new[] { typeof(GameTime) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPatch)));
         }
 
-        internal static void ResetLocationStatePatch(Beach __instance)
+        internal static void MakeMapModificationsPatch(Beach __instance, bool force = false)
         {
-            if (ModEntry.ShouldMurphyAppear(__instance))
+            if (ModEntry.ShouldMurphyAppear(__instance) && ModEntry.murphyNPC == null)
             {
-                ModEntry.murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
+                ModEntry.SpawnMurphy();
             }
         }
 

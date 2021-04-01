@@ -66,6 +66,7 @@
     <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
     <Compile Include="FishingTrawler\Messages\TrawlerEventMessage.cs" />
     <Compile Include="FishingTrawler\Messages\DepartureMessage.cs" />
+    <Compile Include="FishingTrawler\Messages\WaterLevelSyncMessage.cs" />
     <Compile Include="FishingTrawler\Objects\Rewards\AncientFlag.cs" />
     <Compile Include="FishingTrawler\Objects\IntroMail.cs" />
     <Compile Include="FishingTrawler\Objects\Murphy.cs" />

@@ -13,7 +13,8 @@ namespace FishingTrawler.Messages
         Unknown,
         HullHole,
         NetTear,
-        EngineFailure
+        EngineFailure,
+        BailingWater
     }
 
     internal class TrawlerEventMessage

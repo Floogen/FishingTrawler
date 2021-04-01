@@ -98,13 +98,13 @@ namespace FishingTrawler.Objects.Tools
                 {
                     Game1.showRedMessage("Empty the water into the sea!");
                 }
-                else if (trawlerHull.waterLevel > 0)
+                else if (trawlerHull.IsFlooding())
                 {
                     this._containsWater = true;
                     this._bucketScale = 0.5f;
 
-                    trawlerHull.ChangeWaterLevel(-5);
-                    who.currentLocation.localSound("slosh");
+                    trawlerHull.localSound("slosh");
+                    ModEntry.BroadcastTrawlerEvent(Messages.EventType.BailingWater, Vector2.Zero, true, ModEntry.GetFarmersOnTrawler());
                 }
                 else
                 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Objects;
@@ -350,6 +351,16 @@ namespace FishingTrawler.GameLocations
 
             // Pick a random valid spot to leak
             return _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validHoleLocations.Count()));
+        }
+
+        public int GetWaterLevel()
+        {
+            return waterLevel;
+        }
+
+        public bool IsFlooding()
+        {
+            return this.map.GetLayer("FloodWater").Properties["@Opacity"] > 0f;
         }
     }
 }
