@@ -569,6 +569,7 @@ namespace FishingTrawler
                 // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
                 if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR])
                 {
+                    Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
                     Helper.Content.AssetEditors.Add(new IntroMail());
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
                 }
