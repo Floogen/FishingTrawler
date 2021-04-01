@@ -166,9 +166,9 @@ namespace FishingTrawler
                     TrawlerEventMessage eventMessage = e.ReadAs<TrawlerEventMessage>();
                     UpdateLocalTrawlerMap(eventMessage.EventType, eventMessage.Tile, eventMessage.IsRepairing);
                     break;
-                case nameof(WaterLevelSyncMessage):
-                    WaterLevelSyncMessage syncMessage = e.ReadAs<WaterLevelSyncMessage>();
-                    _trawlerHull.Value.RecaculateWaterLevel(syncMessage.WaterLevel);
+                case nameof(TrawlerSyncMessage):
+                    TrawlerSyncMessage syncMessage = e.ReadAs<TrawlerSyncMessage>();
+                    SyncLocalTrawlerMap(syncMessage.SyncType, syncMessage.Quantity);
                     break;
             }
         }
@@ -339,7 +339,7 @@ namespace FishingTrawler
                 {
                     // Update water level (from leaks) every second
                     _trawlerHull.Value.RecaculateWaterLevel();
-                    SyncWaterLevel(_trawlerHull.Value.GetWaterLevel(), GetFarmersOnTrawler());
+                    SyncTrawler(SyncType.WaterLevel, _trawlerHull.Value.GetWaterLevel(), GetFarmersOnTrawler());
                 }
             }
 
@@ -407,14 +407,15 @@ namespace FishingTrawler
                 _trawlerSurface.Value.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
             }
 
-            // Every 5 seconds recalculate the amount of fish caught / lost
-            if (e.IsMultipleOf(300))
-            {
-                _trawlerSurface.Value.UpdateFishCaught(_trawlerCabin.Value.AreAllPipesLeaking());
-            }
-
             if (IsMainDeckhand())
             {
+                // Every 5 seconds recalculate the amount of fish caught / lost
+                if (e.IsMultipleOf(300))
+                {
+                    _trawlerSurface.Value.UpdateFishCaught(_trawlerCabin.Value.AreAllPipesLeaking());
+                    SyncTrawler(SyncType.FishCaught, _trawlerSurface.Value.fishCaughtQuantity, GetFarmersOnTrawler());
+                }
+
                 // Every random interval check for new event (leak, net tearing, etc.) on Trawler
                 if (e.IsMultipleOf(_eventSecondInterval))
                 {
@@ -696,11 +697,11 @@ namespace FishingTrawler
             }
         }
 
-        internal static void SyncWaterLevel(int waterLevel, List<Farmer> farmersToAlert)
+        internal static void SyncTrawler(SyncType syncType, int quantity, List<Farmer> farmersToAlert)
         {
             if (Context.IsMultiplayer)
             {
-                modHelper.Multiplayer.SendMessage(new WaterLevelSyncMessage(waterLevel), nameof(WaterLevelSyncMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
+                modHelper.Multiplayer.SendMessage(new TrawlerSyncMessage(syncType, quantity), nameof(TrawlerSyncMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
             }
         }
 
@@ -823,7 +824,26 @@ namespace FishingTrawler
                     _trawlerHull.Value.ChangeWaterLevel(-5);
                     break;
                 default:
-                    monitor.Log($"A trawler event tried to sync, but its EventType was not handled: {eventType}", LogLevel.Debug);
+                    monitor.Log($"A trawler event was received, but its EventType was not handled: {eventType}", LogLevel.Debug);
+                    break;
+            }
+        }
+
+        internal void SyncLocalTrawlerMap(SyncType syncType, int quantity)
+        {
+            bool result = false;
+            switch (syncType)
+            {
+                case SyncType.WaterLevel:
+                    result = true;
+                    _trawlerHull.Value.RecaculateWaterLevel(quantity);
+                    break;
+                case SyncType.FishCaught:
+                    result = true;
+                    _trawlerSurface.Value.UpdateFishCaught(false, quantity);
+                    break;
+                default:
+                    monitor.Log($"A trawler tried tried to sync, but its SyncType was not handled: {syncType}", LogLevel.Debug);
                     break;
             }
         }

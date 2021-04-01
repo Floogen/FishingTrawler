@@ -86,6 +86,8 @@ namespace FishingTrawler.UI
 
                 speech_position.X = Utility.Clamp(speech_position.X, position.X, position.X + (float)text_width - 24f);
             }
+
+            position *= (1f / Game1.options.zoomLevel);
             b.Draw(Game1.mouseCursors, position + new Vector2(-7f, -3f) * 4f, new Rectangle(324, 299, 7, 17), Color.White * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, layerDepth - 0.001f);
             b.Draw(Game1.mouseCursors, position + new Vector2(0f, -3f) * 4f, new Rectangle(331, 299, 1, 17), Color.White * alpha, 0f, Vector2.Zero, new Vector2(SpriteText.getWidthOfString(s), 4f), SpriteEffects.None, layerDepth - 0.001f);
             b.Draw(Game1.mouseCursors, position + new Vector2(text_width, -12f), new Rectangle(332, 299, 7, 17), Color.White * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, layerDepth - 0.001f);
