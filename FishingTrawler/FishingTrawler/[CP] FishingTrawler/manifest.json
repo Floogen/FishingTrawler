@@ -1,11 +1,11 @@
 {
   "Name": "Fishing Trawler",
   "Author": "PeacefulEnd",
-  "Version": "1.0.0",
+  "Version": "REPLACE_ME_WITH_VERSION",
   "Description": "Fishing Trawler locations.",
   "UniqueID": "PeacefulEnd.FishingTrawler.CP",
   "MinimumApiVersion": "3.0.0",
-  "UpdateKeys": [],
+  "UpdateKeys": [ "Nexus:8406" ],
   "ContentPackFor": {
     "UniqueID": "Pathoschild.ContentPatcher",
     "MinimumVersion": "1.2.1"
