@@ -151,7 +151,7 @@ namespace FishingTrawler.Objects
         internal List<Farmer> GetFarmersToDepart()
         {
             Rectangle zoneOfDeparture = new Rectangle(82, 26, 10, 16);
-            return _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY())).ToList();
+            return _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !ModEntry.HasFarmerGoneSailing(f)).ToList();
         }
     }
 }

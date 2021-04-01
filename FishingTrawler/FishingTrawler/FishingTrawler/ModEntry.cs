@@ -765,6 +765,11 @@ namespace FishingTrawler
             Game1.player.modData[HOISTED_FLAG_KEY] = flagType.ToString();
         }
 
+        internal static bool HasFarmerGoneSailing(Farmer who)
+        {
+            return who.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY) && who.modData[MURPHY_SAILED_TODAY_KEY] == "true";
+        }
+
         private void EstablishPlayerData()
         {
             if (!Game1.player.modData.ContainsKey(HOISTED_FLAG_KEY))
