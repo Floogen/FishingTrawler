@@ -92,7 +92,7 @@ namespace FishingTrawler.Objects.Tools
 
         public override bool beginUsing(GameLocation location, int x, int y, Farmer who)
         {
-            if (!ModEntry.IsPlayerOnTrawler())
+            if (!ModEntry.IsPlayerOnTrawler() || who is null || (who != null && !Game1.player.Equals(who)))
             {
                 who.forceCanMove();
                 return false;

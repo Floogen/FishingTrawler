@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using FishingTrawler.API;
+using FishingTrawler.API.Interfaces;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
 using FishingTrawler.Objects;
@@ -36,6 +37,7 @@ namespace FishingTrawler
         internal static bool themeSongUpdated;
         internal static Farmer mainDeckhand;
         internal static int numberOfDeckhands;
+        internal static string todayDayOfWeek;
 
         // Trawler beach map related
         internal static Murphy murphyNPC;
@@ -57,9 +59,7 @@ namespace FishingTrawler
         private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
 
         // Day to appear settings
-        internal const int BOAT_DEPART_EVENT_ID = 411203900;
-        private const string DAY_TO_APPEAR_TOWN = "Wed";
-        private const string DAY_TO_APPEAR_ISLAND = "Sun";
+        internal const int BOAT_DEPART_EVENT_ID = 840603900;
 
         // Mod data related
         internal const string REWARD_CHEST_DATA_KEY = "PeacefulEnd.FishingTrawler_RewardChest";
@@ -69,6 +69,7 @@ namespace FishingTrawler
         internal const string MURPHY_FINISHED_TALKING_KEY = "PeacefulEnd.FishingTrawler_MurphyFinishedTalking";
         internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
         internal const string MURPHY_ON_TRIP = "PeacefulEnd.FishingTrawler_MurphyOnTrip";
+        internal const string MURPHY_DAY_TO_APPEAR = "PeacefulEnd.FishingTrawler_MurphyDayToAppear";
 
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
@@ -90,9 +91,8 @@ namespace FishingTrawler
         private float _notificationAlpha;
         private string _activeNotification;
 
-        // TODO: Add config option to set day that Murphy appears, but only apply the MainPlayer's config if in multiplayer
-        // API related
-        //IContentPatcherAPI contentPatcherApi;
+        // Config related
+        public ModConfig config;
 
         public override void Entry(IModHelper helper)
         {
@@ -131,7 +131,7 @@ namespace FishingTrawler
             }
 
             // Hook into GameLoops related events
-            helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking; ;
+            helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
@@ -173,6 +173,10 @@ namespace FishingTrawler
                 case nameof(TrawlerSyncMessage):
                     TrawlerSyncMessage syncMessage = e.ReadAs<TrawlerSyncMessage>();
                     SyncLocalTrawlerMap(syncMessage.SyncType, syncMessage.Quantity);
+                    break;
+                case nameof(TrawlerNotificationMessage):
+                    TrawlerNotificationMessage notificationMessage = e.ReadAs<TrawlerNotificationMessage>();
+                    _activeNotification = notificationMessage.Notification;
                     break;
             }
         }
@@ -265,7 +269,6 @@ namespace FishingTrawler
 
                 // Start the timer (2.5 minute default)
                 fishingTripTimer.Value = 150000; //150000
-                //_trawlerSurface.Value.fishCaughtQuantity = 100;
 
                 // Apply flag benefits
                 switch (GetHoistedFlag())
@@ -323,20 +326,20 @@ namespace FishingTrawler
                 return;
             }
 
+            if (_isNotificationFading)
+            {
+                _notificationAlpha -= 0.1f;
+            }
+
+            if (_notificationAlpha < 0f)
+            {
+                _activeNotification = String.Empty;
+                _isNotificationFading = false;
+                _notificationAlpha = 1f;
+            }
+
             if (IsMainDeckhand())
             {
-                if (_isNotificationFading)
-                {
-                    _notificationAlpha -= 0.1f;
-                }
-
-                if (_notificationAlpha < 0f)
-                {
-                    _activeNotification = String.Empty;
-                    _isNotificationFading = false;
-                    _notificationAlpha = 1f;
-                }
-
                 if (e.IsMultipleOf(150))
                 {
                     // Update water level (from leaks) every second
@@ -442,9 +445,10 @@ namespace FishingTrawler
                     if (_activeNotification != message)
                     {
                         _activeNotification = message;
+                        BroadcastNotification(message, GetFarmersOnTrawler());
                     }
 
-                    _eventSecondInterval = (uint)Game1.random.Next(1, 5) * 100;
+                    _eventSecondInterval = (uint)Game1.random.Next(config.eventFrequencyLower, config.eventFrequencyUpper + 1) * 100;
                 }
             }
 
@@ -525,11 +529,35 @@ namespace FishingTrawler
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            // May hook into Content Patcher's API for tokens
+            // Set our default config
+            config = Helper.ReadConfig<ModConfig>();
+
+            // Hook into the APIs we utilize
+            if (Helper.ModRegistry.IsLoaded("spacechase0.GenericModConfigMenu") && ApiManager.HookIntoGMCM(Helper))
+            {
+                // Register our config options
+                var configAPI = ApiManager.GetGMCMInterface();
+                configAPI.RegisterModConfig(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
+                configAPI.RegisterClampedOption(ModManifest, "Minimum Fishing Level Required", "Sets the minimum fishing requirement for Murphy to appear.", () => config.minimumFishingLevel, (int val) => config.minimumFishingLevel = val, 0, 10);
+                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Lower Bound)", "Sets minimum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Upper Bound)", "Sets maximum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
+                configAPI.RegisterChoiceOption(ModManifest, "Murphy Appearance Day", "Determines the day of the week that Murphy will be available for a trip.", () => config.dayOfWeekChoice, (string val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
+            }
+
+            if (Helper.ModRegistry.IsLoaded("Pathoschild.ContentPatcher") && ApiManager.HookIntoContentPatcher(Helper))
+            {
+                var patcherAPI = ApiManager.GetContentPatcherInterface();
+                patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDay", () =>
+                {
+                    return new[] { Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
+                });
+            }
         }
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
+            todayDayOfWeek = SDate.Now().DayOfWeek.ToString();
+
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
             beach.modData[MURPHY_ON_TRIP] = "false";
 
@@ -539,7 +567,7 @@ namespace FishingTrawler
             if (Context.IsMainPlayer)
             {
                 // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
-                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= 3 && beach.bridgeFixed && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN)
+                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR])
                 {
                     Helper.Content.AssetEditors.Add(new IntroMail());
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
@@ -706,6 +734,14 @@ namespace FishingTrawler
             }
         }
 
+        internal static void BroadcastNotification(string notification, List<Farmer> farmersToAlert)
+        {
+            if (Context.IsMultiplayer)
+            {
+                modHelper.Multiplayer.SendMessage(new TrawlerNotificationMessage(notification), nameof(TrawlerNotificationMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
+            }
+        }
+
         internal static void SetTrawlerTheme(string songName)
         {
             trawlerThemeSong = songName;
@@ -737,7 +773,7 @@ namespace FishingTrawler
 
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN && location.modData.ContainsKey(MURPHY_ON_TRIP) && location.modData[MURPHY_ON_TRIP] == "false")
+            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
             {
                 return true;
             }
@@ -782,14 +818,8 @@ namespace FishingTrawler
                 SetHoistedFlag(Enum.TryParse(Game1.player.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown);
             }
 
-            if (!Game1.player.modData.ContainsKey(MURPHY_WAS_GREETED_TODAY_KEY))
-            {
-                Game1.player.modData.Add(MURPHY_WAS_GREETED_TODAY_KEY, "false");
-            }
-            else if (Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true")
-            {
-                Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
-            }
+            Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
+            Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoice;
 
             if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
             {
@@ -797,7 +827,7 @@ namespace FishingTrawler
                 Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
                 Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
             }
-            else if (Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN || Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_ISLAND)
+            else if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR]) // This is intended, as we want MasterPlayer to determine Murphy appearance
             {
                 Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
                 Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
@@ -824,10 +854,6 @@ namespace FishingTrawler
                     break;
                 case EventType.NetTear:
                     result = isRepairing ? _trawlerSurface.Value.AttemptFixNet((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerSurface.Value.AttemptCreateNetRip((int)tile.X, (int)tile.Y);
-                    break;
-                case EventType.BailingWater:
-                    result = true;
-                    _trawlerHull.Value.ChangeWaterLevel(-5);
                     break;
                 default:
                     monitor.Log($"A trawler event was received, but its EventType was not handled: {eventType}", LogLevel.Debug);

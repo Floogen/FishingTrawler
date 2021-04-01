@@ -101,7 +101,7 @@ namespace FishingTrawler.Objects
                 return;
             }
 
-            _boatEvent = _beach.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, Game1.player); // TODO: Change the first four digits to the mod's Nexus ID
+            _boatEvent = _beach.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, Game1.player);
             _boatEvent.showWorldCharacters = false;
             _boatEvent.showGroundObjects = true;
             _boatEvent.ignoreObjectCollisions = false;

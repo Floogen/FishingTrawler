@@ -176,7 +176,7 @@ namespace FishingTrawler.Objects.Rewards
             switch (flagType)
             {
                 case FlagType.Parley:
-                    return "Prevents leaks from occuring, but lowers reward quality by 25%.";
+                    return "Prevents leaks from occurring, but lowers reward quality by 25%.";
                 case FlagType.JollyRoger:
                     return "Quadruples the fishing net output, but any time a leak occurs all holes will leak.";
                 case FlagType.GamblersCrest:
@@ -184,7 +184,7 @@ namespace FishingTrawler.Objects.Rewards
                 case FlagType.MermaidsBlessing:
                     return "Has a 10% chance of consuming a fish, but gives a random fishing chest reward.";
                 case FlagType.PatronSaint:
-                    return "Has a 25% chance of consuming a fish, but gives the full XP for catching it.";
+                    return "Has a 25% chance of consuming a fish, but gives the full experience for catching it.";
                 case FlagType.SharksFin:
                     return "Extends the fishing trawler trip by one minute, allowing for more time to catch fish.";
                 case FlagType.Worldly:

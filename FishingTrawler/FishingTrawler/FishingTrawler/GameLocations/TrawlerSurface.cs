@@ -368,6 +368,11 @@ namespace FishingTrawler.GameLocations
                 return false;
             }
 
+            if (!firstTile.Properties.ContainsKey("CustomAction") || !firstTile.Properties.ContainsKey("IsRipped"))
+            {
+                return false;
+            }
+
             if (firstTile.Properties["CustomAction"] == "RippedNet" && bool.Parse(firstTile.Properties["IsRipped"]) is true)
             {
                 // Stop the rip
@@ -382,6 +387,7 @@ namespace FishingTrawler.GameLocations
 
                 this.playSound("harvest");
             }
+
 
             return false;
         }

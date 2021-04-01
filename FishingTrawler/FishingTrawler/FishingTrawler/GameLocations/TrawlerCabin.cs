@@ -149,6 +149,11 @@ namespace FishingTrawler.GameLocations
                 return false;
             }
 
+            if (!firstTile.Properties.ContainsKey("CustomAction") || !firstTile.Properties.ContainsKey("IsLeaking"))
+            {
+                return false;
+            }
+
             if (firstTile.Properties["CustomAction"] == "RustyPipe" && bool.Parse(firstTile.Properties["IsLeaking"]) is true)
             {
                 // Stop the leak

@@ -332,8 +332,6 @@ namespace FishingTrawler.Objects
                 amountOfFish = AttemptGamble(amountOfFish);
             }
 
-            Game1.addHUDMessage(new HUDMessage($"Your total haul was {amountOfFish} fish!", null));
-
             // See if this run generates an unidentified ancient flag
             ModEntry.monitor.Log($"{amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", StardewModdingAPI.LogLevel.Trace);
             if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)

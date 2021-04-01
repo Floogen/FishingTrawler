@@ -74,7 +74,7 @@ namespace FishingTrawler.Patches.Locations
                         break;
                     }
 
-                    Game1.drawObjectDialogue("There's a note here...#It is from Murphy! It says he will be docked every Wednesday and to speak with him before nightfall if you wish to go on a fishing trip.");
+                    Game1.drawObjectDialogue($"There's a note here...#It is from Murphy! It says he will be docked every {Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]} and to speak with him before nightfall if you wish to go on a fishing trip.");
                     break;
                 default:
                     break;

@@ -61,12 +61,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FishingTrawler\API\ApiManager.cs" />
+    <Compile Include="FishingTrawler\API\Interfaces\IContentPatcherAPI.cs" />
+    <Compile Include="FishingTrawler\API\Interfaces\IGenericModConfigMenuAPI.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerCabin.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerHull.cs" />
     <Compile Include="FishingTrawler\GameLocations\TrawlerSurface.cs" />
     <Compile Include="FishingTrawler\Messages\TrawlerEventMessage.cs" />
     <Compile Include="FishingTrawler\Messages\DepartureMessage.cs" />
+    <Compile Include="FishingTrawler\Messages\TrawlerNotificationMessage.cs" />
     <Compile Include="FishingTrawler\Messages\TrawlerSyncMessage.cs" />
+    <Compile Include="FishingTrawler\ModConfig.cs" />
     <Compile Include="FishingTrawler\Objects\Rewards\AncientFlag.cs" />
     <Compile Include="FishingTrawler\Objects\IntroMail.cs" />
     <Compile Include="FishingTrawler\Objects\Murphy.cs" />
@@ -165,9 +169,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FishingTrawler\API\Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Pathoschild.Stardew.ModBuildConfig.3.2.2\build\Pathoschild.Stardew.ModBuildConfig.targets" Condition="Exists('..\packages\Pathoschild.Stardew.ModBuildConfig.3.2.2\build\Pathoschild.Stardew.ModBuildConfig.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
