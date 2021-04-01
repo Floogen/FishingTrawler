@@ -332,6 +332,8 @@ namespace FishingTrawler.Objects
                 amountOfFish = AttemptGamble(amountOfFish);
             }
 
+            Game1.addHUDMessage(new HUDMessage($"Your total haul was {amountOfFish} fish!", null));
+
             // See if this run generates an unidentified ancient flag
             ModEntry.monitor.Log($"{amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", StardewModdingAPI.LogLevel.Trace);
             if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
@@ -428,7 +430,9 @@ namespace FishingTrawler.Objects
 
             // Now give XP reward (give 5% of total caught XP)
             //_farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
-            _farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
+            int xpGained = (int)((totalRewardXP % (100 - baseXpReduction)));
+            _farmer.gainExperience(1, xpGained + (int)bonusXP);
+            Game1.addHUDMessage(new HUDMessage($"You gained {xpGained} fishing XP from the trip!", null));
 
             ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP", StardewModdingAPI.LogLevel.Trace);
             if (bonusXP > 0f)
