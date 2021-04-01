@@ -92,23 +92,30 @@ namespace FishingTrawler.Objects.Tools
 
         public override bool beginUsing(GameLocation location, int x, int y, Farmer who)
         {
+            if (!ModEntry.IsPlayerOnTrawler())
+            {
+                who.forceCanMove();
+                return false;
+            }
+
             if (location is TrawlerHull trawlerHull)
             {
                 if (this._containsWater)
                 {
-                    Game1.showRedMessage("Empty the water into the sea!");
+                    Game1.addHUDMessage(new HUDMessage("Empty the water into the sea!", 3));
                 }
                 else if (trawlerHull.IsFlooding())
                 {
                     this._containsWater = true;
                     this._bucketScale = 0.5f;
 
+                    trawlerHull.ChangeWaterLevel(-5);
                     trawlerHull.localSound("slosh");
-                    ModEntry.BroadcastTrawlerEvent(Messages.EventType.BailingWater, Vector2.Zero, true, ModEntry.GetFarmersOnTrawler());
+                    ModEntry.SyncTrawler(Messages.SyncType.WaterLevel, trawlerHull.GetWaterLevel(), ModEntry.GetFarmersOnTrawler());
                 }
                 else
                 {
-                    Game1.showRedMessage("There is no water to bail!");
+                    Game1.addHUDMessage(new HUDMessage("There is no water to bail!", 3));
                 }
             }
             else if (location is TrawlerSurface trawlerSurface && this._containsWater)
@@ -122,12 +129,12 @@ namespace FishingTrawler.Objects.Tools
                 }
                 else
                 {
-                    Game1.showRedMessage("Stand closer to the edge of the boat before trying to empty the water!");
+                    Game1.addHUDMessage(new HUDMessage("Stand closer to the edge of the boat before trying to empty the water!", 3));
                 }
             }
             else
             {
-                Game1.showRedMessage("You should be using this to bail water from the hull!");
+                Game1.addHUDMessage(new HUDMessage("You should be using this to bail water from the hull!", 3));
             }
 
             who.forceCanMove();

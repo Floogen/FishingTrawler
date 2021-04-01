@@ -55,6 +55,11 @@ namespace FishingTrawler.Objects
 
         internal void TriggerDepartureEvent()
         {
+            if (ModEntry.murphyNPC != null)
+            {
+                ModEntry.murphyNPC = null;
+            }
+
             string id = _beach.currentEvent is null ? "Empty" : _beach.currentEvent.id.ToString();
             ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {_beach.currentEvent is null} | {id}", LogLevel.Trace);
 
@@ -119,12 +124,14 @@ namespace FishingTrawler.Objects
             ModEntry.numberOfDeckhands = farmersToDepart.Count();
             ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
 
+            _beach.modData[ModEntry.MURPHY_ON_TRIP] = "true";
+
             TriggerDepartureEvent();
 
             if (Context.IsMultiplayer)
             {
                 // Send out trigger event to relevant players
-                ModEntry.AlertPlayersOfDeparture(farmersToDepart);
+                ModEntry.AlertPlayersOfDeparture(who.UniqueMultiplayerID, farmersToDepart);
             }
         }
 

@@ -25,7 +25,7 @@ namespace FishingTrawler.GameLocations
         private const float MINIMUM_WATER_LEVEL_FOR_FLOOR = 5f;
         private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
 
-        internal int waterLevel;
+        internal static int waterLevel;
         internal bool areLeaksEnabled;
         internal bool hasWeakHull;
 

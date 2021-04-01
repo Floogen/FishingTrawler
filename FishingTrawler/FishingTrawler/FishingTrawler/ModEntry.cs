@@ -62,12 +62,13 @@ namespace FishingTrawler
         private const string DAY_TO_APPEAR_ISLAND = "Sun";
 
         // Mod data related
-        private const string REWARD_CHEST_DATA_KEY = "PeacefulEnd.FishingTrawler_RewardChest";
+        internal const string REWARD_CHEST_DATA_KEY = "PeacefulEnd.FishingTrawler_RewardChest";
         internal const string MURPHY_WAS_GREETED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphyGreeted";
         internal const string MURPHY_SAILED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphySailedToday";
         internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "PeacefulEnd.FishingTrawler_MurphyTripSuccessful";
         internal const string MURPHY_FINISHED_TALKING_KEY = "PeacefulEnd.FishingTrawler_MurphyFinishedTalking";
         internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
+        internal const string MURPHY_ON_TRIP = "PeacefulEnd.FishingTrawler_MurphyOnTrip";
 
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
@@ -89,6 +90,7 @@ namespace FishingTrawler
         private float _notificationAlpha;
         private string _activeNotification;
 
+        // TODO: Add config option to set day that Murphy appears, but only apply the MainPlayer's config if in multiplayer
         // API related
         //IContentPatcherAPI contentPatcherApi;
 
@@ -132,7 +134,7 @@ namespace FishingTrawler
             helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking; ;
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-            helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
             helper.Events.GameLoop.DayEnding += this.OnDayEnding;
 
             // Hook into Display related events
@@ -160,6 +162,8 @@ namespace FishingTrawler
             switch (e.Type)
             {
                 case nameof(DepartureMessage):
+                    DepartureMessage departureMessage = e.ReadAs<DepartureMessage>();
+                    mainDeckhand = Game1.getAllFarmers().First(f => f.UniqueMultiplayerID == departureMessage.MainDeckhand);
                     trawlerObject.TriggerDepartureEvent();
                     break;
                 case nameof(TrawlerEventMessage):
@@ -210,20 +214,18 @@ namespace FishingTrawler
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
-                if (murphyNPC is null)
+                if (murphyNPC is null && e.NewLocation is Beach)
                 {
                     // Spawn Murphy, if he isn't already there
+                    e.NewLocation.modData[ModEntry.MURPHY_ON_TRIP] = "false";
                     SpawnMurphy();
                 }
 
-                if (IsMainDeckhand())
-                {
-                    // Set the theme to null
-                    SetTrawlerTheme(null);
+                // Set the theme to null
+                SetTrawlerTheme(null);
 
-                    numberOfDeckhands = 0;
-                    mainDeckhand = null;
-                }
+                numberOfDeckhands = 0;
+                mainDeckhand = null;
 
                 // Take away any bailing buckets
                 foreach (BailingBucket bucket in Game1.player.Items.Where(i => i != null && i is BailingBucket))
@@ -262,8 +264,8 @@ namespace FishingTrawler
                 _trawlerSurface.Value.SetFlagTexture(GetHoistedFlag());
 
                 // Start the timer (2.5 minute default)
-                fishingTripTimer.Value = 30000; //150000
-                _trawlerSurface.Value.fishCaughtQuantity = 100;
+                fishingTripTimer.Value = 150000; //150000
+                //_trawlerSurface.Value.fishCaughtQuantity = 100;
 
                 // Apply flag benefits
                 switch (GetHoistedFlag())
@@ -428,7 +430,6 @@ namespace FishingTrawler
                     }
                     else
                     {
-                        // TODO: Sync area changes via broadcasts
                         message = CreateTrawlerEventsAndGetMessage();
                     }
 
@@ -530,6 +531,7 @@ namespace FishingTrawler
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
+            beach.modData[MURPHY_ON_TRIP] = "false";
 
             // Set Farmer moddata used for this mod
             EstablishPlayerData();
@@ -542,11 +544,11 @@ namespace FishingTrawler
                     Helper.Content.AssetEditors.Add(new IntroMail());
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
                 }
-
-                // Reset ownership of boat, deckhands
-                mainDeckhand = null;
-                numberOfDeckhands = 0;
             }
+
+            // Reset ownership of boat, deckhands
+            mainDeckhand = null;
+            numberOfDeckhands = 0;
 
             // Set the reward chest
             Vector2 rewardChestPosition = new Vector2(-100, -100);
@@ -562,7 +564,6 @@ namespace FishingTrawler
             }
 
             // Create the trawler object for the beach
-            // TODO: See how non-split screen multiplayer is handled
             trawlerObject = new Trawler(beach);
 
             // Create the TrawlerReward class
@@ -681,11 +682,11 @@ namespace FishingTrawler
             return amountOfEvents == 0 ? "Yoba be praised!" : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
-        internal static void AlertPlayersOfDeparture(List<Farmer> farmersToAlert)
+        internal static void AlertPlayersOfDeparture(long mainDeckhandID, List<Farmer> farmersToAlert)
         {
             if (Context.IsMultiplayer)
             {
-                modHelper.Multiplayer.SendMessage(new DepartureMessage(), nameof(DepartureMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
+                modHelper.Multiplayer.SendMessage(new DepartureMessage(mainDeckhandID), nameof(DepartureMessage), new[] { manifest.UniqueID }, farmersToAlert.Select(f => f.UniqueMultiplayerID).ToArray());
             }
         }
 
@@ -736,7 +737,7 @@ namespace FishingTrawler
 
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN && GetFarmersOnTrawler().Count == 0)
+            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth) == DAY_TO_APPEAR_TOWN && location.modData.ContainsKey(MURPHY_ON_TRIP) && location.modData[MURPHY_ON_TRIP] == "false")
             {
                 return true;
             }

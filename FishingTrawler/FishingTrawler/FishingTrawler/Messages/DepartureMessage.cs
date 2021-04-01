@@ -9,9 +9,11 @@ namespace FishingTrawler.Messages
 {
     internal class DepartureMessage
     {
-        public DepartureMessage()
-        {
+        public long MainDeckhand { get; set; }
 
+        public DepartureMessage(long mainDeckhand)
+        {
+            MainDeckhand = mainDeckhand;
         }
     }
 }

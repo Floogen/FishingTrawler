@@ -207,7 +207,7 @@ namespace FishingTrawler.Objects
                 return;
             }
 
-            if (ModEntry.GetFarmersOnTrawler().Count > 0)
+            if (ModEntry.GetFarmersOnTrawler().Count > 0 || !ModEntry.ShouldMurphyAppear(this.currentLocation))
             {
                 // Do nothing and bail, as Murphy is being interacted with on beach despite being on Trawler
                 ModEntry.monitor.Log($"{who.Name} tried to start a trip while one already departed!", LogLevel.Trace);

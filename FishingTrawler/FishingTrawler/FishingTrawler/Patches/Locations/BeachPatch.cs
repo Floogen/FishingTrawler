@@ -27,19 +27,10 @@ namespace FishingTrawler.Patches.Locations
 
         internal override void Apply(HarmonyInstance harmony)
         {
-            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.MakeMapModifications), new[] { typeof(bool) }), postfix: new HarmonyMethod(GetType(), nameof(MakeMapModificationsPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.checkAction), new[] { typeof(xTile.Dimensions.Location), typeof(xTile.Dimensions.Rectangle), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(CheckActionPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.cleanupBeforePlayerExit), null), postfix: new HarmonyMethod(GetType(), nameof(CleanupBeforePlayerExitPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.draw), new[] { typeof(SpriteBatch) }), postfix: new HarmonyMethod(GetType(), nameof(DrawPatch)));
             harmony.Patch(AccessTools.Method(_beach, nameof(Beach.UpdateWhenCurrentLocation), new[] { typeof(GameTime) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPatch)));
-        }
-
-        internal static void MakeMapModificationsPatch(Beach __instance, bool force = false)
-        {
-            if (ModEntry.ShouldMurphyAppear(__instance) && ModEntry.murphyNPC == null)
-            {
-                ModEntry.SpawnMurphy();
-            }
         }
 
         internal static void CheckActionPatch(Beach __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -99,7 +90,7 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void DrawPatch(Beach __instance, SpriteBatch b)
         {
-            if (!ModEntry.ShouldMurphyAppear(__instance))
+            if (!ModEntry.ShouldMurphyAppear(__instance) && __instance.currentEvent is null)
             {
                 // Skip this draw patch if Murphy isn't here today
                 return;
@@ -129,9 +120,19 @@ namespace FishingTrawler.Patches.Locations
         internal static void UpdateWhenCurrentLocationPatch(Beach __instance, GameTime time)
         {
             // Update the Murphy NPC
+            if (ModEntry.ShouldMurphyAppear(__instance) && ModEntry.murphyNPC == null)
+            {
+                ModEntry.SpawnMurphy();
+            }
+
             if (ModEntry.murphyNPC != null)
             {
                 ModEntry.murphyNPC.update(time, __instance);
+
+                if (__instance.modData.ContainsKey(ModEntry.MURPHY_ON_TRIP) && __instance.modData[ModEntry.MURPHY_ON_TRIP] == "true")
+                {
+                    ModEntry.murphyNPC = null;
+                }
             }
 
             // Update the appearance of the reward chest
@@ -168,7 +169,6 @@ namespace FishingTrawler.Patches.Locations
                 }
             }
 
-
             Microsoft.Xna.Framework.Rectangle back_rectangle = new Microsoft.Xna.Framework.Rectangle(24, 188, 16, 220);
             back_rectangle.X += (int)trawler.GetTrawlerPosition().X;
             back_rectangle.Y += (int)trawler.GetTrawlerPosition().Y;
@@ -183,7 +183,15 @@ namespace FishingTrawler.Patches.Locations
                     Vector2 position2 = Utility.getRandomPositionInThisRectangle(back_rectangle, Game1.random);
                     TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, position2, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                     sprite2.acceleration = new Vector2(-0.25f * (float)Math.Sign(trawler._boatDirection), 0f);
-                    ModEntry.multiplayer.broadcastSprites(__instance, sprite2);
+                    if (Context.IsSplitScreen)
+                    {
+                        ModEntry.multiplayer.broadcastSprites(__instance, sprite2);
+                    }
+                    else
+                    {
+                        __instance.temporarySprites.Add(sprite2);
+
+                    }
                     trawler._nextBubble = 0.01f;
                 }
                 if (trawler._nextSlosh > 0f)
