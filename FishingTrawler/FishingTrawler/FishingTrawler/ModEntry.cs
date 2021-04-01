@@ -542,27 +542,27 @@ namespace FishingTrawler
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
                 }
 
-                // Set the reward chest
-                Vector2 rewardChestPosition = new Vector2(-100, -100);
-                Farm farm = Game1.getLocationFromName("Farm") as Farm;
-                rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
-                if (rewardChest is null)
-                {
-                    Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Trace);
-                    rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
-                    rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
-
-                    farm.setObject(rewardChestPosition, rewardChest);
-                }
-
-                // Create the trawler object for the beach
-                // TODO: See how non-split screen multiplayer is handled
-                trawlerObject = new Trawler(beach);
-
                 // Reset ownership of boat, deckhands
                 mainDeckhand = null;
                 numberOfDeckhands = 0;
             }
+
+            // Set the reward chest
+            Vector2 rewardChestPosition = new Vector2(-100, -100);
+            Farm farm = Game1.getLocationFromName("Farm") as Farm;
+            rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
+            if (rewardChest is null)
+            {
+                Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Trace);
+                rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
+                rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
+
+                farm.setObject(rewardChestPosition, rewardChest);
+            }
+
+            // Create the trawler object for the beach
+            // TODO: See how non-split screen multiplayer is handled
+            trawlerObject = new Trawler(beach);
 
             // Create the TrawlerReward class
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
