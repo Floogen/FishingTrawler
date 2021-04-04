@@ -9,6 +9,8 @@ namespace FishingTrawler
     public class ModConfig
     {
         public int minimumFishingLevel = 3;
+        public float fishPerNet = 1f;
+        public int engineFishBonus = 2;
         public int eventFrequencyLower = 1;
         public int eventFrequencyUpper = 5;
         public string dayOfWeekChoice = "Wednesday";

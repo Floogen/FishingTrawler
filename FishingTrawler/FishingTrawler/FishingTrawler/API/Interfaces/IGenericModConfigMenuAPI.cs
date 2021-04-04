@@ -9,6 +9,7 @@ namespace FishingTrawler.API.Interfaces
     {
         void RegisterModConfig(IManifest mod, Action revertToDefault, Action saveToFile);
         void RegisterClampedOption(IManifest mod, string optionName, string optionDesc, Func<int> optionGet, Action<int> optionSet, int min, int max);
+        void RegisterClampedOption(IManifest mod, string optionName, string optionDesc, Func<float> optionGet, Action<float> optionSet, float min, float max, float interval);
         void RegisterChoiceOption(IManifest mod, string optionName, string optionDesc, Func<string> optionGet, Action<string> optionSet, string[] choices);
     }
 }

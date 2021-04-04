@@ -1,4 +1,5 @@
 ﻿using FishingTrawler.Objects.Rewards;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
 using StardewValley.Tools;
@@ -323,6 +324,8 @@ namespace FishingTrawler.Objects
 
         internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
         {
+            ModEntry.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
+
             int[] keys = GetEligibleFishIds(hasWorldly);
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
 
@@ -333,10 +336,10 @@ namespace FishingTrawler.Objects
             }
 
             // See if this run generates an unidentified ancient flag
-            ModEntry.monitor.Log($"{amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", StardewModdingAPI.LogLevel.Trace);
+            ModEntry.monitor.Log($"Odds for getting ancient flag during this run: {amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", LogLevel.Trace);
             if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
             {
-                ModEntry.monitor.Log($"Player got lucky and was rewarded an ancient flag!", StardewModdingAPI.LogLevel.Trace);
+                ModEntry.monitor.Log($"Player got lucky and was rewarded an ancient flag!", LogLevel.Trace);
                 _rewardChest.addItem(new AncientFlag(FlagType.Unknown));
             }
 
@@ -432,7 +435,7 @@ namespace FishingTrawler.Objects
             _farmer.gainExperience(1, xpGained + (int)bonusXP);
             Game1.addHUDMessage(new HUDMessage($"You gained {xpGained} fishing XP from the trip!", null));
 
-            ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP", StardewModdingAPI.LogLevel.Trace);
+            ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP, {xpGained} normal XP", LogLevel.Trace);
             if (bonusXP > 0f)
             {
                 Game1.addHUDMessage(new HUDMessage($"The Patron Saint flag gifted you {bonusXP} bonus XP!", null));

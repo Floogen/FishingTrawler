@@ -33,6 +33,7 @@ namespace FishingTrawler
         internal static IModHelper modHelper;
         internal static IManifest manifest;
         internal static Multiplayer multiplayer;
+        internal static ModConfig config;
         internal static string trawlerThemeSong;
         internal static bool themeSongUpdated;
         internal static Farmer mainDeckhand;
@@ -91,8 +92,6 @@ namespace FishingTrawler
         private float _notificationAlpha;
         private string _activeNotification;
 
-        // Config related
-        public ModConfig config;
 
         public override void Entry(IModHelper helper)
         {
@@ -539,9 +538,13 @@ namespace FishingTrawler
                 var configAPI = ApiManager.GetGMCMInterface();
                 configAPI.RegisterModConfig(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
                 configAPI.RegisterClampedOption(ModManifest, "Minimum Fishing Level Required", "Sets the minimum fishing requirement for Murphy to appear.", () => config.minimumFishingLevel, (int val) => config.minimumFishingLevel = val, 0, 10);
-                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Lower Bound)", "Sets minimum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
-                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Upper Bound)", "Sets maximum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, "Fishing Net Output", "Determines the amount of fish that each net gives on the trawler. Default is 1 (so 2 in total, as there are two nets).", () => config.fishPerNet, (float val) => config.fishPerNet = val, 0f, 1f, 0.5f);
+                configAPI.RegisterClampedOption(ModManifest, "Engine Boost", "Determines the amount of bonus fish that the engine gives when working. Default is 2.", () => config.engineFishBonus, (int val) => config.engineFishBonus = val, 0, 2);
+                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Lower)", "Sets minimum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Upper)", "Sets maximum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
                 configAPI.RegisterChoiceOption(ModManifest, "Murphy Appearance Day", "Determines the day of the week that Murphy will be available for a trip.", () => config.dayOfWeekChoice, (string val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
+
+                Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Event Freq Lower]: {config.eventFrequencyLower} | [Event Freq Upper]: {config.eventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
             }
 
             if (Helper.ModRegistry.IsLoaded("Pathoschild.ContentPatcher") && ApiManager.HookIntoContentPatcher(Helper))
@@ -884,6 +887,7 @@ namespace FishingTrawler
         internal void EndTrip()
         {
             // Give the player(s) their rewards, if they left the trawler as expected (warping out early does not give any rewards)
+            Monitor.Log($"Trip is ending for {GetFarmersOnTrawler().Count()} deckhands...", LogLevel.Trace);
             _trawlerRewards.Value.CalculateAndPopulateReward(_trawlerSurface.Value.fishCaughtQuantity);
 
             DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
