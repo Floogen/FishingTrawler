@@ -78,7 +78,7 @@ namespace FishingTrawler.Objects.Rewards
 
         public override void onUnequip(Farmer who, GameLocation location)
         {
-            who.addedFishingLevel.Value -= 2;
+            who.addedFishingLevel.Value = Math.Max(0, who.addedFishingLevel.Value - 2);
         }
     }
 }
