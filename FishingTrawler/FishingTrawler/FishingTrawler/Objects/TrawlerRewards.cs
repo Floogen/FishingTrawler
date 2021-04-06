@@ -330,7 +330,8 @@ namespace FishingTrawler.Objects
                 case 3:
                     return new Object(680, 1);
                 case 4:
-                    return new Object(857, 1);
+                    // If player has not unlocked Willy's boat / the Island, then return a green slime egg. Otherwise return the tiger slime egg
+                    return Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed") ? new Object(857, 1) : new Object(413, 1);
                 default:
                     return new Object(413, 1);
             }
@@ -358,10 +359,10 @@ namespace FishingTrawler.Objects
             }
 
             // See if this run generates an special reward
-            ModEntry.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]} : {Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 200f}", LogLevel.Trace);
-            if (Game1.random.NextDouble() <= Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 200f)
+            ModEntry.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]} : {Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 400f}", LogLevel.Trace);
+            if (Game1.random.NextDouble() <= Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 400f)
             {
-                ModEntry.monitor.Log($"Player got lucky has chance of getting special reward!", LogLevel.Trace);
+                ModEntry.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
                 switch (Game1.random.Next(0, 2))
                 {
                     case 0:
