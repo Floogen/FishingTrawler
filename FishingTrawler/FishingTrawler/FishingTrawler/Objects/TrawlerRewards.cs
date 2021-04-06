@@ -474,11 +474,13 @@ namespace FishingTrawler.Objects
                     }
                 }
 
+                // Reduce total fish to be awarded in next pass
+                amountOfFish -= randomQuantity;
+
                 // Add selected fish if it hasn't been consumed
                 if (selectedReward.Stack > 0)
                 {
                     _rewardChest.addItem(selectedReward);
-                    amountOfFish -= randomQuantity;
                     totalRewardXP += caughtXP * randomQuantity;
                 }
             }
