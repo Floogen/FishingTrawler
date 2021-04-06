@@ -305,6 +305,7 @@ namespace FishingTrawler
                         break;
                     case FlagType.SlimeKing:
                         // Consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 3% chance to convert into a random slime egg
+                        // Consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 1% chance to convert into a random slime egg
                         _trawlerRewards.Value.hasSlimeKing = true;
                         break;
                     default:
