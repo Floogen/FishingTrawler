@@ -80,5 +80,10 @@ namespace FishingTrawler.Objects.Rewards
         {
             who.addedFishingLevel.Value = Math.Max(0, who.addedFishingLevel.Value - 2);
         }
+
+        public override void onDayUpdate(Farmer who, GameLocation location)
+        {
+            this.onEquip(who, location);
+        }
     }
 }
