@@ -71,6 +71,7 @@ namespace FishingTrawler
         internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
         internal const string MURPHY_ON_TRIP = "PeacefulEnd.FishingTrawler_MurphyOnTrip";
         internal const string MURPHY_DAY_TO_APPEAR = "PeacefulEnd.FishingTrawler_MurphyDayToAppear";
+        internal const string MURPHY_TRIPS_COMPLETED = "PeacefulEnd.FishingTrawler_MurphyTripsCompleted";
 
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
@@ -366,7 +367,7 @@ namespace FishingTrawler
 
             if (_trawlerHull.Value.GetWaterLevel() == 100)
             {
-                Monitor.Log($"Ending trip due to flooding for: {Game1.player.Name}", LogLevel.Warn);
+                Monitor.Log($"Ending trip due to flooding for: {Game1.player.Name}", LogLevel.Trace);
                 _trawlerSurface.Value.fishCaughtQuantity /= 4;
 
                 // Set the status as failed
@@ -838,10 +839,15 @@ namespace FishingTrawler
                 Game1.player.modData[MURPHY_FINISHED_TALKING_KEY] = "false";
             }
 
-            // One time event, do not renew
+            // One time events, do not renew
             if (!Game1.player.modData.ContainsKey(MURPHY_HAS_SEEN_FLAG_KEY))
             {
                 Game1.player.modData.Add(MURPHY_HAS_SEEN_FLAG_KEY, "false");
+            }
+
+            if (!Game1.player.modData.ContainsKey(MURPHY_TRIPS_COMPLETED))
+            {
+                Game1.player.modData[MURPHY_TRIPS_COMPLETED] = "0";
             }
         }
 
@@ -893,6 +899,9 @@ namespace FishingTrawler
             DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
 
             _isTripEnding.Value = true;
+
+            // Increment trip counter for this player by one
+            Game1.player.modData[MURPHY_TRIPS_COMPLETED] = (int.Parse(Game1.player.modData[MURPHY_TRIPS_COMPLETED]) + 1).ToString();
         }
     }
 }
