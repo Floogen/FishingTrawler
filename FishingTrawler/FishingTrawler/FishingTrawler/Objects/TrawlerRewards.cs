@@ -456,7 +456,7 @@ namespace FishingTrawler.Objects
                                 _rewardChest.addItem(GetRandomSlimeEgg());
                                 selectedReward.Stack--;
                                 continue;
-                            case var chance when chance <= 0.25:
+                            case var chance when chance <= 0.50:
                                 _rewardChest.addItem(new Object(796, 1));
                                 selectedReward.Stack--;
                                 continue;
