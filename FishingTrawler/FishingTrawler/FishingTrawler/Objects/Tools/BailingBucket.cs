@@ -59,10 +59,10 @@ namespace FishingTrawler.Objects.Tools
         {
             if (this._containsWater)
             {
-                return "A bucket filled with sea water! Empty it over the side of the ship!";
+                return "A bucket filled with sea water. Empty it over the side of the ship.";
             }
 
-            return "A trusty, albeit rusty bucket! Use to pick up water in the hull and empty it into the sea.";
+            return "A trusty, albeit rusty bucket. Use to pick up water in the hull and empty it into the sea.";
         }
 
         public override bool canBeTrashed()
