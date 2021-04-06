@@ -92,10 +92,5 @@ namespace FishingTrawler.Objects.Rewards
         {
             this.onEquip(who, location);
         }
-
-        public override bool CanCombine(Ring ring)
-        {
-            return false;
-        }
     }
 }

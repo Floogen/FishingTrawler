@@ -312,7 +312,6 @@ namespace FishingTrawler
                         break;
                 }
 
-
                 return;
             }
         }
