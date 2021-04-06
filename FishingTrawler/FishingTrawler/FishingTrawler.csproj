@@ -71,6 +71,7 @@
     <Compile Include="FishingTrawler\Messages\TrawlerNotificationMessage.cs" />
     <Compile Include="FishingTrawler\Messages\TrawlerSyncMessage.cs" />
     <Compile Include="FishingTrawler\ModConfig.cs" />
+    <Compile Include="FishingTrawler\Objects\Rewards\AnglerRing.cs" />
     <Compile Include="FishingTrawler\Objects\Rewards\AncientFlag.cs" />
     <Compile Include="FishingTrawler\Objects\IntroMail.cs" />
     <Compile Include="FishingTrawler\Objects\Murphy.cs" />
@@ -124,6 +125,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\AnglerRing.png">
+      <Link>FishingTrawler\assets\Objects\AnglerRing.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\BailingBucket.png">
       <Link>FishingTrawler\assets\Objects\BailingBucket.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

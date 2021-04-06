@@ -21,6 +21,7 @@ namespace FishingTrawler
         internal static string murphyDialoguePath;
 
         internal static Texture2D ancientFlagsTexture;
+        internal static Texture2D anglerRingTexture;
         internal static Texture2D murphyPortraitTexture;
         internal static Texture2D boatTexture;
         internal static Texture2D bucketTexture;
@@ -36,11 +37,13 @@ namespace FishingTrawler
             murphyPortraitTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Characters", "MurphyPortrait.png"));
             boatTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Trawler.png"));
             ancientFlagsTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Flags.png"));
+            anglerRingTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "AnglerRing.png"));
             bucketTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
             uiTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
 
             // Set any static Texture assets
             AncientFlag.flagTexture = ancientFlagsTexture;
+            AnglerRing.ringTexture = anglerRingTexture;
         }
 
         internal static void ConvertCustomItemsToBase(GameLocation location)
