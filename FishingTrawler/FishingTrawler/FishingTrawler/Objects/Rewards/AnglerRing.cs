@@ -25,6 +25,13 @@ namespace FishingTrawler.Objects.Rewards
             this.price.Value = 0;
         }
 
+        public override Item getOne()
+        {
+            AnglerRing ring = new AnglerRing();
+            ring._GetOneFrom(this);
+            return ring;
+        }
+
         public object getReplacement()
         {
             return new Ring(531);
@@ -84,6 +91,11 @@ namespace FishingTrawler.Objects.Rewards
         public override void onDayUpdate(Farmer who, GameLocation location)
         {
             this.onEquip(who, location);
+        }
+
+        public override bool CanCombine(Ring ring)
+        {
+            return false;
         }
     }
 }
