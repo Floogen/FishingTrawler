@@ -343,6 +343,23 @@ namespace FishingTrawler.Objects
                 _rewardChest.addItem(new AncientFlag(FlagType.Unknown));
             }
 
+            // See if this run generates an special reward
+            ModEntry.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]} : {Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 200f}", LogLevel.Trace);
+            if (Game1.random.NextDouble() <= Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 200f)
+            {
+                ModEntry.monitor.Log($"Player got lucky has chance of getting special reward!", LogLevel.Trace);
+                switch (Game1.random.Next(0, 2))
+                {
+                    case 0:
+                        ModEntry.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
+                        _rewardChest.addItem(new AnglerRing());
+                        break;
+                    default:
+                        ModEntry.monitor.Log($"Player's luck failed for secondary check, no special reward!", LogLevel.Trace);
+                        break;
+                }
+            }
+
             float bonusXP = 0f;
             float totalRewardXP = 3f;
             for (int x = 0; x < amountOfFish; x++)
