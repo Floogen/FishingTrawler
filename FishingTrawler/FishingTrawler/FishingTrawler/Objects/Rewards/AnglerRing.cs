@@ -21,7 +21,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             base.Category = -96;
             this.displayName = "Angler's Ring";
-            this.description = "A ring that is cold to the touch.\n\nWearing it makes you feel at harmony with the ocean.";
+            this.description = "A ring that is cold to the touch.\n\nWearing it makes you feel in harmony with the ocean.";
             this.price.Value = 0;
         }
 
