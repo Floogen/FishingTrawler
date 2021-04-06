@@ -24,17 +24,13 @@ namespace FishingTrawler.Objects
         internal bool hasMermaidsBlessing; // If true, 5% chance of consuming fish but getting treasure chest rewards instead
         internal bool hasPatronSaint; // If true, 25% chance of consuming fish but gives full XP
         internal bool hasWorldly; // If true, allows catching of non-ocean fish
+        internal bool hasSlimeKing; // If true, consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 3% chance to convert into a random slime egg 
 
         public TrawlerRewards(Chest rewardChest)
         {
             _rewardChest = rewardChest;
-            _farmer = Game1.player; // Main player will get XP by default, though it can be overridden
 
-            fishCatchChanceOffset = 0f;
-            isGambling = false;
-            hasMermaidsBlessing = false;
-            hasPatronSaint = false;
-            hasWorldly = false;
+            Reset(Game1.player); // Main player will get XP by default, though it can be overridden
         }
 
         public void Reset(Farmer farmer)
@@ -46,6 +42,7 @@ namespace FishingTrawler.Objects
             hasMermaidsBlessing = false;
             hasPatronSaint = false;
             hasWorldly = false;
+            hasSlimeKing = false;
         }
 
         private int[] GetEligibleFishIds(bool allowCatchingOfNonOceanFish = false)
@@ -322,6 +319,23 @@ namespace FishingTrawler.Objects
             }
         }
 
+        private Object GetRandomSlimeEgg()
+        {
+            switch (Game1.random.Next(0, 5))
+            {
+                case 1:
+                    return new Object(437, 1);
+                case 2:
+                    return new Object(439, 1);
+                case 3:
+                    return new Object(680, 1);
+                case 4:
+                    return new Object(857, 1);
+                default:
+                    return new Object(413, 1);
+            }
+        }
+
         internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
         {
             ModEntry.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
@@ -434,6 +448,29 @@ namespace FishingTrawler.Objects
                         bonusXP += caughtXP * ((100 - baseXpReduction) / 100f);
                         selectedReward.Stack--;
                         continue;
+                    }
+
+                    if (hasSlimeKing)
+                    {
+                        switch (Game1.random.NextDouble())
+                        {
+                            case var chance when chance <= 0.50:
+                                _rewardChest.addItem(new Object(766, 1));
+                                selectedReward.Stack--;
+                                continue;
+                            case var chance when chance <= 0.25:
+                                _rewardChest.addItem(new Object(796, 1));
+                                selectedReward.Stack--;
+                                continue;
+                            case var chance when chance <= 0.03:
+                                _rewardChest.addItem(GetRandomSlimeEgg());
+                                selectedReward.Stack--;
+                                continue;
+                            default:
+                                // Lucked out, consume this fish with no replacement
+                                selectedReward.Stack--;
+                                continue;
+                        }
                     }
                 }
 

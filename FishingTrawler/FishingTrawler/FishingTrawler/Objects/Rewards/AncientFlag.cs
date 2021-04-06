@@ -22,7 +22,8 @@ namespace FishingTrawler.Objects.Rewards
         MermaidsBlessing,
         PatronSaint,
         SharksFin,
-        Worldly
+        Worldly,
+        SlimeKing
     }
 
     public class AncientFlag : Furniture, ISaveElement, ICustomObject
@@ -166,6 +167,8 @@ namespace FishingTrawler.Objects.Rewards
                     return "The Shark's Fin";
                 case FlagType.Worldly:
                     return "Worldly Flag";
+                case FlagType.SlimeKing:
+                    return "Slime King";
                 default:
                     return "Ancient Flag";
             }
@@ -189,6 +192,8 @@ namespace FishingTrawler.Objects.Rewards
                     return "Extends the fishing trawler trip by one minute, allowing for more time to catch fish.";
                 case FlagType.Worldly:
                     return "Allows the trawler to catch fish not normally available in the ocean.";
+                case FlagType.SlimeKing:
+                    return "Consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 3% chance to convert into a random slime egg.";
                 default:
                     return "An ancient flag that faintly shimmers with magic.\n\nPerhaps Murphy would know more about it?";
             }
