@@ -24,7 +24,7 @@ namespace FishingTrawler.Objects
         internal bool hasMermaidsBlessing; // If true, 5% chance of consuming fish but getting treasure chest rewards instead
         internal bool hasPatronSaint; // If true, 25% chance of consuming fish but gives full XP
         internal bool hasWorldly; // If true, allows catching of non-ocean fish
-        internal bool hasSlimeKing; // If true, consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 1% chance to convert into a random slime egg 
+        internal bool hasSlimeKing; // If true, consumes all fish but gives a 75% chance of converting each fish into some slime, 50% chance to convert to a Slimejack and a 1% chance to convert into a random slime egg 
 
         public TrawlerRewards(Chest rewardChest)
         {
@@ -363,14 +363,11 @@ namespace FishingTrawler.Objects
             if (Game1.random.NextDouble() <= Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 400f)
             {
                 ModEntry.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
-                switch (Game1.random.Next(0, 2))
+                switch (Game1.random.Next(0, 1))
                 {
-                    case 0:
+                    default:
                         ModEntry.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
                         _rewardChest.addItem(new AnglerRing());
-                        break;
-                    default:
-                        ModEntry.monitor.Log($"Player's luck failed for secondary check, no special reward!", LogLevel.Trace);
                         break;
                 }
             }
@@ -463,7 +460,7 @@ namespace FishingTrawler.Objects
                                 _rewardChest.addItem(new Object(796, 1));
                                 selectedReward.Stack--;
                                 continue;
-                            case var chance when chance <= 0.50:
+                            case var chance when chance <= 0.75:
                                 _rewardChest.addItem(new Object(766, 1));
                                 selectedReward.Stack--;
                                 continue;

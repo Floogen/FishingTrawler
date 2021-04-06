@@ -193,7 +193,7 @@ namespace FishingTrawler.Objects.Rewards
                 case FlagType.Worldly:
                     return "Allows the trawler to catch fish not normally available in the ocean.";
                 case FlagType.SlimeKing:
-                    return "Consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 1% chance to convert to a random slime egg.";
+                    return "Consumes all fish but gives a 75% chance of converting each fish into some slime, 50% chance to convert to a Slimejack and a 1% chance to convert to a random slime egg.";
                 default:
                     return "An ancient flag that faintly shimmers with magic.\n\nPerhaps Murphy would know more about it?";
             }
