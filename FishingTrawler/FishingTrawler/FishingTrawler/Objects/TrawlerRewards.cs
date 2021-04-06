@@ -24,7 +24,7 @@ namespace FishingTrawler.Objects
         internal bool hasMermaidsBlessing; // If true, 5% chance of consuming fish but getting treasure chest rewards instead
         internal bool hasPatronSaint; // If true, 25% chance of consuming fish but gives full XP
         internal bool hasWorldly; // If true, allows catching of non-ocean fish
-        internal bool hasSlimeKing; // If true, consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 3% chance to convert into a random slime egg 
+        internal bool hasSlimeKing; // If true, consumes all fish but gives a 50% chance of converting each fish into some slime, 25% chance to convert to a Slimejack and a 1% chance to convert into a random slime egg 
 
         public TrawlerRewards(Chest rewardChest)
         {
@@ -454,16 +454,16 @@ namespace FishingTrawler.Objects
                     {
                         switch (Game1.random.NextDouble())
                         {
-                            case var chance when chance <= 0.50:
-                                _rewardChest.addItem(new Object(766, 1));
+                            case var chance when chance <= 0.01:
+                                _rewardChest.addItem(GetRandomSlimeEgg());
                                 selectedReward.Stack--;
                                 continue;
                             case var chance when chance <= 0.25:
                                 _rewardChest.addItem(new Object(796, 1));
                                 selectedReward.Stack--;
                                 continue;
-                            case var chance when chance <= 0.03:
-                                _rewardChest.addItem(GetRandomSlimeEgg());
+                            case var chance when chance <= 0.50:
+                                _rewardChest.addItem(new Object(766, 1));
                                 selectedReward.Stack--;
                                 continue;
                             default:
