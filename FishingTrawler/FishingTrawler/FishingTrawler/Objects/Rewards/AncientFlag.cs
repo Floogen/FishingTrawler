@@ -142,7 +142,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             if (this.FlagType is FlagType.Unknown)
             {
-                Game1.showRedMessage("You need to identify the flag before placing it on walls!");
+                Game1.showRedMessage(ModEntry.i18n.Get("game_message.identify_flag_first"));
                 return false;
             }
 
@@ -154,23 +154,23 @@ namespace FishingTrawler.Objects.Rewards
             switch (flagType)
             {
                 case FlagType.Parley:
-                    return "Parley Flag";
+                    return ModEntry.i18n.Get("item.ancient_flag.parely.name");
                 case FlagType.JollyRoger:
-                    return "Jolly Roger";
+                    return ModEntry.i18n.Get("item.ancient_flag.jolly_roger.name");
                 case FlagType.GamblersCrest:
-                    return "The Gambler's Crest";
+                    return ModEntry.i18n.Get("item.ancient_flag.gamblers_crest.name");
                 case FlagType.MermaidsBlessing:
-                    return "Mermaid's Blessing";
+                    return ModEntry.i18n.Get("item.ancient_flag.mermaids_blessing.name");
                 case FlagType.PatronSaint:
-                    return "The Patron Saint";
+                    return ModEntry.i18n.Get("item.ancient_flag.patron_saint.name");
                 case FlagType.SharksFin:
-                    return "The Shark's Fin";
+                    return ModEntry.i18n.Get("item.ancient_flag.sharks_fin.name");
                 case FlagType.Worldly:
-                    return "Worldly Flag";
+                    return ModEntry.i18n.Get("item.ancient_flag.worldly_flag.name");
                 case FlagType.SlimeKing:
-                    return "Slime King";
+                    return ModEntry.i18n.Get("item.ancient_flag.slime_king.name");
                 default:
-                    return "Ancient Flag";
+                    return ModEntry.i18n.Get("item.ancient_flag.unknown.name");
             }
         }
 
@@ -179,23 +179,23 @@ namespace FishingTrawler.Objects.Rewards
             switch (flagType)
             {
                 case FlagType.Parley:
-                    return "Prevents leaks from occurring, but lowers reward quality by 25%.";
+                    return ModEntry.i18n.Get("item.ancient_flag.parely.description");
                 case FlagType.JollyRoger:
-                    return "Quadruples the fishing net output, but any time a leak occurs all holes will leak.";
+                    return ModEntry.i18n.Get("item.ancient_flag.jolly_roger.description");
                 case FlagType.GamblersCrest:
-                    return "Has a 50% chance of doubling the amount of fish caught, but a 25% chance of consuming all the fish.";
+                    return ModEntry.i18n.Get("item.ancient_flag.gamblers_crest.description");
                 case FlagType.MermaidsBlessing:
-                    return "Has a 10% chance of consuming a fish, but gives a random fishing chest reward.";
+                    return ModEntry.i18n.Get("item.ancient_flag.mermaids_blessing.description");
                 case FlagType.PatronSaint:
-                    return "Has a 25% chance of consuming a fish, but gives the full experience for catching it.";
+                    return ModEntry.i18n.Get("item.ancient_flag.patron_saint.description");
                 case FlagType.SharksFin:
-                    return "Extends the fishing trawler trip by one minute, allowing for more time to catch fish.";
+                    return ModEntry.i18n.Get("item.ancient_flag.sharks_fin.description");
                 case FlagType.Worldly:
-                    return "Allows the trawler to catch fish not normally available in the ocean.";
+                    return ModEntry.i18n.Get("item.ancient_flag.worldly_flag.description");
                 case FlagType.SlimeKing:
-                    return "Consumes all fish but gives a 75% chance of converting each fish into some slime, 50% chance to convert to a Slimejack and a 1% chance to convert to a random slime egg.";
+                    return ModEntry.i18n.Get("item.ancient_flag.slime_king.description");
                 default:
-                    return "An ancient flag that faintly shimmers with magic.\n\nPerhaps Murphy would know more about it?";
+                    return ModEntry.i18n.Get("item.ancient_flag.unknown.description");
             }
         }
     }

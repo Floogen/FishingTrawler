@@ -81,17 +81,17 @@ namespace FishingTrawler.Objects
         {
             if (Game1.random.NextDouble() <= 0.5)
             {
-                Game1.addHUDMessage(new HUDMessage("The Gamber's Crest doubled your haul!", null));
+                Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.gamblers_crest_effect.success"), null));
                 return amountOfFish *= 2;
             }
 
             if (Game1.random.NextDouble() <= 0.25)
             {
-                Game1.addHUDMessage(new HUDMessage("The Gamber's Crest took your haul!", null));
+                Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.gamblers_crest_effect.failed"), null));
                 return 0;
             }
 
-            Game1.addHUDMessage(new HUDMessage("The Gamber's Crest left your haul untouched.", null));
+            Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.gamblers_crest_effect.neutral"), null));
             return amountOfFish;
         }
 
@@ -386,6 +386,12 @@ namespace FishingTrawler.Objects
                 Utility.Shuffle(Game1.random, keys);
                 for (int i = 0; i < keys.Length; i++)
                 {
+                    if (!fishData.ContainsKey(Convert.ToInt32(keys[i])))
+                    {
+                        ModEntry.monitor.Log($"Failed to find fish ID {Convert.ToInt32(keys[i])} in fishData, skipping!", LogLevel.Trace);
+                        continue;
+                    }
+
                     string[] specificFishData = fishData[Convert.ToInt32(keys[i])].Split('/');
 
                     if (specificFishData[1] == "trap")
@@ -487,12 +493,12 @@ namespace FishingTrawler.Objects
             //_farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
             int xpGained = (int)((totalRewardXP % (100 - baseXpReduction)));
             _farmer.gainExperience(1, xpGained + (int)bonusXP);
-            Game1.addHUDMessage(new HUDMessage($"You gained {xpGained} fishing XP from the trip!", null));
+            Game1.addHUDMessage(new HUDMessage(String.Format(ModEntry.i18n.Get("game_message.xp_gained"), xpGained), null));
 
             ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP, {xpGained} normal XP", LogLevel.Trace);
             if (bonusXP > 0f)
             {
-                Game1.addHUDMessage(new HUDMessage($"The Patron Saint flag gifted you {bonusXP} bonus XP!", null));
+                Game1.addHUDMessage(new HUDMessage(String.Format(ModEntry.i18n.Get("game_message.bonus_xp_gained"), bonusXP), null));
             }
         }
     }

@@ -17,7 +17,7 @@ namespace FishingTrawler.Objects.Tools
 {
     internal class BailingBucket : MilkPail, ISaveElement
     {
-        private const string DISPLAY_NAME = "Bailing Bucket";
+        private string _displayName = ModEntry.i18n.Get("item.bailing_bucket.name");
         private readonly NetEvent0 _finishEvent = new NetEvent0();
 
         private bool _containsWater = false;
@@ -52,17 +52,17 @@ namespace FishingTrawler.Objects.Tools
 
         protected override string loadDisplayName()
         {
-            return DISPLAY_NAME;
+            return _displayName;
         }
 
         protected override string loadDescription()
         {
             if (this._containsWater)
             {
-                return "A bucket filled with sea water. Empty it over the side of the ship.";
+                return ModEntry.i18n.Get("item.bailing_bucket.description_full");
             }
 
-            return "A trusty, albeit rusty bucket. Use to pick up water in the hull and empty it into the sea.";
+            return ModEntry.i18n.Get("item.bailing_bucket.description_empty");
         }
 
         public override bool canBeTrashed()
@@ -102,7 +102,7 @@ namespace FishingTrawler.Objects.Tools
             {
                 if (this._containsWater)
                 {
-                    Game1.addHUDMessage(new HUDMessage("Empty the water into the sea!", 3));
+                    Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3));
                 }
                 else if (trawlerHull.IsFlooding())
                 {
@@ -115,7 +115,7 @@ namespace FishingTrawler.Objects.Tools
                 }
                 else
                 {
-                    Game1.addHUDMessage(new HUDMessage("There is no water to bail!", 3));
+                    Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3));
                 }
             }
             else if (location is TrawlerSurface trawlerSurface && this._containsWater)
@@ -129,12 +129,12 @@ namespace FishingTrawler.Objects.Tools
                 }
                 else
                 {
-                    Game1.addHUDMessage(new HUDMessage("Stand closer to the edge of the boat before trying to empty the water!", 3));
+                    Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.stand_closer_to_edge"), 3));
                 }
             }
             else
             {
-                Game1.addHUDMessage(new HUDMessage("You should be using this to bail water from the hull!", 3));
+                Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.bail_from_hull"), 3));
             }
 
             who.forceCanMove();

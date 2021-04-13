@@ -32,6 +32,7 @@ namespace FishingTrawler
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
         internal static IManifest manifest;
+        internal static ITranslationHelper i18n;
         internal static Multiplayer multiplayer;
         internal static ModConfig config;
         internal static string trawlerThemeSong;
@@ -79,13 +80,13 @@ namespace FishingTrawler
         internal const string HOISTED_FLAG_KEY = "PeacefulEnd.FishingTrawler_HoistedFlag";
 
         // Notificiation messages
-        private readonly KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>("This ship is falling apart!", 10);
-        private readonly KeyValuePair<string, int> MESSAGE_LOSING_FISH = new KeyValuePair<string, int>("We're losing fish!", 9);
-        private readonly KeyValuePair<string, int> MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>("We're taking on water!", 8);
-        private readonly KeyValuePair<string, int> MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>("We've got lots of problems!", 7);
-        private readonly KeyValuePair<string, int> MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>("The engine is failing!", 7);
-        private readonly KeyValuePair<string, int> MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>("The nets are torn!", 6);
-        private readonly KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>("We've got a leak!", 5);
+        private KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING;
+        private KeyValuePair<string, int> MESSAGE_LOSING_FISH;
+        private KeyValuePair<string, int> MESSAGE_MAX_LEAKS;
+        private KeyValuePair<string, int> MESSAGE_MULTI_PROBLEMS;
+        private KeyValuePair<string, int> MESSAGE_ENGINE_PROBLEM;
+        private KeyValuePair<string, int> MESSAGE_NET_PROBLEM;
+        private KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM;
 
         // Notification related
         private uint _eventSecondInterval;
@@ -101,6 +102,7 @@ namespace FishingTrawler
             modHelper = helper;
             manifest = ModManifest;
             multiplayer = helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
+            i18n = helper.Translation;
 
             // Load in our assets
             ModResources.SetUpAssets(helper);
@@ -108,7 +110,16 @@ namespace FishingTrawler
             // Initialize the timer for fishing trip
             fishingTripTimer.Value = 0;
 
-            // Set up our notification on the trawler
+            // Set up notification messages
+            MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>(helper.Translation.Get("status_message.ship_falling_apart"), 10);
+            MESSAGE_LOSING_FISH = new KeyValuePair<string, int>(helper.Translation.Get("status_message.losing_fish"), 9);
+            MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>(helper.Translation.Get("status_message.taking_on_water"), 8);
+            MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>(helper.Translation.Get("status_message.lots_of_problems"), 7);
+            MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.engine_failing"), 7);
+            MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.nets_torn"), 6);
+            MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.leak"), 5);
+
+            // Set up our notification system on the trawler
             _eventSecondInterval = 600;
             _isTripEnding.Value = false;
             _activeNotification = String.Empty;
@@ -258,7 +269,7 @@ namespace FishingTrawler
                 if (!Game1.player.items.Any(i => i is BailingBucket))
                 {
                     Game1.player.addItemToInventory(new BailingBucket());
-                    Game1.addHUDMessage(new HUDMessage("A bailing bucket has been added to your inventory.", null));
+                    Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.given_bailing_bucket"), null));
                 }
 
                 // Clear any previous reward data, set the head deckhand (which determines fishing level for reward calc)
@@ -380,7 +391,7 @@ namespace FishingTrawler
                 // End trip due to flooding
                 Game1.player.currentLocation.playSound("fishEscape");
                 Game1.player.CanMove = false;
-                Game1.addHUDMessage(new HUDMessage("The ship has taken on too much water! Murphy quickly returns to port before it can sink.", null));
+                Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.trip_failed"), null));
 
                 EndTrip();
             }
@@ -432,7 +443,7 @@ namespace FishingTrawler
                     // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
                     if (Game1.random.NextDouble() < 0.05)
                     {
-                        message = "The sea favors us today!";
+                        message = i18n.Get("status_message.sea_favors_us");
                     }
                     else
                     {
@@ -442,7 +453,7 @@ namespace FishingTrawler
                     // Check for empty string 
                     if (String.IsNullOrEmpty(message))
                     {
-                        message = "Ah the smell of the sea...";
+                        message = i18n.Get("status_message.default");
                     }
 
                     if (_activeNotification != message)
@@ -465,7 +476,7 @@ namespace FishingTrawler
                 Game1.player.currentLocation.playSound("trainWhistle");
                 Game1.player.CanMove = false;
 
-                Game1.addHUDMessage(new HUDMessage("The trip was a success! Murphy starts heading back to port.", null));
+                Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.trip_succeeded"), null));
 
                 EndTrip();
             }
@@ -541,12 +552,12 @@ namespace FishingTrawler
                 // Register our config options
                 var configAPI = ApiManager.GetGMCMInterface();
                 configAPI.RegisterModConfig(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
-                configAPI.RegisterClampedOption(ModManifest, "Minimum Fishing Level Required", "Sets the minimum fishing requirement for Murphy to appear.", () => config.minimumFishingLevel, (int val) => config.minimumFishingLevel = val, 0, 10);
-                configAPI.RegisterClampedOption(ModManifest, "Fishing Net Output", "Determines the amount of fish that each net gives on the trawler. Default is 1 (so 2 in total, as there are two nets).", () => config.fishPerNet, (float val) => config.fishPerNet = val, 0f, 1f, 0.5f);
-                configAPI.RegisterClampedOption(ModManifest, "Engine Boost", "Determines the amount of bonus fish that the engine gives when working. Default is 2.", () => config.engineFishBonus, (int val) => config.engineFishBonus = val, 0, 2);
-                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Lower)", "Sets minimum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
-                configAPI.RegisterClampedOption(ModManifest, "Frequency of Events (Upper)", "Sets maximum amount of time before an event can occur. 1 is one second, 2 is two, etc.", () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
-                configAPI.RegisterChoiceOption(ModManifest, "Murphy Appearance Day", "Determines the day of the week that Murphy will be available for a trip.", () => config.dayOfWeekChoice, (string val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.required_fishing_level.name"), i18n.Get("config.option.required_fishing_level.description"), () => config.minimumFishingLevel, (int val) => config.minimumFishingLevel = val, 0, 10);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.net_output.name"), i18n.Get("config.option.net_output.description"), () => config.fishPerNet, (float val) => config.fishPerNet = val, 0f, 1f, 0.5f);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.engine_boost.name"), i18n.Get("config.option.engine_boost.description"), () => config.engineFishBonus, (int val) => config.engineFishBonus = val, 0, 2);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.event_frequency_lower.description"), () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.event_frequency_upper.description"), () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
+                configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day.name"), i18n.Get("config.option.murphy_appearance_day.description"), () => config.dayOfWeekChoice, (string val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
 
                 Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Event Freq Lower]: {config.eventFrequencyLower} | [Event Freq Upper]: {config.eventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
             }
@@ -715,7 +726,7 @@ namespace FishingTrawler
             }
 
             // Select highest priority item (priority == default_priority_level * frequency)
-            return amountOfEvents == 0 ? "Yoba be praised!" : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
+            return amountOfEvents == 0 ? i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
         internal static void AlertPlayersOfDeparture(long mainDeckhandID, List<Farmer> farmersToAlert)

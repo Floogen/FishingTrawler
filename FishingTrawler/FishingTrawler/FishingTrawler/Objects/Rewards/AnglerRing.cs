@@ -20,8 +20,8 @@ namespace FishingTrawler.Objects.Rewards
         public AnglerRing() : base(531)
         {
             base.Category = -96;
-            this.displayName = "Angler's Ring";
-            this.description = "A ring that is cold to the touch.\n\nWearing it makes you feel in harmony with the ocean.";
+            this.displayName = ModEntry.i18n.Get("item.angler_ring.name");
+            this.description = ModEntry.i18n.Get("item.angler_ring.description");
             this.price.Value = 0;
         }
 

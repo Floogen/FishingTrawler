@@ -28,11 +28,11 @@ namespace FishingTrawler.Objects
             who.Halt();
             who.faceGeneralDirection(base.getStandingPosition(), 0, opposite: false, useTileCalculations: false);
 
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
             if (!who.hasOrWillReceiveMail("FishingTrawler_IntroductionsMurphy"))
             {
-                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Introduction", playerTerm), this));
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.introduction", playerTerm), this));
                 Game1.drawDialogue(this);
 
                 who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
@@ -42,13 +42,13 @@ namespace FishingTrawler.Objects
             {
                 if (Game1.isRaining || Game1.isSnowing)
                 {
-                    this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Greeting_Rainy", playerTerm), this));
+                    this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.greeting_rainy", playerTerm), this));
                     Game1.drawDialogue(this);
                     Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
                 else
                 {
-                    this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Greeting", playerTerm), this));
+                    this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.greeting", playerTerm), this));
                     Game1.drawDialogue(this);
                     Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
@@ -57,7 +57,7 @@ namespace FishingTrawler.Objects
             }
             else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY].ToLower() == "false" && PlayerHasUnidentifiedFlagInInventory(who))
             {
-                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Reward_Explanation_Flags", playerTerm), this));
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.reward_explanation_flags", playerTerm), this));
                 Game1.drawDialogue(this);
                 Game1.afterDialogues = TakeAndIdentifyFlag;
 
@@ -70,21 +70,21 @@ namespace FishingTrawler.Objects
             }
             else if (who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "false")
             {
-                string tripState = who.modData[ModEntry.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "Successful" : "Failure";
-                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, String.Concat("After_Trip_", tripState), playerTerm), this));
+                string tripState = who.modData[ModEntry.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "successful" : "failure";
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue(String.Concat("dialogue.after_trip_", tripState), playerTerm), this));
                 Game1.drawDialogue(this);
 
                 who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY] = "true";
             }
             else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true" && PlayerHasUnidentifiedFlagInInventory(who))
             {
-                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Identify_Flag", playerTerm), this));
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.identify_flag", playerTerm), this));
                 Game1.drawDialogue(this);
                 Game1.afterDialogues = TakeAndIdentifyFlag;
             }
             else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
             {
-                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Trip_Finished", playerTerm), this));
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.trip_finished", playerTerm), this));
                 Game1.drawDialogue(this);
             }
         }
@@ -113,18 +113,18 @@ namespace FishingTrawler.Objects
                     return;
                 }
 
-                string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+                string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
                 who.currentLocation.localSound("coin");
                 who.reduceActiveItemByOne();
 
                 if (ModEntry.GetHoistedFlag() == FlagType.Unknown)
                 {
-                    this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Given_Flag_To_Hoist", playerTerm), this));
+                    this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.given_flag_to_hoist", playerTerm), this));
                 }
                 else
                 {
-                    this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Given_Flag_To_Hoist_Return_Old", playerTerm), this));
+                    this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.given_flag_to_hoist_return_old", playerTerm), this));
                     who.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
 
                     // Set their toolbar to one to avoid player accidentally giving back the flag they just got?
@@ -138,19 +138,19 @@ namespace FishingTrawler.Objects
 
         private void ConfirmFirstTrip(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
             Response[] answers = new Response[2]
             {
-                new Response("YesExplain", "Yes"),
-                new Response("NoExplain", "No")
+                new Response("YesExplain", ModEntry.i18n.Get("response.yes_explain")),
+                new Response("NoExplain", ModEntry.i18n.Get("response.no_explain"))
             };
 
-            this.currentLocation.createQuestionDialogue(GetDialogue(ModResources.murphyDialoguePath, "Confirm_First_Trip", playerTerm), answers, OnPlayerResponse, this);
+            this.currentLocation.createQuestionDialogue(GetDialogue("dialogue.confirm_first_trip", playerTerm), answers, OnPlayerResponse, this);
         }
 
         private void ExplainMinigame(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
             this.CurrentDialogue.Push(new Dialogue(GetMinigameExplanation(playerTerm), this));
             Game1.drawDialogue(this);
@@ -161,48 +161,48 @@ namespace FishingTrawler.Objects
             }
         }
 
-        private string GetDialogue(string dialoguePath, string dialogueTitle, object title = null)
+        private string GetDialogue(string dialogueTitle, object playerTitle = null)
         {
-            return Game1.content.LoadString(String.Concat(dialoguePath, ":", dialogueTitle), title);
+            return String.Format(ModEntry.i18n.Get(dialogueTitle), playerTitle);
         }
 
         private string GetMinigameExplanation(object title = null)
         {
-            return String.Concat(GetDialogue(ModResources.murphyDialoguePath, "Minigame_Explanation_Hull", title), GetDialogue(ModResources.murphyDialoguePath, "Minigame_Explanation_Bailing", title), GetDialogue(ModResources.murphyDialoguePath, "Minigame_Explanation_Nets", title), GetDialogue(ModResources.murphyDialoguePath, "Minigame_Explanation_Engine", title), GetDialogue(ModResources.murphyDialoguePath, "Minigame_Explanation_Finish", title));
+            return String.Concat(GetDialogue("dialogue.minigame_explanation_hull", title), GetDialogue("dialogue.minigame_explanation_bailing", title), GetDialogue("dialogue.minigame_explanation_nets", title), GetDialogue("dialogue.minigame_explanation_engine", title), GetDialogue("dialogue.minigame_explanation_finish", title));
         }
 
         private void AskQuestionAfterGreeting()
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (Game1.player.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (Game1.player.IsMale ? "Male" : "Female"));
 
             List<Response> answers = new List<Response>()
             {
-                new Response("StartTrip", "I'm ready to set sail!")
+                new Response("StartTrip", ModEntry.i18n.Get("response.start_trip"))
             };
 
             if (PlayerHasUnidentifiedFlagInInventory(Game1.player))
             {
-                answers.Add(new Response("IdentifyFlag", "I found another flag!"));
+                answers.Add(new Response("IdentifyFlag", ModEntry.i18n.Get("response.found_another_flag")));
             }
             if (Context.IsMultiplayer)
             {
-                answers.Add(new Response("MultipleDeckhands", "Could I bring some friends along?"));
+                answers.Add(new Response("MultipleDeckhands", ModEntry.i18n.Get("response.bring_some_friends")));
             }
 
-            answers.Add(new Response("GotQuestion", "I've got some questions."));
-            answers.Add(new Response("NoDeparture", "Maybe another time."));
+            answers.Add(new Response("GotQuestion", ModEntry.i18n.Get("response.more_questions")));
+            answers.Add(new Response("NoDeparture", ModEntry.i18n.Get("response.no_departure")));
 
-            this.currentLocation.createQuestionDialogue(GetDialogue(ModResources.murphyDialoguePath, "Options", playerTerm), answers.ToArray(), OnPlayerResponse, this);
+            this.currentLocation.createQuestionDialogue(GetDialogue("dialogue.options", playerTerm), answers.ToArray(), OnPlayerResponse, this);
         }
 
         private void StartDepartureDialogue(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
             // Verify main player has empty spot for bucket
             if (who.freeSpotsInInventory() == 0)
             {
-                this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Full_Inventory", playerTerm), this));
+                this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.full_inventory", playerTerm), this));
                 Game1.drawDialogue(this);
                 return;
             }
@@ -217,35 +217,40 @@ namespace FishingTrawler.Objects
             // Check if any deckhands have open menus
             //List<Farmer> deckhands = ModEntry.trawlerObject.GetFarmersToDepart(true);
 
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Start_Departure", playerTerm), this));
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.start_departure", playerTerm), this));
             Game1.afterDialogues = delegate () { ModEntry.trawlerObject.StartDeparture(who); };
             Game1.drawDialogue(this);
         }
 
         private void HowToHoistDialogue(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "How_To_Hoist_Flag", playerTerm), this));
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.how_to_hoist_flag", playerTerm), this));
             Game1.drawDialogue(this);
         }
 
         private void WhatFlagIsHoisted(Farmer who)
         {
-            string flagName = AncientFlag.GetFlagName(ModEntry.GetHoistedFlag()).Replace("The", "the");
-            if (!flagName.Contains("the"))
+            string flagName = AncientFlag.GetFlagName(ModEntry.GetHoistedFlag());
+            if (ModEntry.modHelper.Translation.LocaleEnum == LocalizedContentManager.LanguageCode.en)
             {
-                flagName = String.Concat("the", " ", flagName);
+                flagName = flagName.Replace("The", "the");
+                if (!flagName.Contains("the"))
+                {
+                    flagName = String.Concat("the", " ", flagName);
+                }
             }
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "What_Flag_Is_Hoisted" + (ModEntry.GetHoistedFlag() == FlagType.Unknown ? "_None" : ""), flagName), this));
+
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.what_flag_is_hoisted" + (ModEntry.GetHoistedFlag() == FlagType.Unknown ? "_None" : ""), flagName), this));
             Game1.drawDialogue(this);
         }
 
         private void RemoveHoistedFlag(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Remove_Current_Flag", playerTerm), this));
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.remove_current_flag", playerTerm), this));
             Game1.drawDialogue(this);
 
             Game1.player.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
@@ -254,53 +259,53 @@ namespace FishingTrawler.Objects
 
         private void IdentifyFlag(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Identify_Flag", playerTerm), this));
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.identify_flag", playerTerm), this));
             Game1.drawDialogue(this);
             Game1.afterDialogues = TakeAndIdentifyFlag;
         }
 
         private void MultipleDeckhands(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "Multiple_Deckhands", playerTerm), this));
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.multiple_deckhands", playerTerm), this));
             Game1.drawDialogue(this);
         }
 
         private void SayGoodbye(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
-            this.CurrentDialogue.Push(new Dialogue(GetDialogue(ModResources.murphyDialoguePath, "GoodBye", playerTerm), this));
+            this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.goodbye", playerTerm), this));
             Game1.drawDialogue(this);
         }
 
         private void ShowMoreQuestions(Farmer who)
         {
-            string playerTerm = GetDialogue(ModResources.murphyDialoguePath, "Player_" + (who.IsMale ? "Male" : "Female"));
+            string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
             List<Response> answers = new List<Response>()
             {
-                new Response("MinigameExplanation", "What does a deckhand do?")
+                new Response("MinigameExplanation", ModEntry.i18n.Get("response.what_does_deckhand_do"))
             };
 
             if (PlayerHasIdentifiedFlagInInventory(Game1.player))
             {
-                answers.Add(new Response("WantToHoist", "I'd like to hoist a flag."));
+                answers.Add(new Response("WantToHoist", ModEntry.i18n.Get("response.like_to_hoist_flag")));
             }
             if (Game1.player.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
             {
-                answers.Add(new Response("WhatFlag", "What flag is the trawler flying?"));
+                answers.Add(new Response("WhatFlag", ModEntry.i18n.Get("response.what_flag_is_trawler_flying")));
             }
             if (ModEntry.GetHoistedFlag() != FlagType.Unknown)
             {
-                answers.Add(new Response("GetFlag", "Could I have my flag back?"));
+                answers.Add(new Response("GetFlag", ModEntry.i18n.Get("response.want_have_flag_back")));
             }
 
-            answers.Add(new Response("NeverMind", "Actually never mind."));
+            answers.Add(new Response("NeverMind", ModEntry.i18n.Get("response.never_mind")));
 
-            this.currentLocation.createQuestionDialogue(GetDialogue(ModResources.murphyDialoguePath, "More_Questions", playerTerm), answers.ToArray(), OnPlayerResponse, this);
+            this.currentLocation.createQuestionDialogue(GetDialogue("dialogue.more_questions", playerTerm), answers.ToArray(), OnPlayerResponse, this);
         }
 
         private void OnPlayerResponse(Farmer who, string answer)
