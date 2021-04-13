@@ -115,5 +115,10 @@
   "game_message.gamblers_crest_effect.failed": "The Gamber's Crest took your haul!",
   "game_message.gamblers_crest_effect.neutral": "The Gamber's Crest left your haul untouched.",
   "game_message.xp_gained": "You gained {0} fishing XP from the trip!",
-  "game_message.bonus_xp_gained": "The Patron Saint flag gifted you {0} bonus XP!"
+  "game_message.bonus_xp_gained": "The Patron Saint flag gifted you {0} bonus XP!",
+  "game_message.empty_crate": "The fishing crate is empty.",
+  "game_message.messy_note": "There's a note here...#You can't read the handwriting.",
+  "game_message.readable_note": "There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.",
+  "game_message.speak_to_captain": "You should speak to the captain before boarding his ship!",
+  "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea..."
 }

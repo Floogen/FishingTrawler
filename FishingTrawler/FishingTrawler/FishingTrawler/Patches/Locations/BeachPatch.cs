@@ -60,7 +60,7 @@ namespace FishingTrawler.Patches.Locations
 
                     if (ModEntry.rewardChest.items.Count() == 0)
                     {
-                        Game1.drawObjectDialogue("The fishing crate is empty.");
+                        Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.empty_crate"));
                         break;
                     }
 
@@ -70,11 +70,11 @@ namespace FishingTrawler.Patches.Locations
                 case "TrawlerNote":
                     if (!who.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
                     {
-                        Game1.drawObjectDialogue("There's a note here...#You can't read the handwriting.");
+                        Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.messy_note"));
                         break;
                     }
 
-                    Game1.drawObjectDialogue($"There's a note here...#It is from Murphy! It says he will be docked every {Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]} and to speak with him before nightfall if you wish to go on a fishing trip.");
+                    Game1.drawObjectDialogue(String.Format(ModEntry.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]));
                     break;
                 default:
                     break;

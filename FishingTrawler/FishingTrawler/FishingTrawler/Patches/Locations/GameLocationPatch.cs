@@ -102,12 +102,12 @@ namespace FishingTrawler.Patches.Locations
 
             if (fullActionString == "FishingTrawler_AttemptBoard")
             {
-                Game1.drawObjectDialogue("You should speak to the captain before boarding his ship!");
+                Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.speak_to_captain"));
             }
 
             if (fullActionString == "FishingTrawler_NoMurphy")
             {
-                Game1.drawObjectDialogue("Walking the plank doesn't seem like such a great idea...");
+                Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.walk_the_plank"));
             }
         }
 
