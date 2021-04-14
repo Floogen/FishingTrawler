@@ -110,15 +110,6 @@ namespace FishingTrawler
             // Initialize the timer for fishing trip
             fishingTripTimer.Value = 0;
 
-            // Set up notification messages
-            MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>(helper.Translation.Get("status_message.ship_falling_apart"), 10);
-            MESSAGE_LOSING_FISH = new KeyValuePair<string, int>(helper.Translation.Get("status_message.losing_fish"), 9);
-            MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>(helper.Translation.Get("status_message.taking_on_water"), 8);
-            MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>(helper.Translation.Get("status_message.lots_of_problems"), 7);
-            MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.engine_failing"), 7);
-            MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.nets_torn"), 6);
-            MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.leak"), 5);
-
             // Set up our notification system on the trawler
             _eventSecondInterval = 600;
             _isTripEnding.Value = false;
@@ -574,6 +565,15 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
+            // Set up notification messages
+            MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>(i18n.Get("status_message.ship_falling_apart"), 10);
+            MESSAGE_LOSING_FISH = new KeyValuePair<string, int>(i18n.Get("status_message.losing_fish"), 9);
+            MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>(i18n.Get("status_message.taking_on_water"), 8);
+            MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>(i18n.Get("status_message.lots_of_problems"), 7);
+            MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.engine_failing"), 7);
+            MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.nets_torn"), 6);
+            MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.leak"), 5);
+
             todayDayOfWeek = SDate.Now().DayOfWeek.ToString();
 
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
@@ -802,7 +802,7 @@ namespace FishingTrawler
 
         internal static void SpawnMurphy()
         {
-            murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
+            murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
         }
 
         internal static bool IsMainDeckhand()
