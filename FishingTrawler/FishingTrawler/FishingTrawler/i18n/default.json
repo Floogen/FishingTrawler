@@ -118,7 +118,19 @@
   "game_message.bonus_xp_gained": "The Patron Saint flag gifted you {0} bonus XP!",
   "game_message.empty_crate": "The fishing crate is empty.",
   "game_message.messy_note": "There's a note here...#You can't read the handwriting.",
-  "game_message.readable_note": "There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.",
+  "game_message.readable_note": "There's a note here...#It is from Murphy! It says he will be docked next week and to speak with him before nightfall if you wish to go on a fishing trip.",
   "game_message.speak_to_captain": "You should speak to the captain before boarding his ship!",
-  "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea..."
+  "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea...",
+
+  // UI related
+  "ui.flooding.name": "Flooding",
+  "ui.nets.name": "Nets",
+  "ui.engine.name": "Engine",
+  "ui.generic.working": "Working",
+  "ui.nets.ripping": "Ripping",
+  "ui.nets.ripped": "Ripped",
+  "ui.engine.failing": "Failing",
+
+  // Etc
+  "etc.murphy_name": "Murphy"
 }

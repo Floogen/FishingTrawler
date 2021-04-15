@@ -110,15 +110,6 @@ namespace FishingTrawler
             // Initialize the timer for fishing trip
             fishingTripTimer.Value = 0;
 
-            // Set up notification messages
-            MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>(helper.Translation.Get("status_message.ship_falling_apart"), 10);
-            MESSAGE_LOSING_FISH = new KeyValuePair<string, int>(helper.Translation.Get("status_message.losing_fish"), 9);
-            MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>(helper.Translation.Get("status_message.taking_on_water"), 8);
-            MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>(helper.Translation.Get("status_message.lots_of_problems"), 7);
-            MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.engine_failing"), 7);
-            MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.nets_torn"), 6);
-            MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(helper.Translation.Get("status_message.leak"), 5);
-
             // Set up our notification system on the trawler
             _eventSecondInterval = 600;
             _isTripEnding.Value = false;
@@ -140,6 +131,10 @@ namespace FishingTrawler
                 Monitor.Log($"Issue with Harmony patching: {e}", LogLevel.Error);
                 return;
             }
+
+            // Add in our debug commands
+            helper.ConsoleCommands.Add("ft_getflags", "Gives all the variations of the ancient flag.\n\nUsage: ft_getflags", this.DebugGetAllFlags);
+            helper.ConsoleCommands.Add("ft_getspecials", "Gives all the special rewards.\n\nUsage: ft_getspecials", this.DebugGetSpecialRewards);
 
             // Hook into GameLoops related events
             helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
@@ -574,6 +569,15 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
+            // Set up notification messages
+            MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>(i18n.Get("status_message.ship_falling_apart"), 10);
+            MESSAGE_LOSING_FISH = new KeyValuePair<string, int>(i18n.Get("status_message.losing_fish"), 9);
+            MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>(i18n.Get("status_message.taking_on_water"), 8);
+            MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>(i18n.Get("status_message.lots_of_problems"), 7);
+            MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.engine_failing"), 7);
+            MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.nets_torn"), 6);
+            MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.leak"), 5);
+
             todayDayOfWeek = SDate.Now().DayOfWeek.ToString();
 
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
@@ -802,7 +806,7 @@ namespace FishingTrawler
 
         internal static void SpawnMurphy()
         {
-            murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, "Murphy", ModResources.murphyPortraitTexture);
+            murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
         }
 
         internal static bool IsMainDeckhand()
@@ -916,6 +920,22 @@ namespace FishingTrawler
 
             // Increment trip counter for this player by one
             Game1.player.modData[MURPHY_TRIPS_COMPLETED] = (int.Parse(Game1.player.modData[MURPHY_TRIPS_COMPLETED]) + 1).ToString();
+        }
+
+        // Debug commands
+        private void DebugGetAllFlags(string command, string[] args)
+        {
+            foreach (FlagType flagType in Enum.GetValues(typeof(FlagType)))
+            {
+                Game1.player.addItemByMenuIfNecessary(new AncientFlag(flagType));
+            }
+            Monitor.Log($"Giving all ancient flags to {Game1.player}.", LogLevel.Trace);
+        }
+
+        private void DebugGetSpecialRewards(string command, string[] args)
+        {
+            Game1.player.addItemByMenuIfNecessary(new AnglerRing());
+            Monitor.Log($"Giving all special rewards to {Game1.player}.", LogLevel.Trace);
         }
     }
 }
