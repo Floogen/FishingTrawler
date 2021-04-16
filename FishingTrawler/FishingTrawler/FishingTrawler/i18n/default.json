@@ -75,8 +75,8 @@
 
   // Tools and special rewards
   "item.bailing_bucket.name": "Bailing Bucket",
-  "item.bailing_bucket.description_empty": "A bucket filled with sea water. Empty it over the side of the ship.",
-  "item.bailing_bucket.description_full": "A trusty, albeit rusty bucket. Use to pick up water in the hull and empty it into the sea.",
+  "item.bailing_bucket.description_full": "A bucket filled with sea water. Empty it over the side of the ship.",
+  "item.bailing_bucket.description_empty": "A trusty, albeit rusty bucket. Use to pick up water in the hull and empty it into the sea.",
   "item.angler_ring.name": "Angler's Ring",
   "item.angler_ring.description": "It is cold to the touch.\n\nWearing it makes you feel in harmony with the ocean.",
 

@@ -75,8 +75,8 @@
 
   // Tools and special rewards
   "item.bailing_bucket.name": "Su Boşaltma Kovası",
-  "item.bailing_bucket.description_empty": "Deniz suyuyla dolu bir kova. Teknenin kenarından boşaltabilirsin.",
-  "item.bailing_bucket.description_full": "Paslı da olsa güvenilir bir kova. Teknedeki suyu denize boşaltmak için kullanılır.",
+  "item.bailing_bucket.description_full": "Deniz suyuyla dolu bir kova. Teknenin kenarından boşaltabilirsin.",
+  "item.bailing_bucket.description_empty": "Paslı da olsa güvenilir bir kova. Teknedeki suyu denize boşaltmak için kullanılır.",
   "item.angler_ring.name": "Balıkçı Yüzüğü",
   "item.angler_ring.description": "Dokunmak için soğuk.\n\nBunu takmak, okyanusla uyum içinda hissetmeni sağlar.",
 
@@ -120,8 +120,8 @@
   "game_message.messy_note": "Burada bir not var...#El yazısını okuyamıyorsun.",
   "game_message.readable_note": "Burada bir not var...#Murphy yazmış! Her {0} iskeleye yanaşacağını ve balığa çıkmak istiyorsan gece çökmeden önce onunla konuşman gerektiğini yazıyor.",
   "game_message.speak_to_captain": "Gemisine binmeden önce kaptanla konuşmalısın!",
-  "game_message.walk_the_plank": "Tahtada yürümek iyi bir fikir gibi durmuyor..."
-  
+  "game_message.walk_the_plank": "Tahtada yürümek iyi bir fikir gibi durmuyor...",
+
   // UI related
   "ui.flooding.name": "Su Baskını",
   "ui.nets.name": "Balık Ağı",

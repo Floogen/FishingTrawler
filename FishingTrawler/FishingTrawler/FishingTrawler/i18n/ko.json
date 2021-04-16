@@ -75,8 +75,8 @@
 
   // Tools and special rewards
   "item.bailing_bucket.name": "물양동이",
-  "item.bailing_bucket.description_empty": "바닷물로 가득 찬 양동이. 배 옆에서 물을 비우세요.",
-  "item.bailing_bucket.description_full": "사용감 있는 녹슨 양동이. 선체에서 새어 들어온 물을 받아 바다로 비울 때 사용한다..",
+  "item.bailing_bucket.description_full": "바닷물로 가득 찬 양동이. 배 옆에서 물을 비우세요.",
+  "item.bailing_bucket.description_empty": "사용감 있는 녹슨 양동이. 선체에서 새어 들어온 물을 받아 바다로 비울 때 사용한다..",
   "item.angler_ring.name": "어부의 반지",
   "item.angler_ring.description": "차가운 촉감의 반지.\n\n이 반지를 끼면 바다와 공명하게 된다.",
 
