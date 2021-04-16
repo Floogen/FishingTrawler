@@ -26,6 +26,7 @@ namespace FishingTrawler.Objects.Tools
         public BailingBucket() : base()
         {
             this.modData.Add(ModEntry.BAILING_BUCKET_KEY, "true");
+            this.description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
         }
 
         public object getReplacement()
@@ -53,16 +54,6 @@ namespace FishingTrawler.Objects.Tools
         protected override string loadDisplayName()
         {
             return _displayName;
-        }
-
-        protected override string loadDescription()
-        {
-            if (this._containsWater)
-            {
-                return ModEntry.i18n.Get("item.bailing_bucket.description_full");
-            }
-
-            return ModEntry.i18n.Get("item.bailing_bucket.description_empty");
         }
 
         public override bool canBeTrashed()
@@ -108,6 +99,7 @@ namespace FishingTrawler.Objects.Tools
                 {
                     this._containsWater = true;
                     this._bucketScale = 0.5f;
+                    this.description = ModEntry.i18n.Get("item.bailing_bucket.description_full");
 
                     trawlerHull.ChangeWaterLevel(-5);
                     trawlerHull.localSound("slosh");
@@ -124,6 +116,7 @@ namespace FishingTrawler.Objects.Tools
                 {
                     this._containsWater = false;
                     this._bucketScale = 0.5f;
+                    this.description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
 
                     who.currentLocation.localSound("waterSlosh");
                 }
