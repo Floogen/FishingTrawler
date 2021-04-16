@@ -96,6 +96,21 @@ namespace FishingTrawler.GameLocations
             return true;
         }
 
+        public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
+        {
+            Tile tile = this.map.GetLayer("Buildings").PickTile(new Location(tileLocation.X * 64, tileLocation.Y * 64), viewport.Size);
+            if (tile != null && tile.Properties.ContainsKey("CustomAction"))
+            {
+                if (tile.Properties["CustomAction"] == "PathosCat")
+                {
+                    Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.pathos_cat"));
+                    return true;
+                }
+            }
+
+            return base.checkAction(tileLocation, viewport, who);
+        }
+
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
             string actionProperty = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
@@ -107,6 +122,10 @@ namespace FishingTrawler.GameLocations
                 }
 
                 return true;
+            }
+            if (actionProperty != null && actionProperty == "PathosCat")
+            {
+                return Enumerable.Range(who.getTileX(), 1).Contains(xTile);
             }
 
             return base.isActionableTile(xTile, yTile, who);

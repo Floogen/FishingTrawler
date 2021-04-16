@@ -121,6 +121,7 @@
   "game_message.readable_note": "There's a note here...#It is from Murphy! It says he will be docked next week and to speak with him before nightfall if you wish to go on a fishing trip.",
   "game_message.speak_to_captain": "You should speak to the captain before boarding his ship!",
   "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea...",
+  "game_message.pathos_cat": "A cat with an interesting black and white pattern.",
 
   // UI related
   "ui.flooding.name": "Flooding",

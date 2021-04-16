@@ -121,6 +121,7 @@
   "game_message.readable_note": "Burada bir not var...#Murphy yazmış! Her {0} iskeleye yanaşacağını ve balığa çıkmak istiyorsan gece çökmeden önce onunla konuşman gerektiğini yazıyor.",
   "game_message.speak_to_captain": "Gemisine binmeden önce kaptanla konuşmalısın!",
   "game_message.walk_the_plank": "Tahtada yürümek iyi bir fikir gibi durmuyor...",
+  "game_message.pathos_cat": "İlginç siyah beyaz desenli bir kedi.",
 
   // UI related
   "ui.flooding.name": "Su Baskını",

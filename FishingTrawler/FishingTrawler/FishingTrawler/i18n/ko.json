@@ -121,6 +121,7 @@
   "game_message.readable_note": "쪽지가 있다...#머피의 쪽지다! 다음주에 돌아올 예정이고, 낚시 여행을 가고 싶다면 해가 지기 전에 찾아와서 말해달라고 써있다.",
   "game_message.speak_to_captain": "배에 타려면 선장에게 말하세요!",
   "game_message.walk_the_plank": "판자 위를 걷는 것은 그리 좋은 생각이 아닌 것 같다...",
+  "game_message.pathos_cat": "재미있는 흑백 패턴을 가진 고양이.",
 
   // UI related
   "ui.flooding.name": "침수율",
