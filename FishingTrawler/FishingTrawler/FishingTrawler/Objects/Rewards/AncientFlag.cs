@@ -23,7 +23,8 @@ namespace FishingTrawler.Objects.Rewards
         PatronSaint,
         SharksFin,
         Worldly,
-        SlimeKing
+        SlimeKing,
+        KingCrab
     }
 
     public class AncientFlag : Furniture, ISaveElement, ICustomObject
@@ -169,6 +170,8 @@ namespace FishingTrawler.Objects.Rewards
                     return ModEntry.i18n.Get("item.ancient_flag.worldly_flag.name");
                 case FlagType.SlimeKing:
                     return ModEntry.i18n.Get("item.ancient_flag.slime_king.name");
+                case FlagType.KingCrab:
+                    return ModEntry.i18n.Get("item.ancient_flag.king_crab.name");
                 default:
                     return ModEntry.i18n.Get("item.ancient_flag.unknown.name");
             }
@@ -194,6 +197,8 @@ namespace FishingTrawler.Objects.Rewards
                     return ModEntry.i18n.Get("item.ancient_flag.worldly_flag.description");
                 case FlagType.SlimeKing:
                     return ModEntry.i18n.Get("item.ancient_flag.slime_king.description");
+                case FlagType.KingCrab:
+                    return ModEntry.i18n.Get("item.ancient_flag.king_crab.description");
                 default:
                     return ModEntry.i18n.Get("item.ancient_flag.unknown.description");
             }

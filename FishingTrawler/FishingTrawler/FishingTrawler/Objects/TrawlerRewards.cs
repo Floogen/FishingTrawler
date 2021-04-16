@@ -25,6 +25,7 @@ namespace FishingTrawler.Objects
         internal bool hasPatronSaint; // If true, 25% chance of consuming fish but gives full XP
         internal bool hasWorldly; // If true, allows catching of non-ocean fish
         internal bool hasSlimeKing; // If true, consumes all fish but gives a 75% chance of converting each fish into some slime, 50% chance to convert to a Slimejack and a 1% chance to convert into a random slime egg 
+        internal bool hasKingCrab; // If true, causes the trawler to only catch crab pot based creatures and higher chance of crab
 
         public TrawlerRewards(Chest rewardChest)
         {
@@ -43,6 +44,7 @@ namespace FishingTrawler.Objects
             hasPatronSaint = false;
             hasWorldly = false;
             hasSlimeKing = false;
+            hasKingCrab = false;
         }
 
         private int[] GetEligibleFishIds(bool allowCatchingOfNonOceanFish = false)
@@ -74,7 +76,7 @@ namespace FishingTrawler.Objects
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
             eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !_forbiddenFish.Contains(i)));
 
-            return eligibleFishIds.ToArray();
+            return eligibleFishIds.Distinct().ToArray();
         }
 
         private int AttemptGamble(int amountOfFish)
@@ -394,13 +396,25 @@ namespace FishingTrawler.Objects
 
                     string[] specificFishData = fishData[Convert.ToInt32(keys[i])].Split('/');
 
+                    if (specificFishData[1] != "trap" && hasKingCrab)
+                    {
+                        // Skip any non-crab pot based creatures if King Crab is currently active
+                        continue;
+                    }
+
                     if (specificFishData[1] == "trap")
                     {
                         double chance = Convert.ToDouble(specificFishData[2]);
                         chance += (double)((float)_farmer.FishingLevel / 50f);
                         chance /= 1.2f;  // Reduce chance of trap-based catches by 1.2
-
                         chance = Math.Min(chance, 0.89999997615814209);
+
+                        if (hasKingCrab && keys[i] == 717) // 717 is crab
+                        {
+                            randomQuantity = Math.Min(Game1.random.Next(randomQuantity, amountOfFish), 99); // Attempt to boost the amount of crabs caught, but still limited to available fish to reward
+                            chance = 1; // Always give crab if it is selected as an option, as we want preference towards them
+                        }
+
                         if (Game1.random.NextDouble() <= chance)
                         {
                             caughtFish = true;

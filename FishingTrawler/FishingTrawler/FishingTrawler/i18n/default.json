@@ -89,6 +89,7 @@
   "item.ancient_flag.sharks_fin.name": "The Shark's Fin",
   "item.ancient_flag.worldly_flag.name": "Worldly Flag",
   "item.ancient_flag.slime_king.name": "The Slime King",
+  "item.ancient_flag.king_crab.name": "The King Crab",
   "item.ancient_flag.unknown.name": "Ancient Flag",
 
   "item.ancient_flag.parely.description": "Prevents leaks from occurring, but lowers reward quality by 25%.",
@@ -99,6 +100,7 @@
   "item.ancient_flag.sharks_fin.description": "Extends the fishing trawler trip by one minute, allowing for more time to catch fish.",
   "item.ancient_flag.worldly_flag.description": "Allows the trawler to catch fish not normally available in the ocean.",
   "item.ancient_flag.slime_king.description": "Consumes all fish but gives a 75% chance of converting each fish into some slime, 50% chance to convert to a Slimejack and a 1% chance to convert to a random slime egg.",
+  "item.ancient_flag.king_crab.description": "Limits the trawler to crab pot based catches, with a higher chance of crabs.",
   "item.ancient_flag.unknown.description": "An ancient flag that faintly shimmers with magic.\n\nPerhaps Murphy would know more about it?",
 
 

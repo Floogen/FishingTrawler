@@ -313,6 +313,10 @@ namespace FishingTrawler
                         // Consumes all fish but gives a 75% chance of converting each fish into some slime, 50% chance to convert to a Slimejack and a 1% chance to convert into a random slime egg
                         _trawlerRewards.Value.hasSlimeKing = true;
                         break;
+                    case FlagType.KingCrab:
+                        // Causes the trawler to only catch crab pot based creatures, higher chance of crab
+                        _trawlerRewards.Value.hasKingCrab = true;
+                        break;
                     default:
                         // Do nothing
                         break;
