@@ -30,9 +30,14 @@ namespace FishingTrawler.Patches.Locations
             harmony.Patch(AccessTools.Method(_gameLocation, nameof(GameLocation.isActionableTile), new[] { typeof(int), typeof(int), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(IsActionableTilePatch)));
         }
 
+        private static bool IsValidLocation(GameLocation location)
+        {
+            return location is Beach || location is IslandSouthEast;
+        }
+
         internal static void RunLocationSpecificEventCommandPatch(GameLocation __instance, ref bool __result, Event current_event, string command_string, bool first_run, params string[] args)
         {
-            if (!(__instance is Beach))
+            if (!IsValidLocation(__instance))
             {
                 return;
             }
@@ -95,7 +100,7 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void PerformTouchActionPatch(GameLocation __instance, string fullActionString, Vector2 playerStandingPosition)
         {
-            if (Game1.eventUp || !(__instance is Beach))
+            if (Game1.eventUp || !IsValidLocation(__instance))
             {
                 return;
             }
@@ -113,7 +118,7 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void IsActionableTilePatch(GameLocation __instance, ref bool __result, int xTile, int yTile, Farmer who)
         {
-            if (__result || !(__instance is Beach))
+            if (__result || !IsValidLocation(__instance))
             {
                 return;
             }

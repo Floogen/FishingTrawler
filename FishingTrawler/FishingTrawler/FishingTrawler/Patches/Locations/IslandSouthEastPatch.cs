@@ -16,24 +16,24 @@ using FishingTrawler.Objects.Rewards;
 
 namespace FishingTrawler.Patches.Locations
 {
-    public class BeachPatch : Patch
+    public class IslandSouthEastPatch : Patch
     {
-        private readonly Type _beach = typeof(Beach);
+        private readonly Type _islandSouthEast = typeof(IslandSouthEast);
 
-        internal BeachPatch(IMonitor monitor) : base(monitor)
+        internal IslandSouthEastPatch(IMonitor monitor) : base(monitor)
         {
 
         }
 
         internal override void Apply(HarmonyInstance harmony)
         {
-            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.checkAction), new[] { typeof(xTile.Dimensions.Location), typeof(xTile.Dimensions.Rectangle), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(CheckActionPatch)));
-            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.cleanupBeforePlayerExit), null), postfix: new HarmonyMethod(GetType(), nameof(CleanupBeforePlayerExitPatch)));
-            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.draw), new[] { typeof(SpriteBatch) }), postfix: new HarmonyMethod(GetType(), nameof(DrawPatch)));
-            harmony.Patch(AccessTools.Method(_beach, nameof(Beach.UpdateWhenCurrentLocation), new[] { typeof(GameTime) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPatch)));
+            harmony.Patch(AccessTools.Method(_islandSouthEast, nameof(IslandSouthEast.checkAction), new[] { typeof(xTile.Dimensions.Location), typeof(xTile.Dimensions.Rectangle), typeof(Farmer) }), postfix: new HarmonyMethod(GetType(), nameof(CheckActionPatch)));
+            harmony.Patch(AccessTools.Method(_islandSouthEast, nameof(IslandSouthEast.cleanupBeforePlayerExit), null), postfix: new HarmonyMethod(GetType(), nameof(CleanupBeforePlayerExitPatch)));
+            harmony.Patch(AccessTools.Method(_islandSouthEast, nameof(IslandSouthEast.draw), new[] { typeof(SpriteBatch) }), postfix: new HarmonyMethod(GetType(), nameof(DrawPatch)));
+            harmony.Patch(AccessTools.Method(_islandSouthEast, nameof(IslandSouthEast.UpdateWhenCurrentLocation), new[] { typeof(GameTime) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPatch)));
         }
 
-        internal static void CheckActionPatch(Beach __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
+        internal static void CheckActionPatch(IslandSouthEast __instance, ref bool __result, xTile.Dimensions.Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
             if (__result)
             {
@@ -87,14 +87,14 @@ namespace FishingTrawler.Patches.Locations
             }
         }
 
-        internal static void CleanupBeforePlayerExitPatch(Beach __instance)
+        internal static void CleanupBeforePlayerExitPatch(IslandSouthEast __instance)
         {
             ModEntry.trawlerObject.Reset();
             ModEntry.murphyNPC = null;
         }
 
 
-        internal static void DrawPatch(Beach __instance, SpriteBatch b)
+        internal static void DrawPatch(IslandSouthEast __instance, SpriteBatch b)
         {
             if (!ModEntry.ShouldMurphyAppear(__instance) && __instance.currentEvent is null)
             {
@@ -123,7 +123,7 @@ namespace FishingTrawler.Patches.Locations
             }
         }
 
-        internal static void UpdateWhenCurrentLocationPatch(Beach __instance, GameTime time)
+        internal static void UpdateWhenCurrentLocationPatch(IslandSouthEast __instance, GameTime time)
         {
             // Update the Murphy NPC
             if (ModEntry.ShouldMurphyAppear(__instance) && ModEntry.murphyNPC == null)
@@ -142,11 +142,11 @@ namespace FishingTrawler.Patches.Locations
             }
 
             // Update the appearance of the reward chest
-            if (ModEntry.rewardChest.items.Count() == 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 10)
+            if (ModEntry.rewardChest.items.Count() == 0 && __instance.getTileIndexAt(new Point(5, 39), "Buildings") != 10)
             {
                 SwapRewardChestTiles(__instance, 10);
             }
-            else if (ModEntry.rewardChest.items.Count() > 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 0)
+            else if (ModEntry.rewardChest.items.Count() > 0 && __instance.getTileIndexAt(new Point(5, 39), "Buildings") != 0)
             {
                 SwapRewardChestTiles(__instance, 0);
             }
@@ -229,8 +229,8 @@ namespace FishingTrawler.Patches.Locations
         {
             for (int x = 0; x < 3; x++)
             {
-                location.setMapTileIndex(82 + x, 37, startingOffset + x, "Buildings");
-                location.setMapTileIndex(82 + x, 38, startingOffset + x + 5, "Buildings"); // Offsetting by 5 for second row from tilesheet
+                location.setMapTileIndex(5 + x, 38, startingOffset + x, "Buildings");
+                location.setMapTileIndex(5 + x, 39, startingOffset + x + 5, "Buildings"); // Offsetting by 5 for second row from tilesheet
             }
         }
     }

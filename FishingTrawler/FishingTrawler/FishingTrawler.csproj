@@ -80,6 +80,7 @@
     <Compile Include="FishingTrawler\ModEntry.cs" />
     <Compile Include="FishingTrawler\ModResources.cs" />
     <Compile Include="FishingTrawler\Objects\TrawlerRewards.cs" />
+    <Compile Include="FishingTrawler\Patches\Locations\IslandSouthEastPatch.cs" />
     <Compile Include="FishingTrawler\Patches\Locations\GameLocationPatch.cs" />
     <Compile Include="FishingTrawler\Patches\Locations\BeachPatch.cs" />
     <Compile Include="FishingTrawler\Patches\Patch.cs" />
@@ -101,6 +102,10 @@
     </None>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\IslandBeachPatchEmpty.tmx">
       <Link>[CP] FishingTrawler\assets\IslandBeachPatchEmpty.tmx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\IslandBeachPatchMurphy.tmx">
+      <Link>[CP] FishingTrawler\assets\IslandBeachPatchMurphy.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerCabin.tmx">

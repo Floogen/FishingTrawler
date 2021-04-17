@@ -2,6 +2,7 @@
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Locations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +23,29 @@ namespace FishingTrawler.Objects
         internal float _nextSmoke;
         internal bool _boatAnimating;
         internal bool _closeGate;
-        internal readonly GameLocation _beach;
+        internal readonly GameLocation location;
 
         public Trawler()
         {
 
         }
 
-        public Trawler(GameLocation beachLocation)
+        public Trawler(GameLocation location)
         {
-            _beach = beachLocation;
-            this._boatPosition = new Vector2(80f, 41f) * 64f;
+            this.location = location;
+            this._boatPosition = GetStartingPosition();
+        }
+
+        internal Vector2 GetStartingPosition()
+        {
+            if (location is null || location is Beach)
+            {
+                return new Vector2(80f, 41f) * 64f;
+            }
+            else
+            {
+                return new Vector2(3f, 42f) * 64f;
+            }
         }
 
         internal Vector2 GetTrawlerPosition()
@@ -47,7 +60,7 @@ namespace FishingTrawler.Objects
             this._nextSmoke = 0f;
             this._nextBubble = 0f;
             this._boatAnimating = false;
-            this._boatPosition = new Vector2(80f, 41f) * 64f;
+            this._boatPosition = GetStartingPosition();
             this._boatOffset = 0;
             this._boatDirection = 0;
             this._closeGate = false;
@@ -60,8 +73,14 @@ namespace FishingTrawler.Objects
                 ModEntry.murphyNPC = null;
             }
 
-            string id = _beach.currentEvent is null ? "Empty" : _beach.currentEvent.id.ToString();
-            ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {_beach.currentEvent is null} | {id}", LogLevel.Trace);
+            string id = location.currentEvent is null ? "Empty" : location.currentEvent.id.ToString();
+            ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {location.currentEvent is null} | {id}", LogLevel.Trace);
+
+            string eventString = "/-1000 -1000/farmer 0 0 0/playMusic none/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Back 87 40 14/changeMapTile Buildings 87 41 19/changeMapTile Buildings 87 42 24/changeMapTile Buildings 87 43 4/fade/viewport 83 38/locationSpecificCommand non_blocking_pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/changeMapTile Back 87 40 18/changeMapTile Buildings 87 41 14/changeMapTile Buildings 87 42 19/changeMapTile Buildings 87 43 24/locationSpecificCommand warp_to_cabin/end warpOut";
+            if (location is IslandSouthEast)
+            {
+                eventString = "/-1000 -1000/farmer 0 0 0/playMusic none/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Back 10 41 14/changeMapTile Buildings 10 42 19/changeMapTile Buildings 10 43 24/changeMapTile Buildings 10 44 4/fade/viewport 22 39/locationSpecificCommand non_blocking_pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/changeMapTile Back 10 41 18/changeMapTile Buildings 10 42 14/changeMapTile Buildings 10 43 19/changeMapTile Buildings 10 44 24/locationSpecificCommand warp_to_cabin/end warpOut";
+            }
 
             if (Context.IsMultiplayer)
             {
@@ -79,12 +98,12 @@ namespace FishingTrawler.Objects
                     Game1.warpingForForcedRemoteEvent = true;
                     Game1.player.completelyStopAnimatingOrDoingAction();
 
-                    farmerActor.currentLocation = _beach;
+                    farmerActor.currentLocation = location;
                     farmerActor.completelyStopAnimatingOrDoingAction();
                     farmerActor.UsingTool = false;
                     farmerActor.items.Clear();
                     farmerActor.hidden.Value = false;
-                    Event @event = Game1.currentLocation.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, farmerActor);
+                    Event @event = new Event(eventString, ModEntry.BOAT_DEPART_EVENT_ID, farmerActor);
                     @event.showWorldCharacters = false;
                     @event.showGroundObjects = true;
                     @event.ignoreObjectCollisions = false;
@@ -101,7 +120,7 @@ namespace FishingTrawler.Objects
                 return;
             }
 
-            _boatEvent = _beach.findEventById(ModEntry.BOAT_DEPART_EVENT_ID, Game1.player);
+            _boatEvent = new Event(eventString, ModEntry.BOAT_DEPART_EVENT_ID, Game1.player);
             _boatEvent.showWorldCharacters = false;
             _boatEvent.showGroundObjects = true;
             _boatEvent.ignoreObjectCollisions = false;
@@ -110,8 +129,8 @@ namespace FishingTrawler.Objects
 
             Event boatEvent = this._boatEvent;
             boatEvent.onEventFinished = (Action)Delegate.Combine(boatEvent.onEventFinished, new Action(OnBoatEventEnd));
-            _beach.currentEvent = this._boatEvent;
-            _boatEvent.checkForNextCommand(_beach, Game1.currentGameTime);
+            location.currentEvent = this._boatEvent;
+            _boatEvent.checkForNextCommand(location, Game1.currentGameTime);
 
             Game1.eventUp = true;
         }
@@ -124,7 +143,7 @@ namespace FishingTrawler.Objects
             ModEntry.numberOfDeckhands = farmersToDepart.Count();
             ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
 
-            _beach.modData[ModEntry.MURPHY_ON_TRIP] = "true";
+            location.modData[ModEntry.MURPHY_ON_TRIP] = "true";
 
             TriggerDepartureEvent();
 
@@ -158,7 +177,11 @@ namespace FishingTrawler.Objects
         internal List<Farmer> GetFarmersToDepart()
         {
             Rectangle zoneOfDeparture = new Rectangle(82, 26, 10, 16);
-            return _beach.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !ModEntry.HasFarmerGoneSailing(f)).ToList();
+            if (location is IslandSouthEast)
+            {
+                zoneOfDeparture = new Rectangle(5, 31, 10, 16);
+            }
+            return location.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !ModEntry.HasFarmerGoneSailing(f)).ToList();
         }
     }
 }

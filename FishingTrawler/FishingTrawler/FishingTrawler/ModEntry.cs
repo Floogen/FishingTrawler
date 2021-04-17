@@ -125,6 +125,7 @@ namespace FishingTrawler
 
                 // Apply our patches
                 new BeachPatch(monitor).Apply(harmony);
+                new IslandSouthEastPatch(monitor).Apply(harmony);
                 new GameLocationPatch(monitor).Apply(harmony);
             }
             catch (Exception e)
@@ -225,11 +226,11 @@ namespace FishingTrawler
             // Check if player just left the trawler
             if (!IsPlayerOnTrawler() && IsValidTrawlerLocation(e.OldLocation))
             {
-                if (murphyNPC is null && e.NewLocation is Beach)
+                if (murphyNPC is null && (e.NewLocation is Beach || e.NewLocation is IslandSouthEast))
                 {
                     // Spawn Murphy, if he isn't already there
                     e.NewLocation.modData[ModEntry.MURPHY_ON_TRIP] = "false";
-                    SpawnMurphy();
+                    SpawnMurphy(e.NewLocation);
                 }
 
                 // Set the theme to null
@@ -568,10 +569,11 @@ namespace FishingTrawler
                 var patcherAPI = ApiManager.GetContentPatcherInterface();
                 patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDay", () =>
                 {
-                    return new[] {
-                        Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice,
-                        Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland,
-                    };
+                    return new[] { Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
+                });
+                patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDayIsland", () =>
+                {
+                    return new[] { Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland };
                 });
             }
         }
@@ -592,17 +594,29 @@ namespace FishingTrawler
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
             beach.modData[MURPHY_ON_TRIP] = "false";
 
+            IslandSouthEast island = Game1.getLocationFromName("IslandSouthEast") as IslandSouthEast;
+            island.modData[MURPHY_ON_TRIP] = "false";
+
             // Set Farmer moddata used for this mod
             EstablishPlayerData();
 
             if (Context.IsMainPlayer)
             {
-                // Must be a Wednesday, the player's fishing level >= 3 and the bridge must be fixed on the beach
+                // Must be a user set date (default Wednesday), the player's fishing level >= 3 and the bridge must be fixed on the beach
                 if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
                     Helper.Content.AssetEditors.Add(new IntroMail());
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
+                }
+
+                // Must be a user set island date (default Satuday), the player's fishing level >= 3 and Ginger Island must be unlocked
+                IslandSouth resort = Game1.getLocationFromName("IslandSouth") as IslandSouth;
+                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
+                {
+                    Monitor.Log($"Sending {Game1.MasterPlayer.Name} Ginger Island letter about Murphy!", LogLevel.Trace);
+                    //Helper.Content.AssetEditors.Add(new IntroMail());
+                    //Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_MurphyGingerIsland");
                 }
             }
 
@@ -624,7 +638,14 @@ namespace FishingTrawler
             }
 
             // Create the trawler object for the beach
-            trawlerObject = new Trawler(beach);
+            if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
+            {
+                trawlerObject = new Trawler(island);
+            }
+            else
+            {
+                trawlerObject = new Trawler(beach);
+            }
 
             // Create the TrawlerReward class
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
@@ -805,17 +826,32 @@ namespace FishingTrawler
 
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
+            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
             {
-                return true;
+                if (location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
+                {
+                    return true;
+                }
+
+                if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
+                {
+                    return true;
+                }
             }
 
             return false;
         }
 
-        internal static void SpawnMurphy()
+        internal static void SpawnMurphy(GameLocation location)
         {
-            murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
+            if (location is IslandSouthEast)
+            {
+                murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(12.05f, 39.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
+            }
+            else
+            {
+                murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
+            }
         }
 
         internal static bool IsMainDeckhand()
@@ -924,7 +960,15 @@ namespace FishingTrawler
             Monitor.Log($"Trip is ending for {GetFarmersOnTrawler().Count()} deckhands...", LogLevel.Trace);
             _trawlerRewards.Value.CalculateAndPopulateReward(_trawlerSurface.Value.fishCaughtQuantity);
 
-            DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
+            if (trawlerObject.location is IslandSouthEast)
+            {
+                DelayedAction.warpAfterDelay("IslandSouthEast", new Point(9, 39), 2500);
+            }
+            else
+            {
+                DelayedAction.warpAfterDelay("Beach", new Point(86, 38), 2500);
+            }
+
 
             _isTripEnding.Value = true;
 
