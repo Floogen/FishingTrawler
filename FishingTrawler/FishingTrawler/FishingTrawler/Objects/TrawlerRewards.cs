@@ -420,7 +420,7 @@ namespace FishingTrawler.Objects
                             caughtFish = true;
                             selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
                             caughtXP = 5f; // Crab pot always give 5 XP per Vanilla
-                            continue;
+                            break;
                         }
                     }
                     else if (_farmer.FishingLevel >= Convert.ToInt32(specificFishData[12]))
@@ -438,7 +438,7 @@ namespace FishingTrawler.Objects
                             caughtFish = true;
                             selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
                             caughtXP = 3f + (difficulty / 3);
-                            continue;
+                            break;
                         }
                     }
                 }
