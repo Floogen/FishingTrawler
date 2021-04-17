@@ -73,7 +73,7 @@
     <Compile Include="FishingTrawler\ModConfig.cs" />
     <Compile Include="FishingTrawler\Objects\Rewards\AnglerRing.cs" />
     <Compile Include="FishingTrawler\Objects\Rewards\AncientFlag.cs" />
-    <Compile Include="FishingTrawler\Objects\IntroMail.cs" />
+    <Compile Include="FishingTrawler\Objects\CustomMail.cs" />
     <Compile Include="FishingTrawler\Objects\Murphy.cs" />
     <Compile Include="FishingTrawler\Objects\Tools\BailingBucket.cs" />
     <Compile Include="FishingTrawler\Objects\Trawler.cs" />

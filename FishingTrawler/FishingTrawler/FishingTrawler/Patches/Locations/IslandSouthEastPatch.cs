@@ -76,7 +76,7 @@ namespace FishingTrawler.Patches.Locations
 
                     if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en)
                     {
-                        Game1.drawObjectDialogue(String.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]));
+                        Game1.drawObjectDialogue(String.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR_ISLAND]));
                         break;
                     }
 

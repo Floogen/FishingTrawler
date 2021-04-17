@@ -21,6 +21,7 @@
   "dialogue.introduction": "거기 {0}!$h#$b#자네가 @구먼? 윌리의 친구가 온다고 듣긴 했지만, 이런 젊은이였다니.$n#$b#이 여명 호의 갑판원이 되고 싶나?$n#$b#뱃삯은 따로 없지만 잡은 물고기를 나눠주겠네!$h#$e",
   "dialogue.greeting": "거기 {0}!$h#$b#오늘은 바다가 잔잔하니 배타기 딱 좋은 날씨야. 요바의 축복이 함께하는 항해가 될걸세.$n#$e",
   "dialogue.greeting_rainy": "거기 {0}!$h#$b#오늘은 바다가 거칠지만, 용맹한 선원들을 막을 수는 없어.$n#$e",
+  "dialogue.greeting_island": "Ahoy there {0}!$h#$b#Nothing like enjoying a good drink while feelin' the ocean breeze, aye {0}?$h#$e",
   "dialogue.options": "낚시 여행을 떠날까, {0}?",
   "dialogue.confirm_first_trip": "자네는 낚시 여행은 처음이라지? 갑판원이 하는 일에 대해 설명해줄까?",
   "dialogue.minigame_explanation_hull": "페른 제도의 섬들을 항해하는 동안 갑판장은 여명호가 멈추지 않고 계속 움직이도록 배의 여러 부분을 살펴야 해.$n#$b#이 배는 나와 함께 오랜 세월을 보낸 친구야. 나와 함께 늙은 만큼 고장나기도 쉽지.$s#$b#선체에 구멍이 나기 쉬우니 빨리 수습해야 할걸세.$n#$b#너무 많이 침수되면 안전을 위해 회황해야 하지. 자네의 몫도 그만큼 줄어들게야.$s#$b#",
@@ -74,6 +75,7 @@
 
   // Letter message that is sent once player has requirements to meet Murphy
   "letter.meet_murphy": "잘 지내나, 농부씨!^ ^내 오랜 친구 머피가 최근에 찾아왔네. 아무래도 어선에서 일할 갑판원을 찾고 있는 모양이야. 네가 마을에서 낚시하던 모습이 생각해서 귀띔했더니 너를 만나고 싶어 하는 눈치였어.^ ^-윌리 ^ ^P.S. 머피는 다리 건너 오른쪽 해안에 있는 부두에 정박할거야. 그리고 해가 지기 전에 떠난다고 했어.",
+  "letter.island_murphy": "Ahoy there!^ ^I caught wind ye recently built a resort on ol' Ginger Island. I'll be stopping by there weekly on {0} to stretch my legs and grab a drink. ^^If yer interested in another fishing trip, meet me at the docks on the eastern part of the island before nightfall.^ ^-Murphy",
 
   // Tools and special rewards
   "item.bailing_bucket.name": "물양동이",
@@ -91,6 +93,7 @@
   "item.ancient_flag.sharks_fin.name": "상어 지느러미",
   "item.ancient_flag.worldly_flag.name": "세계기",
   "item.ancient_flag.slime_king.name": "슬라임 대왕",
+  "item.ancient_flag.king_crab.name": "The King Crab",
   "item.ancient_flag.unknown.name": "고대의 깃발",
 
   "item.ancient_flag.parely.description": "누출 발생을 방지하는 대신 보상 품질을 25% 낮춥니다..",
@@ -101,6 +104,7 @@
   "item.ancient_flag.sharks_fin.description": "낚싯배 여행을 1분 연장하여 더 많은 시간 동안 물고기를 잡을 수 있다.",
   "item.ancient_flag.worldly_flag.description": "보통 바다에서 구할 수 없는 물고기를 어선에서 잡을 수 있게 한다.",
   "item.ancient_flag.slime_king.description": "모든 생선을 소비하지만 각 생선당 75% 확률로 슬라임, 50% 확률로 슬라임잭, 1% 확률로 무작위 슬라임 알을 얻을 수 있다.",
+  "item.ancient_flag.king_crab.description": "Limits the trawler to crab pot based catches, with a higher chance of crabs.",
   "item.ancient_flag.unknown.description": "고대의 깃발이 마력때문에 반짝거린다.\n\n아마 이 깃발에 대해선 머피가 잘 알지 않을까?",
 
 

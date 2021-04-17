@@ -606,17 +606,17 @@ namespace FishingTrawler
                 if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
-                    Helper.Content.AssetEditors.Add(new IntroMail());
+                    Helper.Content.AssetEditors.Add(new CustomMail());
                     Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
                 }
 
-                // Must be a user set island date (default Satuday), the player's fishing level >= 3 and Ginger Island must be unlocked
+                // Must be a user set island date (default Satuday), met Murphy and Ginger Island's resort must be built
                 IslandSouth resort = Game1.getLocationFromName("IslandSouth") as IslandSouth;
-                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
+                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland") && Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} Ginger Island letter about Murphy!", LogLevel.Trace);
-                    //Helper.Content.AssetEditors.Add(new IntroMail());
-                    //Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_MurphyGingerIsland");
+                    Helper.Content.AssetEditors.Add(new CustomMail());
+                    Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_MurphyGingerIsland");
                 }
             }
 
@@ -638,6 +638,7 @@ namespace FishingTrawler
             }
 
             // Create the trawler object for the beach
+            var locationContext = (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] ? GameLocation.LocationContext.Island : GameLocation.LocationContext.Default);
             if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
             {
                 trawlerObject = new Trawler(island);
@@ -651,15 +652,15 @@ namespace FishingTrawler
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
 
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(surfaceLocation);
 
             // Add the hull location
-            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
+            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(hullLocation);
 
             // Add the cabin location
-            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
+            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(cabinLocation);
 
             // Verify our locations were added and establish our location variables
@@ -832,7 +833,10 @@ namespace FishingTrawler
                 {
                     return true;
                 }
+            }
 
+            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland"))
+            {
                 if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
                 {
                     return true;
@@ -896,7 +900,7 @@ namespace FishingTrawler
                 Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
                 Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
             }
-            else if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR]) // This is intended, as we want MasterPlayer to determine Murphy appearance
+            else if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] || todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND]) // This is intended, as we want MasterPlayer to determine Murphy appearance
             {
                 Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
                 Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";

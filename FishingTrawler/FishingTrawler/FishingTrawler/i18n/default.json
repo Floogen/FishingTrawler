@@ -21,6 +21,7 @@
   "dialogue.introduction": "Ahoy there {0}!$h#$b#Ye must be @? Willy mentioned a pal of his would be stopping by.$n#$b#So yer interested in being a deckhand aboard the ol' Dawnshard?$n#$b#I don't have much to offer as payment, but the share of fish we catch be yers!$h#$e",
   "dialogue.greeting": "Ahoy there {0}!$h#$b#The sea be in our favor today. With Yoba's Blessing we'll make it back in one piece.$n#$e",
   "dialogue.greeting_rainy": "Ahoy there {0}!$h#$b#The sea be rough today, but us seadogs can handle it aye?$n#$e",
+  "dialogue.greeting_island": "Ahoy there {0}!$h#$b#Nothing like enjoying a good drink while feelin' the ocean breeze, aye {0}?$h#$e",
   "dialogue.options": "Fancy a fishing trip, {0}?",
   "dialogue.confirm_first_trip": "Since this will be yer first trip, would ye like an explanation of a deckhand's duties?",
   "dialogue.minigame_explanation_hull": "Yer main job as deckhand will be to keep the Dawnshard afloat while we sail around the Fern Islands.$n#$b#The ol' girl has seen better days, much like myself, and she's prone to breaking down.$s#$b#Holes are likely to appear in the hull, so be sure to patch 'em up quickly.$n#$b#If we take on too much water, I'll have to turn us around and yer share of the haul will become a pittance.$s#$b#",
@@ -74,6 +75,7 @@
 
   // Letter message that is sent once player has requirements to meet Murphy
   "letter.meet_murphy": "Ahoy there!^ ^My old gambling buddy Murphy recently stopped by. He's looking for some deckhands willing to work on his fishing trawler. I brought your name up, as I've seen you fishing around town, and he seems eager to meet you.^ ^-Willy ^ ^P.S. Murphy also mentioned he would be on the far right docks (across the bridge) on {0} and that he would leave before nightfall.",
+  "letter.island_murphy": "Ahoy there!^ ^I caught wind ye recently built a resort on ol' Ginger Island. I'll be stopping by there weekly on {0} to stretch my legs and grab a drink. ^^If yer interested in another fishing trip, meet me at the docks on the eastern part of the island before nightfall.^ ^-Murphy",
 
   // Tools and special rewards
   "item.bailing_bucket.name": "Bailing Bucket",

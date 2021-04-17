@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Locations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +41,15 @@ namespace FishingTrawler.Objects
             }
             else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false" && who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
-                if (Game1.isRaining || Game1.isSnowing)
+                if (Game1.IsRainingHere(this.currentLocation) || Game1.IsSnowingHere(this.currentLocation))
                 {
                     this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.greeting_rainy", playerTerm), this));
+                    Game1.drawDialogue(this);
+                    Game1.afterDialogues = AskQuestionAfterGreeting;
+                }
+                else if (this.currentLocation is IslandSouthEast)
+                {
+                    this.CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.greeting_island", playerTerm), this));
                     Game1.drawDialogue(this);
                     Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
