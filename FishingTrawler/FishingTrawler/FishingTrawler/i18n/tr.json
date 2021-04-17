@@ -12,6 +12,8 @@
   "config.option.event_frequency_upper.description": "Bir olay gerçekleşmeden önce geçebilecek olan maksimum zamanı belirler. Bir saniye için 1, iki saniye için 2 vb.",
   "config.option.murphy_appearance_day.name": "Murphy'nin Geldiği Gün",
   "config.option.murphy_appearance_day.description": "Murphy'nin haftanın hangi günü gezi için müsait olduğunu belirler.",
+  "config.option.murphy_appearance_day_island.name": "Murphy Appearance Day (Island)",
+  "config.option.murphy_appearance_day_island.description": "Determines the day of the week that Murphy will be available for a trip, if you can visit the island.",
 
   // Murphy's dialogue
   "dialogue.player_title.male": "delikanlı",

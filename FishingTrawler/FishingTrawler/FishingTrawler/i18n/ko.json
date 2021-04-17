@@ -12,6 +12,8 @@
   "config.option.event_frequency_upper.description": "낚시여행 중 이벤트가 발생하는 최대 시간. 단위는 초.",
   "config.option.murphy_appearance_day.name": "머피 등장 요일",
   "config.option.murphy_appearance_day.description": "머피가 펠리칸 타운 해변에 나타나는 요일.",
+  "config.option.murphy_appearance_day_island.name": "Murphy Appearance Day (Island)",
+  "config.option.murphy_appearance_day_island.description": "Determines the day of the week that Murphy will be available for a trip, if you can visit the island.",
 
   // Murphy's dialogue
   "dialogue.player_title.male": "젊은이",

@@ -72,6 +72,7 @@ namespace FishingTrawler
         internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
         internal const string MURPHY_ON_TRIP = "PeacefulEnd.FishingTrawler_MurphyOnTrip";
         internal const string MURPHY_DAY_TO_APPEAR = "PeacefulEnd.FishingTrawler_MurphyDayToAppear";
+        internal const string MURPHY_DAY_TO_APPEAR_ISLAND = "PeacefulEnd.FishingTrawler_MurphyDayToAppearIsland";
         internal const string MURPHY_TRIPS_COMPLETED = "PeacefulEnd.FishingTrawler_MurphyTripsCompleted";
 
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
@@ -557,6 +558,7 @@ namespace FishingTrawler
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.event_frequency_lower.description"), () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.event_frequency_upper.description"), () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
                 configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day.name"), i18n.Get("config.option.murphy_appearance_day.description"), () => config.dayOfWeekChoice, (string val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
+                configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day_island.name"), i18n.Get("config.option.murphy_appearance_day_island.description"), () => config.dayOfWeekChoiceIsland, (string val) => config.dayOfWeekChoiceIsland = val, ModConfig.murphyDayToAppear);
 
                 Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Event Freq Lower]: {config.eventFrequencyLower} | [Event Freq Upper]: {config.eventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
             }
@@ -566,7 +568,10 @@ namespace FishingTrawler
                 var patcherAPI = ApiManager.GetContentPatcherInterface();
                 patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDay", () =>
                 {
-                    return new[] { Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
+                    return new[] {
+                        Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice,
+                        Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland,
+                    };
                 });
             }
         }
@@ -847,6 +852,7 @@ namespace FishingTrawler
 
             Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
             Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoice;
+            Game1.player.modData[MURPHY_DAY_TO_APPEAR_ISLAND] = config.dayOfWeekChoiceIsland;
 
             if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
             {

@@ -99,6 +99,10 @@
       <Link>FishingTrawler\assets\Maps\FishingTrawler.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\IslandBeachPatchEmpty.tmx">
+      <Link>[CP] FishingTrawler\assets\IslandBeachPatchEmpty.tmx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\Sprite Sandbox\StardewMods\FishingTrawler\TrawlerCabin.tmx">
       <Link>FishingTrawler\assets\Maps\TrawlerCabin.tmx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
