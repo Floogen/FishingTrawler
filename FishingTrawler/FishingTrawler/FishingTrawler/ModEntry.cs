@@ -892,7 +892,19 @@ namespace FishingTrawler
 
             Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
             Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoice;
-            Game1.player.modData[MURPHY_DAY_TO_APPEAR_ISLAND] = config.dayOfWeekChoiceIsland;
+
+            Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoiceIsland;
+            if (config.dayOfWeekChoice == config.dayOfWeekChoiceIsland)
+            {
+                // Prevent Murphy from showing up on the beach and island on same day by offsetting it by 1 (or setting it the first index)
+                int currentIndex = Array.IndexOf(ModConfig.murphyDayToAppear, config.dayOfWeekChoiceIsland) + 1;
+                if (currentIndex > ModConfig.murphyDayToAppear.Length - 1)
+                {
+                    currentIndex = 0;
+                }
+
+                Game1.player.modData[MURPHY_DAY_TO_APPEAR_ISLAND] = ModConfig.murphyDayToAppear[currentIndex];
+            }
 
             if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
             {
