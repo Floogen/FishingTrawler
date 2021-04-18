@@ -12,16 +12,16 @@
   "config.option.event_frequency_upper.description": "Bir olay gerçekleşmeden önce geçebilecek olan maksimum zamanı belirler. Bir saniye için 1, iki saniye için 2 vb.",
   "config.option.murphy_appearance_day.name": "Murphy'nin Geldiği Gün",
   "config.option.murphy_appearance_day.description": "Murphy'nin haftanın hangi günü gezi için müsait olduğunu belirler.",
-  "config.option.murphy_appearance_day_island.name": "Murphy Appearance Day (Island)",
-  "config.option.murphy_appearance_day_island.description": "Determines the day of the week that Murphy will be available for a trip, if you can visit the island.",
+  "config.option.murphy_appearance_day_island.name": "Murphy'nin Geldiği Gün (Ada)",
+  "config.option.murphy_appearance_day_island.description": "Eğer adaya erişimin varsa, Murphy'nin haftanın hangi günü gezi için müsait olduğunu belirler.",
 
   // Murphy's dialogue
   "dialogue.player_title.male": "delikanlı",
   "dialogue.player_title.female": "genç hanım",
-  "dialogue.introduction": "Hey oradaki {0}!$h#$b#Sen @ olmalısın? Willy bir arkadaşının uğrayacağını söylemişti..$n#$b#Yani, eski Şafak'ta bir gemici olmak istiyorsun öyle mi?$n#$b#Ödeyecek çok şeyim yok ama yakaladığımız balığın payı senin olsun!$h#$e",
+  "dialogue.introduction": "Ahoy {0}!$h#$b#Sen @ olmalısın. Willy bir arkadaşının uğrayacağını söylemişti..$n#$b#Yani, eski Şafak'ta bir gemici olmak istiyorsun öyle mi?$n#$b#Ödeyecek çok şeyim yok ama yakaladığımız balığın payı senin olsun!$h#$e",
   "dialogue.greeting": "Ahoy {0}!$h#$b#Deniz bugün bizim lehimize olsun. Yoba'nın kutsaması ile tek parça halinde geri geleceğiz.$n#$e",
   "dialogue.greeting_rainy": "Ahoy {0}!$h#$b#Deniz bugün çalkantılı, ama biz deniz kurtlarını etkilemez, değil mi?$n#$e",
-  "dialogue.greeting_island": "Ahoy there {0}!$h#$b#Nothing like enjoying a good drink while feelin' the ocean breeze, aye {0}?$h#$e",
+  "dialogue.greeting_island": "Ahoy {0}!$h#$b#Okyanus esintisini hissederken güzel bir içeceğin tadını çıkarmak gibisi yok, değil mi {0}?$h#$e",
   "dialogue.options": "Balığa çıkalım mı, {0}?",
   "dialogue.confirm_first_trip": "Bu senin ilk gezin olacağı için, sana tayfanın görevlerini açıklamamı ister misin?",
   "dialogue.minigame_explanation_hull": "Gemici olarak asıl görevin, Eğreltiotu Adaları çevresinde dolaşırken Şafak'ı ayakta tutmak olacak..$n#$b#Bu yaşlı kızın daha iyi günleri de oldu, tıpkı benim gibi, ve o parçalanmaya meyilli.$s#$b#Gövdede deliklerin oluşması muhtemeldir, bu yüzden hızlıca yamadığıdan emin ol.$n#$b#Eğer çok fazla su alırsak geri dönmek zorunda kalırım ve avdaki payın çok az olur.$s#$b#",
@@ -30,7 +30,7 @@
   "dialogue.minigame_explanation_engine": "Son olarak motor, kabinin içinde bulunuyor. Borular ara sıra buhar sızdırıyor ve yamalanmaları gerekiyor.$n#$b#Sızdıran bir boru, arızalı bir motor anlamına gelir. Arızalı bir motor, ağların o kadar çok balık tutmayacağı anlamına gelir. Hem ağlar hem de motor bozulursa, balıkları da kaybetmeye başlarız.$s#$b#",
   "dialogue.minigame_explanation_finish": "Eğer tek parça halinde geri dönersek bütün kazanç senindir. Ama eğer normalden erken dönmek zorunda kalırsak daha küçük bir pay alırsın.$n#$b#Bu iş için hazırsan bana söyle ve denize açılalım.$h#$e#",
   "dialogue.reward_explanation_flags": "Vay canına {0}! Bu benim düşündüğüm şey mi?$u#$b#%Murphy nazikçe bayrağı senden alıp dikkatle inceliyor.$n#$b#Bu, çok eskiden denizciler ve korsanlar tarafından dalgalandırılmış antik bir bayrak.$n#$b#Bu bayraklar ve onları kullanan denizcilere verdikleri efektler hakkında birsürü şey anlatılır.$n#$b#Bunu sana vereceğim {0}, ama eğer onu eski Şafak'ta dalgalandırmak istersen, ya da daha fazlasını bulursan bana bildir.$h#$e",
-  "dialogue.after_trip_successful": "Aferin {0}! Senden tam bir denizkurdu olur.$h#$b#Senin payın soldaki sandıkta!$n#$e",
+  "dialogue.after_trip_successful": "Aferin {0}! Senden tam bir deniz kurdu olur.$h#$b#Senin payın soldaki sandıkta!$n#$e",
   "dialogue.after_trip_failure": "Yoba'ya şükür ki tek parça döndük.$s#$b#Endişelenme {0}, her zaman tekrar deneyebilirsin.$n#$e",
   "dialogue.trip_finished": "Başka bir geziye çıkmak için sabırsızlanıyor musun?$n#$b#Üzgünüm {0}, önümüzdeki haftaya kadar beklemen gerekecek. Bu yaşlı kemiklerin dinlenmesi gerek.$h#$e",
   "dialogue.full_inventory": "Herkes iş ba-$n#$b#Ah! Üzgünüm {0}, çantanda kova için boş yer olması lazım.$u#$b#Güven bana, çok ihtiyacın olacak.$s#$e",
@@ -75,7 +75,7 @@
 
   // Letter message that is sent once player has requirements to meet Murphy
   "letter.meet_murphy": "Ahoy!^ ^Eski kumar arkadaşım Murphy bu aralar buraya uğruyor. Balıkçı teknesinde çalışmak isteyen tayfalar arıyor. Ona senden bahsettim, çünkü daha önce kasabanın etrafında balık tuttuğunu gördüm, seninle tanışmaya hevesli görünüyordu.^ ^-Willy ^ ^Dipnot: Murphy ayrıca {0} günleri sağ traftaki iskelenin ucunda olacağını (köprünün karşısında) ve gece çökmeden önce ayrılacağını söyledi.",
-  "letter.island_murphy": "Ahoy there!^ ^I caught wind ye recently built a resort on ol' Ginger Island. I'll be stopping by there weekly on {0} to stretch my legs and grab a drink. ^^If yer interested in another fishing trip, meet me at the docks on the eastern part of the island before nightfall.^ ^-Murphy",
+  "letter.island_murphy": "Ahoy!^ ^Yakın zamanda eski Zencefil Adası'nda bir tatil yeri inşa ettiğini duydum. Her hafta {0} günü oraya uğrayıp bacaklarımı esnetecek ve bir içecek alacağım. ^^Başka bir balık avı gezisiyle ilgileniyorsan, akşam hava kararmadan adanın doğu tarafındaki iskelede benimle buluş.^ ^-Murphy",
 
   // Tools and special rewards
   "item.bailing_bucket.name": "Su Boşaltma Kovası",
