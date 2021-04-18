@@ -893,7 +893,7 @@ namespace FishingTrawler
             Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
             Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoice;
 
-            Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoiceIsland;
+            Game1.player.modData[MURPHY_DAY_TO_APPEAR_ISLAND] = config.dayOfWeekChoiceIsland;
             if (config.dayOfWeekChoice == config.dayOfWeekChoiceIsland)
             {
                 // Prevent Murphy from showing up on the beach and island on same day by offsetting it by 1 (or setting it the first index)
