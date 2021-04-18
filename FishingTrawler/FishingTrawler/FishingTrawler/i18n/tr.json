@@ -93,7 +93,7 @@
   "item.ancient_flag.sharks_fin.name": "Köpekbalığının Yüzgeci",
   "item.ancient_flag.worldly_flag.name": "Dünyevi Bayrak",
   "item.ancient_flag.slime_king.name": "Balçıkça Kralı",
-  "item.ancient_flag.king_crab.name": "The King Crab",
+  "item.ancient_flag.king_crab.name": "Kral Yengeç",
   "item.ancient_flag.unknown.name": "Antik Bayrak",
 
   "item.ancient_flag.parely.description": "Sızıntı oluşmasını engeller, ama ödül kalitesini %25 oranında düşürür.",
@@ -104,7 +104,7 @@
   "item.ancient_flag.sharks_fin.description": "Balıkçı teknesinin yolculuğunu bir dakika uzatır, balık yakalamak için daha çok zaman verir.",
   "item.ancient_flag.worldly_flag.description": "Normalde okyanusta bulunmayan balıkların yakalanmasını sağlar.",
   "item.ancient_flag.slime_king.description": "Bütün balıkları tüketir ama %75 şansla her balığı bir balçığa, %50 şansla  Balçık İstavridine ve 1% şansla da rastgele bir balçıkça yumurtasına çevirir.",
-  "item.ancient_flag.king_crab.description": "Limits the trawler to crab pot based catches, with a higher chance of crabs.",
+  "item.ancient_flag.king_crab.description": "Balıkçı teknesini yengeç çömleği ödülleriyle sınırlar, genellikle yengeçlerle.",
   "item.ancient_flag.unknown.description": "Sihirle hafifçe parıldayan eski bir bayrak.\n\nBelki Murphy bunun hakkında daha çok şey biliyordur?",
 
 
