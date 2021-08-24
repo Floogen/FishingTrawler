@@ -125,6 +125,9 @@
     <None Include="FishingTrawler\i18n\ko.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="FishingTrawler\i18n\pt.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="FishingTrawler\i18n\tr.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
