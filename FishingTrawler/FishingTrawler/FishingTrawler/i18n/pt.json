@@ -39,7 +39,7 @@
   "dialogue.how_to_hoist_flag": "Ocê está pensando em içar uma das bandeiras eh?$n#$b#Me entregue uma delas e eu vou fazer com que ela esteja içada assim que zarparmos.$h#$e",
   "dialogue.what_flag_is_hoisted_none": "A velha Dawnshard não está com nenhuma bandeira no momento.",
   "dialogue.what_flag_is_hoisted": "Atualmente a velha Dawnshard está com a Bandeira {0}.",
-"dialogue.identify_flag": "Eh {0}?$n#$b#Carambolas! Ocê conseguiu achar outra bandeira?$u#$b#%Murphy pega gentilmente a bandeira de sua mão, antes de examinar de perto.$n#$b#Com toda certeza é outra das bandeiras antigas. O mar gosta muito de você {0}!$n#$b#Eu vou te devolver isso, mas se você quiser içar esta bandeira na velha Dawnshard ou achar mais delas, ocê me avise por favor.$h#$e",
+  "dialogue.identify_flag": "Eh {0}?$n#$b#Carambolas! Ocê conseguiu achar outra bandeira?$u#$b#%Murphy pega gentilmente a bandeira de sua mão, antes de examinar de perto.$n#$b#Com toda certeza é outra das bandeiras antigas. O mar gosta muito de você {0}!$n#$b#Eu vou te devolver isso, mas se você quiser içar esta bandeira na velha Dawnshard ou achar mais delas, ocê me avise por favor.$h#$e",
   "dialogue.given_flag_to_hoist": "Essa bandeira vai ser uma ótima adição a Dawnshard!$h#$b#Eu vou iça-la corretamente assim que zarparmos {0}.",
   "dialogue.given_flag_to_hoist_return_old": "Essa bandeira vai ser uma ótima adição a Dawnshard!$n#$b#Eu vou iça-la corretamente assim que zarparmos {0}.$h#$b#Ah! antes que eu me esqueça, aqui está a outra bandeira que estava içada antes.$n#$e",
   "dialogue.remove_current_flag": "Ocê que a bandeira de volta {0}?$n#$b#O barco vai ficar um pouco vazio sem ela, mas aqui está!$h#$e",
