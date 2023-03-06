@@ -116,13 +116,13 @@ namespace FishingTrawler.GameLocations
                         string soundName = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", "FloodWater");
                         if (string.IsNullOrEmpty(soundName))
                         {
-                            ModEntry.monitor.Log($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
+                            FishingTrawler.monitor.Log($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
                             return;
                         }
 
                         TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, Game1.player.Position, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                         sprite2.acceleration = new Vector2(Game1.player.xVelocity, Game1.player.yVelocity);
-                        ModEntry.multiplayer.broadcastSprites(this, sprite2);
+                        FishingTrawler.multiplayer.broadcastSprites(this, sprite2);
                         playSound(soundName);
                     }
                 }
@@ -175,7 +175,7 @@ namespace FishingTrawler.GameLocations
                 return bool.Parse(hole.Properties["IsLeaking"]);
             }
 
-            ModEntry.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
+            FishingTrawler.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
             return false;
         }
 

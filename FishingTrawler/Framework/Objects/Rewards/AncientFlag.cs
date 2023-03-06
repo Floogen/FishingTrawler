@@ -35,7 +35,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             get
             {
-                if (modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && Enum.TryParse(modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+                if (modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY) && Enum.TryParse(modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
                 {
                     return flagType;
                 }
@@ -59,7 +59,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             flagTexture = ModResources.ancientFlagsTexture;
             defaultSourceRect.Value = new Rectangle(32 * (int)flagType % flagTexture.Width, 32 * (int)flagType / flagTexture.Width * 32, 32, 32);
-            modData.Add(ModEntry.ANCIENT_FLAG_KEY, flagType.ToString());
+            modData.Add(FishingTrawler.ANCIENT_FLAG_KEY, flagType.ToString());
         }
 
         public object getReplacement()
@@ -145,7 +145,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             if (FlagType is FlagType.Unknown)
             {
-                Game1.showRedMessage(ModEntry.i18n.Get("game_message.identify_flag_first"));
+                Game1.showRedMessage(FishingTrawler.i18n.Get("game_message.identify_flag_first"));
                 return false;
             }
 
@@ -157,25 +157,25 @@ namespace FishingTrawler.Objects.Rewards
             switch (flagType)
             {
                 case FlagType.Parley:
-                    return ModEntry.i18n.Get("item.ancient_flag.parely.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.parely.name");
                 case FlagType.JollyRoger:
-                    return ModEntry.i18n.Get("item.ancient_flag.jolly_roger.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.jolly_roger.name");
                 case FlagType.GamblersCrest:
-                    return ModEntry.i18n.Get("item.ancient_flag.gamblers_crest.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.gamblers_crest.name");
                 case FlagType.MermaidsBlessing:
-                    return ModEntry.i18n.Get("item.ancient_flag.mermaids_blessing.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.mermaids_blessing.name");
                 case FlagType.PatronSaint:
-                    return ModEntry.i18n.Get("item.ancient_flag.patron_saint.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.patron_saint.name");
                 case FlagType.SharksFin:
-                    return ModEntry.i18n.Get("item.ancient_flag.sharks_fin.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.sharks_fin.name");
                 case FlagType.Worldly:
-                    return ModEntry.i18n.Get("item.ancient_flag.worldly_flag.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.worldly_flag.name");
                 case FlagType.SlimeKing:
-                    return ModEntry.i18n.Get("item.ancient_flag.slime_king.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.slime_king.name");
                 case FlagType.KingCrab:
-                    return ModEntry.i18n.Get("item.ancient_flag.king_crab.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.king_crab.name");
                 default:
-                    return ModEntry.i18n.Get("item.ancient_flag.unknown.name");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.unknown.name");
             }
         }
 
@@ -184,25 +184,25 @@ namespace FishingTrawler.Objects.Rewards
             switch (flagType)
             {
                 case FlagType.Parley:
-                    return ModEntry.i18n.Get("item.ancient_flag.parely.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.parely.description");
                 case FlagType.JollyRoger:
-                    return ModEntry.i18n.Get("item.ancient_flag.jolly_roger.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.jolly_roger.description");
                 case FlagType.GamblersCrest:
-                    return ModEntry.i18n.Get("item.ancient_flag.gamblers_crest.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.gamblers_crest.description");
                 case FlagType.MermaidsBlessing:
-                    return ModEntry.i18n.Get("item.ancient_flag.mermaids_blessing.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.mermaids_blessing.description");
                 case FlagType.PatronSaint:
-                    return ModEntry.i18n.Get("item.ancient_flag.patron_saint.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.patron_saint.description");
                 case FlagType.SharksFin:
-                    return ModEntry.i18n.Get("item.ancient_flag.sharks_fin.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.sharks_fin.description");
                 case FlagType.Worldly:
-                    return ModEntry.i18n.Get("item.ancient_flag.worldly_flag.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.worldly_flag.description");
                 case FlagType.SlimeKing:
-                    return ModEntry.i18n.Get("item.ancient_flag.slime_king.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.slime_king.description");
                 case FlagType.KingCrab:
-                    return ModEntry.i18n.Get("item.ancient_flag.king_crab.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.king_crab.description");
                 default:
-                    return ModEntry.i18n.Get("item.ancient_flag.unknown.description");
+                    return FishingTrawler.i18n.Get("item.ancient_flag.unknown.description");
             }
         }
     }

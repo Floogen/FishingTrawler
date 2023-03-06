@@ -45,7 +45,7 @@ namespace FishingTrawler.Patches.Locations
             switch (command_string)
             {
                 case "animate_boat_start":
-                    ModEntry.trawlerObject._boatAnimating = true;
+                    FishingTrawler.trawlerObject._boatAnimating = true;
                     __result = true;
                     return;
                 case "non_blocking_pause":
@@ -56,14 +56,14 @@ namespace FishingTrawler.Patches.Locations
                         {
                             delay = 0;
                         }
-                        ModEntry.trawlerObject.nonBlockingPause = delay;
+                        FishingTrawler.trawlerObject.nonBlockingPause = delay;
                         __result = false;
                         return;
                     }
-                    ModEntry.trawlerObject.nonBlockingPause -= (int)Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds;
-                    if (ModEntry.trawlerObject.nonBlockingPause < 0)
+                    FishingTrawler.trawlerObject.nonBlockingPause -= (int)Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (FishingTrawler.trawlerObject.nonBlockingPause < 0)
                     {
-                        ModEntry.trawlerObject.nonBlockingPause = 0;
+                        FishingTrawler.trawlerObject.nonBlockingPause = 0;
                         __result = true;
                         return;
                     }
@@ -72,9 +72,9 @@ namespace FishingTrawler.Patches.Locations
                 case "boat_depart":
                     if (first_run)
                     {
-                        ModEntry.trawlerObject._boatDirection = 1;
+                        FishingTrawler.trawlerObject._boatDirection = 1;
                     }
-                    if (ModEntry.trawlerObject._boatOffset >= 150)
+                    if (FishingTrawler.trawlerObject._boatOffset >= 150)
                     {
                         __result = true;
                         return;
@@ -82,13 +82,13 @@ namespace FishingTrawler.Patches.Locations
                     __result = false;
                     return;
                 case "close_gate":
-                    ModEntry.trawlerObject._closeGate = true;
+                    FishingTrawler.trawlerObject._closeGate = true;
                     __result = true;
                     return;
                 case "despawn_murphy":
-                    if (ModEntry.murphyNPC != null)
+                    if (FishingTrawler.murphyNPC != null)
                     {
-                        ModEntry.murphyNPC = null;
+                        FishingTrawler.murphyNPC = null;
                     }
                     __result = true;
                     return;
@@ -107,12 +107,12 @@ namespace FishingTrawler.Patches.Locations
 
             if (fullActionString == "FishingTrawler_AttemptBoard")
             {
-                Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.speak_to_captain"));
+                Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.speak_to_captain"));
             }
 
             if (fullActionString == "FishingTrawler_NoMurphy")
             {
-                Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.walk_the_plank"));
+                Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.walk_the_plank"));
             }
         }
 
@@ -144,7 +144,7 @@ namespace FishingTrawler.Patches.Locations
                 __result = true;
             }
 
-            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == xTile && ModEntry.murphyNPC.getTileY() == yTile)
+            if (FishingTrawler.murphyNPC != null && FishingTrawler.murphyNPC.getTileX() == xTile && FishingTrawler.murphyNPC.getTileY() == yTile)
             {
                 if (!Utility.tileWithinRadiusOfPlayer(xTile, yTile, 1, who))
                 {

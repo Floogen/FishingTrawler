@@ -36,10 +36,10 @@ namespace FishingTrawler.Objects
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.introduction", playerTerm), this));
                 Game1.drawDialogue(this);
 
-                who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
+                who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
                 Game1.addMailForTomorrow("FishingTrawler_IntroductionsMurphy", true);
             }
-            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false" && who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
+            else if (who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false" && who.modData[FishingTrawler.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
                 if (Game1.IsRainingHere(currentLocation) || Game1.IsSnowingHere(currentLocation))
                 {
@@ -60,36 +60,36 @@ namespace FishingTrawler.Objects
                     Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
 
-                who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
+                who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
             }
-            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY].ToLower() == "false" && PlayerHasUnidentifiedFlagInInventory(who))
+            else if (who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[FishingTrawler.MURPHY_HAS_SEEN_FLAG_KEY].ToLower() == "false" && PlayerHasUnidentifiedFlagInInventory(who))
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.reward_explanation_flags", playerTerm), this));
                 Game1.drawDialogue(this);
                 Game1.afterDialogues = TakeAndIdentifyFlag;
 
-                who.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY] = "true";
+                who.modData[FishingTrawler.MURPHY_HAS_SEEN_FLAG_KEY] = "true";
             }
-            else if (who.modData[ModEntry.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
+            else if (who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[FishingTrawler.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
                 // Show questions
                 AskQuestionAfterGreeting();
             }
-            else if (who.modData[ModEntry.MURPHY_SAILED_TODAY_KEY].ToLower() == "true" && who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "false")
+            else if (who.modData[FishingTrawler.MURPHY_SAILED_TODAY_KEY].ToLower() == "true" && who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY].ToLower() == "false")
             {
-                string tripState = who.modData[ModEntry.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "successful" : "failure";
+                string tripState = who.modData[FishingTrawler.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "successful" : "failure";
                 CurrentDialogue.Push(new Dialogue(GetDialogue(string.Concat("dialogue.after_trip_", tripState), playerTerm), this));
                 Game1.drawDialogue(this);
 
-                who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY] = "true";
+                who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY] = "true";
             }
-            else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true" && PlayerHasUnidentifiedFlagInInventory(who))
+            else if (who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true" && PlayerHasUnidentifiedFlagInInventory(who))
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.identify_flag", playerTerm), this));
                 Game1.drawDialogue(this);
                 Game1.afterDialogues = TakeAndIdentifyFlag;
             }
-            else if (who.modData[ModEntry.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
+            else if (who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.trip_finished", playerTerm), this));
                 Game1.drawDialogue(this);
@@ -125,21 +125,21 @@ namespace FishingTrawler.Objects
                 who.currentLocation.localSound("coin");
                 who.reduceActiveItemByOne();
 
-                if (ModEntry.GetHoistedFlag() == FlagType.Unknown)
+                if (FishingTrawler.GetHoistedFlag() == FlagType.Unknown)
                 {
                     CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.given_flag_to_hoist", playerTerm), this));
                 }
                 else
                 {
                     CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.given_flag_to_hoist_return_old", playerTerm), this));
-                    who.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
+                    who.addItemByMenuIfNecessary(new AncientFlag(FishingTrawler.GetHoistedFlag()));
 
                     // Set their toolbar to one to avoid player accidentally giving back the flag they just got?
                     who.CurrentToolIndex = 0;
                 }
 
                 Game1.drawDialogue(this);
-                ModEntry.SetHoistedFlag(ancientFlag.FlagType);
+                FishingTrawler.SetHoistedFlag(ancientFlag.FlagType);
             }
         }
 
@@ -148,8 +148,8 @@ namespace FishingTrawler.Objects
             string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
             Response[] answers = new Response[2]
             {
-                new Response("YesExplain", ModEntry.i18n.Get("response.yes_explain")),
-                new Response("NoExplain", ModEntry.i18n.Get("response.no_explain"))
+                new Response("YesExplain", FishingTrawler.i18n.Get("response.yes_explain")),
+                new Response("NoExplain", FishingTrawler.i18n.Get("response.no_explain"))
             };
 
             currentLocation.createQuestionDialogue(GetDialogue("dialogue.confirm_first_trip", playerTerm), answers, OnPlayerResponse, this);
@@ -170,7 +170,7 @@ namespace FishingTrawler.Objects
 
         private string GetDialogue(string dialogueTitle, object playerTitle = null)
         {
-            return string.Format(ModEntry.i18n.Get(dialogueTitle), playerTitle);
+            return string.Format(FishingTrawler.i18n.Get(dialogueTitle), playerTitle);
         }
 
         private string GetMinigameExplanation(object title = null)
@@ -184,20 +184,20 @@ namespace FishingTrawler.Objects
 
             List<Response> answers = new List<Response>()
             {
-                new Response("StartTrip", ModEntry.i18n.Get("response.start_trip"))
+                new Response("StartTrip", FishingTrawler.i18n.Get("response.start_trip"))
             };
 
             if (PlayerHasUnidentifiedFlagInInventory(Game1.player))
             {
-                answers.Add(new Response("IdentifyFlag", ModEntry.i18n.Get("response.found_another_flag")));
+                answers.Add(new Response("IdentifyFlag", FishingTrawler.i18n.Get("response.found_another_flag")));
             }
             if (Context.IsMultiplayer)
             {
-                answers.Add(new Response("MultipleDeckhands", ModEntry.i18n.Get("response.bring_some_friends")));
+                answers.Add(new Response("MultipleDeckhands", FishingTrawler.i18n.Get("response.bring_some_friends")));
             }
 
-            answers.Add(new Response("GotQuestion", ModEntry.i18n.Get("response.more_questions")));
-            answers.Add(new Response("NoDeparture", ModEntry.i18n.Get("response.no_departure")));
+            answers.Add(new Response("GotQuestion", FishingTrawler.i18n.Get("response.more_questions")));
+            answers.Add(new Response("NoDeparture", FishingTrawler.i18n.Get("response.no_departure")));
 
             currentLocation.createQuestionDialogue(GetDialogue("dialogue.options", playerTerm), answers.ToArray(), OnPlayerResponse, this);
         }
@@ -214,10 +214,10 @@ namespace FishingTrawler.Objects
                 return;
             }
 
-            if (ModEntry.GetFarmersOnTrawler().Count > 0 || !ModEntry.ShouldMurphyAppear(currentLocation))
+            if (FishingTrawler.GetFarmersOnTrawler().Count > 0 || !FishingTrawler.ShouldMurphyAppear(currentLocation))
             {
                 // Do nothing and bail, as Murphy is being interacted with on beach despite being on Trawler
-                ModEntry.monitor.Log($"{who.Name} tried to start a trip while one already departed!", LogLevel.Trace);
+                FishingTrawler.monitor.Log($"{who.Name} tried to start a trip while one already departed!", LogLevel.Trace);
                 return;
             }
 
@@ -225,7 +225,7 @@ namespace FishingTrawler.Objects
             //List<Farmer> deckhands = ModEntry.trawlerObject.GetFarmersToDepart(true);
 
             CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.start_departure", playerTerm), this));
-            Game1.afterDialogues = delegate () { ModEntry.trawlerObject.StartDeparture(who); };
+            Game1.afterDialogues = delegate () { FishingTrawler.trawlerObject.StartDeparture(who); };
             Game1.drawDialogue(this);
         }
 
@@ -239,8 +239,8 @@ namespace FishingTrawler.Objects
 
         private void WhatFlagIsHoisted(Farmer who)
         {
-            string flagName = AncientFlag.GetFlagName(ModEntry.GetHoistedFlag());
-            if (ModEntry.modHelper.Translation.LocaleEnum == LocalizedContentManager.LanguageCode.en)
+            string flagName = AncientFlag.GetFlagName(FishingTrawler.GetHoistedFlag());
+            if (FishingTrawler.modHelper.Translation.LocaleEnum == LocalizedContentManager.LanguageCode.en)
             {
                 flagName = flagName.Replace("The", "the");
                 if (!flagName.Contains("the"))
@@ -249,7 +249,7 @@ namespace FishingTrawler.Objects
                 }
             }
 
-            CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.what_flag_is_hoisted" + (ModEntry.GetHoistedFlag() == FlagType.Unknown ? "_None" : ""), flagName), this));
+            CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.what_flag_is_hoisted" + (FishingTrawler.GetHoistedFlag() == FlagType.Unknown ? "_None" : ""), flagName), this));
             Game1.drawDialogue(this);
         }
 
@@ -260,8 +260,8 @@ namespace FishingTrawler.Objects
             CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.remove_current_flag", playerTerm), this));
             Game1.drawDialogue(this);
 
-            Game1.player.addItemByMenuIfNecessary(new AncientFlag(ModEntry.GetHoistedFlag()));
-            ModEntry.SetHoistedFlag(FlagType.Unknown);
+            Game1.player.addItemByMenuIfNecessary(new AncientFlag(FishingTrawler.GetHoistedFlag()));
+            FishingTrawler.SetHoistedFlag(FlagType.Unknown);
         }
 
         private void IdentifyFlag(Farmer who)
@@ -294,23 +294,23 @@ namespace FishingTrawler.Objects
             string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
             List<Response> answers = new List<Response>()
             {
-                new Response("MinigameExplanation", ModEntry.i18n.Get("response.what_does_deckhand_do"))
+                new Response("MinigameExplanation", FishingTrawler.i18n.Get("response.what_does_deckhand_do"))
             };
 
             if (PlayerHasIdentifiedFlagInInventory(Game1.player))
             {
-                answers.Add(new Response("WantToHoist", ModEntry.i18n.Get("response.like_to_hoist_flag")));
+                answers.Add(new Response("WantToHoist", FishingTrawler.i18n.Get("response.like_to_hoist_flag")));
             }
-            if (Game1.player.modData[ModEntry.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
+            if (Game1.player.modData[FishingTrawler.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
             {
-                answers.Add(new Response("WhatFlag", ModEntry.i18n.Get("response.what_flag_is_trawler_flying")));
+                answers.Add(new Response("WhatFlag", FishingTrawler.i18n.Get("response.what_flag_is_trawler_flying")));
             }
-            if (ModEntry.GetHoistedFlag() != FlagType.Unknown)
+            if (FishingTrawler.GetHoistedFlag() != FlagType.Unknown)
             {
-                answers.Add(new Response("GetFlag", ModEntry.i18n.Get("response.want_have_flag_back")));
+                answers.Add(new Response("GetFlag", FishingTrawler.i18n.Get("response.want_have_flag_back")));
             }
 
-            answers.Add(new Response("NeverMind", ModEntry.i18n.Get("response.never_mind")));
+            answers.Add(new Response("NeverMind", FishingTrawler.i18n.Get("response.never_mind")));
 
             currentLocation.createQuestionDialogue(GetDialogue("dialogue.more_questions", playerTerm), answers.ToArray(), OnPlayerResponse, this);
         }
@@ -365,12 +365,12 @@ namespace FishingTrawler.Objects
 
         private bool PlayerHasUnidentifiedFlagInInventory(Farmer who)
         {
-            return who.items.Any(i => i != null && i.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && i.modData[ModEntry.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString());
+            return who.items.Any(i => i != null && i.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY) && i.modData[FishingTrawler.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString());
         }
 
         private bool PlayerHasIdentifiedFlagInInventory(Farmer who)
         {
-            return who.items.Any(i => i != null && i.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && i.modData[ModEntry.ANCIENT_FLAG_KEY] != FlagType.Unknown.ToString());
+            return who.items.Any(i => i != null && i.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY) && i.modData[FishingTrawler.ANCIENT_FLAG_KEY] != FlagType.Unknown.ToString());
         }
 
         private void TakeAndIdentifyFlag()

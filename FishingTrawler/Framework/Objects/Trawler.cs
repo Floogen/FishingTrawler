@@ -68,13 +68,13 @@ namespace FishingTrawler.Objects
 
         internal void TriggerDepartureEvent()
         {
-            if (ModEntry.murphyNPC != null)
+            if (FishingTrawler.murphyNPC != null)
             {
-                ModEntry.murphyNPC = null;
+                FishingTrawler.murphyNPC = null;
             }
 
             string id = location.currentEvent is null ? "Empty" : location.currentEvent.id.ToString();
-            ModEntry.monitor.Log($"Starting event for {Game1.player.Name}: {location.currentEvent is null} | {id}", LogLevel.Trace);
+            FishingTrawler.monitor.Log($"Starting event for {Game1.player.Name}: {location.currentEvent is null} | {id}", LogLevel.Trace);
 
             string eventString = "/-1000 -1000/farmer 0 0 0/playMusic none/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Back 87 40 14/changeMapTile Buildings 87 41 19/changeMapTile Buildings 87 42 24/changeMapTile Buildings 87 43 4/fade/viewport 83 38/locationSpecificCommand non_blocking_pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/changeMapTile Back 87 40 18/changeMapTile Buildings 87 41 14/changeMapTile Buildings 87 42 19/changeMapTile Buildings 87 43 24/locationSpecificCommand warp_to_cabin/end warpOut";
             if (location is IslandSouthEast)
@@ -103,7 +103,7 @@ namespace FishingTrawler.Objects
                     farmerActor.UsingTool = false;
                     farmerActor.items.Clear();
                     farmerActor.hidden.Value = false;
-                    Event @event = new Event(eventString, ModEntry.BOAT_DEPART_EVENT_ID, farmerActor);
+                    Event @event = new Event(eventString, FishingTrawler.BOAT_DEPART_EVENT_ID, farmerActor);
                     @event.showWorldCharacters = false;
                     @event.showGroundObjects = true;
                     @event.ignoreObjectCollisions = false;
@@ -120,7 +120,7 @@ namespace FishingTrawler.Objects
                 return;
             }
 
-            _boatEvent = new Event(eventString, ModEntry.BOAT_DEPART_EVENT_ID, Game1.player);
+            _boatEvent = new Event(eventString, FishingTrawler.BOAT_DEPART_EVENT_ID, Game1.player);
             _boatEvent.showWorldCharacters = false;
             _boatEvent.showGroundObjects = true;
             _boatEvent.ignoreObjectCollisions = false;
@@ -139,18 +139,18 @@ namespace FishingTrawler.Objects
         {
             List<Farmer> farmersToDepart = GetFarmersToDepart();
 
-            ModEntry.mainDeckhand = who;
-            ModEntry.numberOfDeckhands = farmersToDepart.Count();
-            ModEntry.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
+            FishingTrawler.mainDeckhand = who;
+            FishingTrawler.numberOfDeckhands = farmersToDepart.Count();
+            FishingTrawler.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
 
-            location.modData[ModEntry.MURPHY_ON_TRIP] = "true";
+            location.modData[FishingTrawler.MURPHY_ON_TRIP] = "true";
 
             TriggerDepartureEvent();
 
             if (Context.IsMultiplayer)
             {
                 // Send out trigger event to relevant players
-                ModEntry.AlertPlayersOfDeparture(who.UniqueMultiplayerID, farmersToDepart);
+                FishingTrawler.AlertPlayersOfDeparture(who.UniqueMultiplayerID, farmersToDepart);
             }
         }
 
@@ -181,7 +181,7 @@ namespace FishingTrawler.Objects
             {
                 zoneOfDeparture = new Rectangle(5, 31, 10, 16);
             }
-            return location.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !ModEntry.HasFarmerGoneSailing(f)).ToList();
+            return location.farmers.Where(f => zoneOfDeparture.Contains(f.getTileX(), f.getTileY()) && !FishingTrawler.HasFarmerGoneSailing(f)).ToList();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace FishingTrawler.Objects.Tools
 {
     internal class BailingBucket : MilkPail
     {
-        private string _displayName = ModEntry.i18n.Get("item.bailing_bucket.name");
+        private string _displayName = FishingTrawler.i18n.Get("item.bailing_bucket.name");
         private readonly NetEvent0 _finishEvent = new NetEvent0();
 
         private bool _containsWater = false;
@@ -25,8 +25,8 @@ namespace FishingTrawler.Objects.Tools
 
         public BailingBucket() : base()
         {
-            modData.Add(ModEntry.BAILING_BUCKET_KEY, "true");
-            description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
+            modData.Add(FishingTrawler.BAILING_BUCKET_KEY, "true");
+            description = FishingTrawler.i18n.Get("item.bailing_bucket.description_empty");
         }
 
         public object getReplacement()
@@ -58,7 +58,7 @@ namespace FishingTrawler.Objects.Tools
 
         public override bool canBeTrashed()
         {
-            if (ModEntry.IsPlayerOnTrawler())
+            if (FishingTrawler.IsPlayerOnTrawler())
             {
                 return false;
             }
@@ -83,7 +83,7 @@ namespace FishingTrawler.Objects.Tools
 
         public override bool beginUsing(GameLocation location, int x, int y, Farmer who)
         {
-            if (!ModEntry.IsPlayerOnTrawler() || who is null || who != null && !Game1.player.Equals(who))
+            if (!FishingTrawler.IsPlayerOnTrawler() || who is null || who != null && !Game1.player.Equals(who))
             {
                 who.forceCanMove();
                 return false;
@@ -93,21 +93,21 @@ namespace FishingTrawler.Objects.Tools
             {
                 if (_containsWater)
                 {
-                    Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3));
+                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3));
                 }
                 else if (trawlerHull.IsFlooding())
                 {
                     _containsWater = true;
                     _bucketScale = 0.5f;
-                    description = ModEntry.i18n.Get("item.bailing_bucket.description_full");
+                    description = FishingTrawler.i18n.Get("item.bailing_bucket.description_full");
 
                     trawlerHull.ChangeWaterLevel(-5);
                     trawlerHull.localSound("slosh");
-                    ModEntry.SyncTrawler(Messages.SyncType.WaterLevel, trawlerHull.GetWaterLevel(), ModEntry.GetFarmersOnTrawler());
+                    FishingTrawler.SyncTrawler(Messages.SyncType.WaterLevel, trawlerHull.GetWaterLevel(), FishingTrawler.GetFarmersOnTrawler());
                 }
                 else
                 {
-                    Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3));
+                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3));
                 }
             }
             else if (location is TrawlerSurface trawlerSurface && _containsWater)
@@ -116,18 +116,18 @@ namespace FishingTrawler.Objects.Tools
                 {
                     _containsWater = false;
                     _bucketScale = 0.5f;
-                    description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
+                    description = FishingTrawler.i18n.Get("item.bailing_bucket.description_empty");
 
                     who.currentLocation.localSound("waterSlosh");
                 }
                 else
                 {
-                    Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.stand_closer_to_edge"), 3));
+                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.stand_closer_to_edge"), 3));
                 }
             }
             else
             {
-                Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.bail_from_hull"), 3));
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.bail_from_hull"), 3));
             }
 
             who.forceCanMove();

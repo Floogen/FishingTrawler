@@ -5,7 +5,7 @@ namespace FishingTrawler.API
 {
     public static class ApiManager
     {
-        private static IMonitor monitor = ModEntry.monitor;
+        private static IMonitor monitor = FishingTrawler.monitor;
         private static IGenericModConfigMenuAPI genericModConfigMenuApi;
         private static IContentPatcherAPI contentPatcherApi;
 

@@ -28,7 +28,7 @@ using xTile.Dimensions;
 
 namespace FishingTrawler
 {
-    public class ModEntry : Mod
+    public class FishingTrawler : Mod
     {
         internal static IMonitor monitor;
         internal static IModHelper modHelper;

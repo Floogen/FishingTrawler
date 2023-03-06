@@ -40,9 +40,9 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            if (ModEntry.murphyNPC != null && ModEntry.murphyNPC.getTileX() == tileLocation.X && Enumerable.Range(ModEntry.murphyNPC.getTileY() - 1, 3).Contains(tileLocation.Y))
+            if (FishingTrawler.murphyNPC != null && FishingTrawler.murphyNPC.getTileX() == tileLocation.X && Enumerable.Range(FishingTrawler.murphyNPC.getTileY() - 1, 3).Contains(tileLocation.Y))
             {
-                __result = ModEntry.murphyNPC.checkAction(who, __instance);
+                __result = FishingTrawler.murphyNPC.checkAction(who, __instance);
                 return;
             }
 
@@ -58,29 +58,29 @@ namespace FishingTrawler.Patches.Locations
                 case "TrawlerRewardStorage":
                     __result = true;
 
-                    if (ModEntry.rewardChest.items.Count() == 0)
+                    if (FishingTrawler.rewardChest.items.Count() == 0)
                     {
-                        Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.empty_crate"));
+                        Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.empty_crate"));
                         break;
                     }
 
                     __instance.playSound("fishSlap");
-                    ModEntry.rewardChest.ShowMenu();
+                    FishingTrawler.rewardChest.ShowMenu();
                     break;
                 case "TrawlerNote":
                     if (!who.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
                     {
-                        Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.messy_note"));
+                        Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.messy_note"));
                         break;
                     }
 
                     if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en)
                     {
-                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]));
+                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[FishingTrawler.MURPHY_DAY_TO_APPEAR]));
                         break;
                     }
 
-                    Game1.drawObjectDialogue(string.Format(ModEntry.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]));
+                    Game1.drawObjectDialogue(string.Format(FishingTrawler.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[FishingTrawler.MURPHY_DAY_TO_APPEAR]));
                     break;
                 default:
                     break;
@@ -89,14 +89,14 @@ namespace FishingTrawler.Patches.Locations
 
         internal static void CleanupBeforePlayerExitPatch(Beach __instance)
         {
-            ModEntry.trawlerObject.Reset();
-            ModEntry.murphyNPC = null;
+            FishingTrawler.trawlerObject.Reset();
+            FishingTrawler.murphyNPC = null;
         }
 
 
         internal static void DrawPatch(Beach __instance, SpriteBatch b)
         {
-            if (!ModEntry.ShouldMurphyAppear(__instance) && __instance.currentEvent is null)
+            if (!FishingTrawler.ShouldMurphyAppear(__instance) && __instance.currentEvent is null)
             {
                 // Skip this draw patch if Murphy isn't here today
                 return;
@@ -105,53 +105,53 @@ namespace FishingTrawler.Patches.Locations
             Texture2D boatTexture = ModResources.boatTexture;
             if (boatTexture != null)
             {
-                b.Draw(boatTexture, Game1.GlobalToLocal(ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
-                if (ModEntry.trawlerObject._closeGate)
+                b.Draw(boatTexture, Game1.GlobalToLocal(FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+                if (FishingTrawler.trawlerObject._closeGate)
                 {
-                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(107f, 16f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(251, 32, 18, 15), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(107f, 16f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(251, 32, 18, 15), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
                 }
                 else
                 {
-                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(106f, 7f) * 4f + ModEntry.trawlerObject.GetTrawlerPosition()), new Rectangle(282, 23, 4, 24), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(106f, 7f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(282, 23, 4, 24), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
                 }
             }
 
             // Draw the Murphy NPC
-            if (ModEntry.murphyNPC != null)
+            if (FishingTrawler.murphyNPC != null)
             {
-                ModEntry.murphyNPC.draw(b);
+                FishingTrawler.murphyNPC.draw(b);
             }
         }
 
         internal static void UpdateWhenCurrentLocationPatch(Beach __instance, GameTime time)
         {
             // Update the Murphy NPC
-            if (ModEntry.ShouldMurphyAppear(__instance) && ModEntry.murphyNPC == null)
+            if (FishingTrawler.ShouldMurphyAppear(__instance) && FishingTrawler.murphyNPC == null)
             {
-                ModEntry.SpawnMurphy(__instance);
+                FishingTrawler.SpawnMurphy(__instance);
             }
 
-            if (ModEntry.murphyNPC != null)
+            if (FishingTrawler.murphyNPC != null)
             {
-                ModEntry.murphyNPC.update(time, __instance);
+                FishingTrawler.murphyNPC.update(time, __instance);
 
-                if (__instance.modData.ContainsKey(ModEntry.MURPHY_ON_TRIP) && __instance.modData[ModEntry.MURPHY_ON_TRIP] == "true")
+                if (__instance.modData.ContainsKey(FishingTrawler.MURPHY_ON_TRIP) && __instance.modData[FishingTrawler.MURPHY_ON_TRIP] == "true")
                 {
-                    ModEntry.murphyNPC = null;
+                    FishingTrawler.murphyNPC = null;
                 }
             }
 
             // Update the appearance of the reward chest
-            if (ModEntry.rewardChest.items.Count() == 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 10)
+            if (FishingTrawler.rewardChest.items.Count() == 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 10)
             {
                 SwapRewardChestTiles(__instance, 10);
             }
-            else if (ModEntry.rewardChest.items.Count() > 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 0)
+            else if (FishingTrawler.rewardChest.items.Count() > 0 && __instance.getTileIndexAt(new Point(82, 37), "Buildings") != 0)
             {
                 SwapRewardChestTiles(__instance, 0);
             }
 
-            Trawler trawler = ModEntry.trawlerObject;
+            Trawler trawler = FishingTrawler.trawlerObject;
             if (trawler is null)
             {
                 return;
@@ -191,7 +191,7 @@ namespace FishingTrawler.Patches.Locations
                     sprite2.acceleration = new Vector2(-0.25f * Math.Sign(trawler._boatDirection), 0f);
                     if (Context.IsSplitScreen)
                     {
-                        ModEntry.multiplayer.broadcastSprites(__instance, sprite2);
+                        FishingTrawler.multiplayer.broadcastSprites(__instance, sprite2);
                     }
                     else
                     {

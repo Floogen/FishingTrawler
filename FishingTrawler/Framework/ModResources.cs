@@ -52,14 +52,14 @@ namespace FishingTrawler
             {
                 if (IsItemCustom(customFurniture))
                 {
-                    if (customFurniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                    if (customFurniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                     {
                         location.furniture.Remove(customFurniture);
                         location.furniture.Add(new Furniture(1900, customFurniture.TileLocation) { modData = customFurniture.modData });
                         continue;
                     }
 
-                    ModEntry.monitor.Log($"Custom furniture {customFurniture.Name} at {location.NameOrUniqueName} failed to convert back to base furniture. Serializer will likely fail.", LogLevel.Trace);
+                    FishingTrawler.monitor.Log($"Custom furniture {customFurniture.Name} at {location.NameOrUniqueName} failed to convert back to base furniture. Serializer will likely fail.", LogLevel.Trace);
                 }
             }
 
@@ -78,14 +78,14 @@ namespace FishingTrawler
                                 chest.items.Add(new MilkPail() { modData = customItem.modData });
                                 break;
                             case Furniture furniture:
-                                if (furniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                                if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                                 {
                                     chest.items.Remove(customItem);
                                     chest.items.Add(new Furniture(1900, Vector2.Zero) { modData = customItem.modData });
                                 }
                                 break;
                             default:
-                                ModEntry.monitor.Log($"Custom item {customItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} failed to convert back to base item. Serializer will likely fail.", LogLevel.Trace);
+                                FishingTrawler.monitor.Log($"Custom item {customItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} failed to convert back to base item. Serializer will likely fail.", LogLevel.Trace);
                                 continue;
                         }
                     }
@@ -99,11 +99,11 @@ namespace FishingTrawler
             {
                 if (IsItemCustom(baseFurniture))
                 {
-                    if (baseFurniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                    if (baseFurniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                     {
-                        if (!System.Enum.TryParse(baseFurniture.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+                        if (!System.Enum.TryParse(baseFurniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
                         {
-                            ModEntry.monitor.Log($"Failed to convert base furniture {baseFurniture.Name} at {location.NameOrUniqueName} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
+                            FishingTrawler.monitor.Log($"Failed to convert base furniture {baseFurniture.Name} at {location.NameOrUniqueName} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                             break;
                         }
 
@@ -112,7 +112,7 @@ namespace FishingTrawler
                         continue;
                     }
 
-                    ModEntry.monitor.Log($"Base furniture {baseFurniture.Name} at {location.NameOrUniqueName} failed to convert to custom furniture.", LogLevel.Trace);
+                    FishingTrawler.monitor.Log($"Base furniture {baseFurniture.Name} at {location.NameOrUniqueName} failed to convert to custom furniture.", LogLevel.Trace);
                 }
             }
             foreach (var tileToObject in location.Objects.Pairs)
@@ -124,11 +124,11 @@ namespace FishingTrawler
                     switch (baseObject)
                     {
                         case Furniture furniture:
-                            if (furniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                            if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                             {
-                                if (!System.Enum.TryParse(furniture.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+                                if (!System.Enum.TryParse(furniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
                                 {
-                                    ModEntry.monitor.Log($"Failed to convert placed object {baseObject.Name} at {location.NameOrUniqueName} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
+                                    FishingTrawler.monitor.Log($"Failed to convert placed object {baseObject.Name} at {location.NameOrUniqueName} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                                     break;
                                 }
 
@@ -137,7 +137,7 @@ namespace FishingTrawler
                             }
                             break;
                         default:
-                            ModEntry.monitor.Log($"Base object {baseObject.Name} at {location.NameOrUniqueName} failed to convert to custom item.", LogLevel.Trace);
+                            FishingTrawler.monitor.Log($"Base object {baseObject.Name} at {location.NameOrUniqueName} failed to convert to custom item.", LogLevel.Trace);
                             continue;
                     }
                 }
@@ -155,11 +155,11 @@ namespace FishingTrawler
                                 chest.items.Add(new BailingBucket() { modData = baseItem.modData });
                                 break;
                             case Furniture furniture:
-                                if (furniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                                if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                                 {
-                                    if (!System.Enum.TryParse(furniture.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+                                    if (!System.Enum.TryParse(furniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
                                     {
-                                        ModEntry.monitor.Log($"Failed to convert {baseItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
+                                        FishingTrawler.monitor.Log($"Failed to convert {baseItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                                         break;
                                     }
 
@@ -168,7 +168,7 @@ namespace FishingTrawler
                                 }
                                 break;
                             default:
-                                ModEntry.monitor.Log($"Base item {baseItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} failed to convert back to custom item.", LogLevel.Trace);
+                                FishingTrawler.monitor.Log($"Base item {baseItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} failed to convert back to custom item.", LogLevel.Trace);
                                 continue;
                         }
                     }
@@ -187,14 +187,14 @@ namespace FishingTrawler
                         who.addItemToInventory(new MilkPail() { modData = customItem.modData });
                         break;
                     case Furniture furniture:
-                        if (furniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                        if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                         {
                             who.removeItemFromInventory(customItem);
                             who.addItemToInventory(new Furniture(1900, Vector2.Zero) { modData = customItem.modData });
                         }
                         break;
                     default:
-                        ModEntry.monitor.Log($"Custom item {customItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} failed to convert back to base item. Serializer will likely fail.", LogLevel.Trace);
+                        FishingTrawler.monitor.Log($"Custom item {customItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} failed to convert back to base item. Serializer will likely fail.", LogLevel.Trace);
                         continue;
                 }
             }
@@ -211,11 +211,11 @@ namespace FishingTrawler
                         who.addItemToInventory(new BailingBucket() { modData = baseItem.modData });
                         break;
                     case Furniture furniture:
-                        if (furniture.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY))
+                        if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
                         {
-                            if (!System.Enum.TryParse(furniture.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+                            if (!System.Enum.TryParse(furniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
                             {
-                                ModEntry.monitor.Log($"Failed to convert {baseItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
+                                FishingTrawler.monitor.Log($"Failed to convert {baseItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                                 break;
                             }
 
@@ -224,7 +224,7 @@ namespace FishingTrawler
                         }
                         break;
                     default:
-                        ModEntry.monitor.Log($"Custom item {baseItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} failed to convert back to base item. Serializer will likely fail.", LogLevel.Trace);
+                        FishingTrawler.monitor.Log($"Custom item {baseItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} failed to convert back to base item. Serializer will likely fail.", LogLevel.Trace);
                         continue;
                 }
             }

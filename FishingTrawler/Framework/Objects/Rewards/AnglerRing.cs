@@ -20,8 +20,8 @@ namespace FishingTrawler.Objects.Rewards
         public AnglerRing() : base(531)
         {
             Category = -96;
-            displayName = ModEntry.i18n.Get("item.angler_ring.name");
-            description = ModEntry.i18n.Get("item.angler_ring.description");
+            displayName = FishingTrawler.i18n.Get("item.angler_ring.name");
+            description = FishingTrawler.i18n.Get("item.angler_ring.description");
             price.Value = 0;
         }
 

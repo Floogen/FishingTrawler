@@ -75,11 +75,11 @@ namespace FishingTrawler.GameLocations
         {
             if (Game1.startedJukeboxMusic)
             {
-                ModEntry.SetTrawlerTheme(Game1.getMusicTrackName());
+                FishingTrawler.SetTrawlerTheme(Game1.getMusicTrackName());
             }
-            else if (string.IsNullOrEmpty(miniJukeboxTrack.Value) && !string.IsNullOrEmpty(ModEntry.trawlerThemeSong))
+            else if (string.IsNullOrEmpty(miniJukeboxTrack.Value) && !string.IsNullOrEmpty(FishingTrawler.trawlerThemeSong))
             {
-                ModEntry.SetTrawlerTheme(null);
+                FishingTrawler.SetTrawlerTheme(null);
             }
 
             base.cleanupBeforePlayerExit();
@@ -103,7 +103,7 @@ namespace FishingTrawler.GameLocations
             {
                 if (tile.Properties["CustomAction"] == "PathosCat")
                 {
-                    Game1.drawObjectDialogue(ModEntry.i18n.Get("game_message.pathos_cat"));
+                    Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.pathos_cat"));
                     return true;
                 }
             }
@@ -149,7 +149,7 @@ namespace FishingTrawler.GameLocations
                 return bool.Parse(hole.Properties["IsLeaking"]);
             }
 
-            ModEntry.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
+            FishingTrawler.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
             return false;
         }
 

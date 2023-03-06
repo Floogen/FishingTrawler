@@ -286,7 +286,7 @@ namespace FishingTrawler.GameLocations
                 return bool.Parse(hole.Properties["IsRipped"]);
             }
 
-            ModEntry.monitor.Log("Called [IsNetRipped] on tile that doesn't have IsRipped property on AlwaysFront layer, returning false!", LogLevel.Trace);
+            FishingTrawler.monitor.Log("Called [IsNetRipped] on tile that doesn't have IsRipped property on AlwaysFront layer, returning false!", LogLevel.Trace);
             return false;
         }
 
@@ -401,7 +401,7 @@ namespace FishingTrawler.GameLocations
             else
             {
                 // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
-                fishCaughtQuantity += (int)(_netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() * ModEntry.config.fishPerNet * fishCaughtMultiplier + (isEngineFailing ? -1 : ModEntry.config.engineFishBonus));
+                fishCaughtQuantity += (int)(_netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() * FishingTrawler.config.fishPerNet * fishCaughtMultiplier + (isEngineFailing ? -1 : FishingTrawler.config.engineFishBonus));
                 if (fishCaughtQuantity < 0)
                 {
                     fishCaughtQuantity = 0;

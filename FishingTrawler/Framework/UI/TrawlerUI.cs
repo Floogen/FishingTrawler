@@ -23,9 +23,9 @@ namespace FishingTrawler.UI
             b.Draw(ModResources.uiTexture, new Vector2(16f, 16f) + new Vector2(-1f, -3f) * 4f, new Rectangle(2, 16, 74, 57), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f - 0.001f);
             b.Draw(ModResources.uiTexture, new Vector2(16f, 16f) + new Vector2(256 + 4, -12f), new Rectangle(68, 16, 8, 67), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f - 0.001f);
 
-            Game1.drawWithBorder($"{ModEntry.i18n.Get("ui.flooding.name")}: {floodLevel}%", Color.Black, floodLevel > 75 ? Color.Red : isHullLeaking ? Color.Yellow : Color.White, new Vector2(32f, 24f), 0f, 1f, 1f, tiny: false);
-            Game1.drawWithBorder(string.Concat(ModEntry.i18n.Get("ui.nets.name"), ": ", rippedNetsCount < 1 ? ModEntry.i18n.Get("ui.generic.working") : rippedNetsCount > 1 ? ModEntry.i18n.Get("ui.nets.ripped") : ModEntry.i18n.Get("ui.nets.ripping")), Color.Black, rippedNetsCount < 1 ? Color.White : rippedNetsCount > 1 ? Color.Red : Color.Yellow, new Vector2(32f, 76f), 0f, 1f, 1f, tiny: false);
-            Game1.drawWithBorder(string.Concat(ModEntry.i18n.Get("ui.engine.name"), ": ", leakingPipes > 0 ? ModEntry.i18n.Get("ui.engine.failing") : ModEntry.i18n.Get("ui.generic.working")), Color.Black, leakingPipes > 0 ? Color.Red : Color.White, new Vector2(32f, 128f), 0f, 1f, 1f, tiny: false);
+            Game1.drawWithBorder($"{FishingTrawler.i18n.Get("ui.flooding.name")}: {floodLevel}%", Color.Black, floodLevel > 75 ? Color.Red : isHullLeaking ? Color.Yellow : Color.White, new Vector2(32f, 24f), 0f, 1f, 1f, tiny: false);
+            Game1.drawWithBorder(string.Concat(FishingTrawler.i18n.Get("ui.nets.name"), ": ", rippedNetsCount < 1 ? FishingTrawler.i18n.Get("ui.generic.working") : rippedNetsCount > 1 ? FishingTrawler.i18n.Get("ui.nets.ripped") : FishingTrawler.i18n.Get("ui.nets.ripping")), Color.Black, rippedNetsCount < 1 ? Color.White : rippedNetsCount > 1 ? Color.Red : Color.Yellow, new Vector2(32f, 76f), 0f, 1f, 1f, tiny: false);
+            Game1.drawWithBorder(string.Concat(FishingTrawler.i18n.Get("ui.engine.name"), ": ", leakingPipes > 0 ? FishingTrawler.i18n.Get("ui.engine.failing") : FishingTrawler.i18n.Get("ui.generic.working")), Color.Black, leakingPipes > 0 ? Color.Red : Color.White, new Vector2(32f, 128f), 0f, 1f, 1f, tiny: false);
             b.Draw(ModResources.uiTexture, new Vector2(28f, 174f), new Rectangle(0, 0, 16, 16), Color.White, 0f, Vector2.Zero, 3f, SpriteEffects.None, 1f);
             Game1.drawWithBorder(string.Concat(amountOfFish), Color.Black, Color.White, new Vector2(76f, 169f + languageOffset), 0f, 1f, 1f, tiny: false);
             b.Draw(ModResources.uiTexture, new Vector2(136f, 169f), new Rectangle(16, 0, 16, 16), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
@@ -36,7 +36,7 @@ namespace FishingTrawler.UI
 
         internal static void DrawNotification(SpriteBatch b, GameLocation location, string s, float alpha = 1f)
         {
-            ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "setUpCharacterMap").Invoke();
+            FishingTrawler.modHelper.Reflection.GetMethod(typeof(SpriteText), "setUpCharacterMap").Invoke();
 
             int x = 0;
             int y = 0;
@@ -107,10 +107,10 @@ namespace FishingTrawler.UI
             s = s.Replace('♡', '<');
             for (int i = 0; i < Math.Min(s.Length, 9999); i++)
             {
-                if (LocalizedContentManager.CurrentLanguageLatin || ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) || SpriteText.forceEnglishFont)
+                if (LocalizedContentManager.CurrentLanguageLatin || FishingTrawler.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) || SpriteText.forceEnglishFont)
                 {
                     float tempzoom = SpriteText.fontPixelZoom;
-                    if (ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) || SpriteText.forceEnglishFont)
+                    if (FishingTrawler.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) || SpriteText.forceEnglishFont)
                     {
                         SpriteText.fontPixelZoom = 3f;
                     }
@@ -140,7 +140,7 @@ namespace FishingTrawler.UI
                             continue;
                         }
                     }
-                    b.Draw(color != -1 ? SpriteText.coloredTexture : SpriteText.spriteTexture, position + spriteFontOffset * SpriteText.fontPixelZoom, ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "getSourceRectForChar").Invoke<Rectangle>(s[i], false), (ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) ? Color.White : SpriteText.getColorFromIndex(color)) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
+                    b.Draw(color != -1 ? SpriteText.coloredTexture : SpriteText.spriteTexture, position + spriteFontOffset * SpriteText.fontPixelZoom, FishingTrawler.modHelper.Reflection.GetMethod(typeof(SpriteText), "getSourceRectForChar").Invoke<Rectangle>(s[i], false), (FishingTrawler.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) ? Color.White : SpriteText.getColorFromIndex(color)) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
                     if (i < s.Length - 1)
                     {
                         position.X += 8f * SpriteText.fontPixelZoom + accumulatedHorizontalSpaceBetweenCharacters + SpriteText.getWidthOffsetForChar(s[i + 1]) * SpriteText.fontPixelZoom;

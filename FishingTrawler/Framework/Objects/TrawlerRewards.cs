@@ -84,17 +84,17 @@ namespace FishingTrawler.Objects
         {
             if (Game1.random.NextDouble() <= 0.5)
             {
-                Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.gamblers_crest_effect.success"), null));
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.gamblers_crest_effect.success"), null));
                 return amountOfFish *= 2;
             }
 
             if (Game1.random.NextDouble() <= 0.25)
             {
-                Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.gamblers_crest_effect.failed"), null));
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.gamblers_crest_effect.failed"), null));
                 return 0;
             }
 
-            Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.gamblers_crest_effect.neutral"), null));
+            Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.gamblers_crest_effect.neutral"), null));
             return amountOfFish;
         }
 
@@ -342,7 +342,7 @@ namespace FishingTrawler.Objects
 
         internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
         {
-            ModEntry.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
+            FishingTrawler.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
 
             int[] keys = GetEligibleFishIds(hasWorldly);
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
@@ -354,22 +354,22 @@ namespace FishingTrawler.Objects
             }
 
             // See if this run generates an unidentified ancient flag
-            ModEntry.monitor.Log($"Odds for getting ancient flag during this run: {amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", LogLevel.Trace);
+            FishingTrawler.monitor.Log($"Odds for getting ancient flag during this run: {amountOfFish}, {_farmer.FishingLevel} : {amountOfFish / 500f + _farmer.FishingLevel / 100f}", LogLevel.Trace);
             if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
             {
-                ModEntry.monitor.Log($"Player got lucky and was rewarded an ancient flag!", LogLevel.Trace);
+                FishingTrawler.monitor.Log($"Player got lucky and was rewarded an ancient flag!", LogLevel.Trace);
                 _rewardChest.addItem(new AncientFlag(FlagType.Unknown));
             }
 
             // See if this run generates an special reward
-            ModEntry.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
-            if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
+            FishingTrawler.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[FishingTrawler.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[FishingTrawler.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
+            if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[FishingTrawler.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
             {
-                ModEntry.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
+                FishingTrawler.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
                 switch (Game1.random.Next(0, 1))
                 {
                     default:
-                        ModEntry.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
+                        FishingTrawler.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
                         _rewardChest.addItem(new AnglerRing());
                         break;
                 }
@@ -391,7 +391,7 @@ namespace FishingTrawler.Objects
                 {
                     if (!fishData.ContainsKey(Convert.ToInt32(keys[i])))
                     {
-                        ModEntry.monitor.Log($"Failed to find fish ID {Convert.ToInt32(keys[i])} in fishData, skipping!", LogLevel.Trace);
+                        FishingTrawler.monitor.Log($"Failed to find fish ID {Convert.ToInt32(keys[i])} in fishData, skipping!", LogLevel.Trace);
                         continue;
                     }
 
@@ -508,12 +508,12 @@ namespace FishingTrawler.Objects
             //_farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
             int xpGained = (int)(totalRewardXP % (100 - baseXpReduction));
             _farmer.gainExperience(1, xpGained + (int)bonusXP);
-            Game1.addHUDMessage(new HUDMessage(string.Format(ModEntry.i18n.Get("game_message.xp_gained"), xpGained), null));
+            Game1.addHUDMessage(new HUDMessage(string.Format(FishingTrawler.i18n.Get("game_message.xp_gained"), xpGained), null));
 
-            ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP, {xpGained} normal XP", LogLevel.Trace);
+            FishingTrawler.monitor.Log($"Gave player {bonusXP} bonus XP, {xpGained} normal XP", LogLevel.Trace);
             if (bonusXP > 0f)
             {
-                Game1.addHUDMessage(new HUDMessage(string.Format(ModEntry.i18n.Get("game_message.bonus_xp_gained"), bonusXP), null));
+                Game1.addHUDMessage(new HUDMessage(string.Format(FishingTrawler.i18n.Get("game_message.bonus_xp_gained"), bonusXP), null));
             }
         }
     }
