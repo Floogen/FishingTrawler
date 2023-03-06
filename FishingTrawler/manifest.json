@@ -13,7 +13,7 @@
       "IsRequired": true
     },
     {
-      "UniqueID": "Platonymous.Toolkit",
+      "UniqueID": "aedenthorn.ExtraMapLayers",
       "IsRequired": true
     }
   ]

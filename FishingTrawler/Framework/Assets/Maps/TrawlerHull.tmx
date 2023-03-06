@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="16" height="9" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="36">
+ <properties>
+  <property name="AmbientLight" value="170 190 90"/>
+  <property name="Light" value="3 4 2 11 4 2"/>
+ </properties>
+ <tileset firstgid="1" name="paths" tilewidth="16" tileheight="16" tilecount="0" columns="4">
+  <image source="paths" width="64" height="144"/>
+ </tileset>
+ <tileset firstgid="1" name="wizardhouse" tilewidth="16" tileheight="16" tilecount="0" columns="32">
+  <image source="townInterior" width="512" height="1088"/>
+ </tileset>
+ <tileset firstgid="1" name="z_trawlerTiles" tilewidth="16" tileheight="16" tilecount="576" columns="24">
+  <image source="TrawlerTiles.png" width="384" height="384"/>
+  <tile id="247">
+   <animation>
+    <frame tileid="247" duration="1000"/>
+    <frame tileid="271" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="377">
+   <animation>
+    <frame tileid="377" duration="60"/>
+    <frame tileid="378" duration="60"/>
+    <frame tileid="379" duration="60"/>
+    <frame tileid="380" duration="60"/>
+    <frame tileid="381" duration="60"/>
+    <frame tileid="382" duration="60"/>
+   </animation>
+  </tile>
+  <tile id="399">
+   <animation>
+    <frame tileid="422" duration="1000"/>
+    <frame tileid="398" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="401">
+   <animation>
+    <frame tileid="401" duration="60"/>
+    <frame tileid="402" duration="60"/>
+    <frame tileid="403" duration="60"/>
+    <frame tileid="404" duration="60"/>
+    <frame tileid="405" duration="60"/>
+    <frame tileid="406" duration="60"/>
+   </animation>
+  </tile>
+  <tile id="419">
+   <animation>
+    <frame tileid="419" duration="1000"/>
+    <frame tileid="420" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="421">
+   <animation>
+    <frame tileid="421" duration="1000"/>
+    <frame tileid="397" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="425">
+   <animation>
+    <frame tileid="425" duration="60"/>
+    <frame tileid="426" duration="60"/>
+    <frame tileid="427" duration="60"/>
+    <frame tileid="428" duration="60"/>
+    <frame tileid="429" duration="60"/>
+    <frame tileid="430" duration="60"/>
+   </animation>
+  </tile>
+  <tile id="442">
+   <animation>
+    <frame tileid="442" duration="1000"/>
+    <frame tileid="444" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="443">
+   <animation>
+    <frame tileid="443" duration="1000"/>
+    <frame tileid="445" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="446">
+   <animation>
+    <frame tileid="446" duration="1000"/>
+    <frame tileid="422" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="447">
+   <animation>
+    <frame tileid="422" duration="1000"/>
+    <frame tileid="447" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="449">
+   <animation>
+    <frame tileid="449" duration="60"/>
+    <frame tileid="450" duration="60"/>
+    <frame tileid="451" duration="60"/>
+    <frame tileid="452" duration="60"/>
+    <frame tileid="453" duration="60"/>
+    <frame tileid="454" duration="60"/>
+   </animation>
+  </tile>
+  <tile id="473">
+   <animation>
+    <frame tileid="473" duration="60"/>
+    <frame tileid="474" duration="60"/>
+    <frame tileid="475" duration="60"/>
+    <frame tileid="476" duration="60"/>
+    <frame tileid="477" duration="60"/>
+    <frame tileid="478" duration="60"/>
+   </animation>
+  </tile>
+  <tile id="496">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+   <animation>
+    <frame tileid="496" duration="500"/>
+    <frame tileid="497" duration="500"/>
+    <frame tileid="498" duration="500"/>
+    <frame tileid="499" duration="500"/>
+   </animation>
+  </tile>
+  <tile id="497">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+  </tile>
+  <tile id="498">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+  </tile>
+  <tile id="499">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+  </tile>
+  <tile id="500">
+   <animation>
+    <frame tileid="500" duration="500"/>
+    <frame tileid="501" duration="500"/>
+    <frame tileid="502" duration="500"/>
+    <frame tileid="503" duration="500"/>
+   </animation>
+  </tile>
+  <tile id="520">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+   <animation>
+    <frame tileid="520" duration="500"/>
+    <frame tileid="521" duration="500"/>
+    <frame tileid="522" duration="500"/>
+    <frame tileid="523" duration="500"/>
+   </animation>
+  </tile>
+  <tile id="521">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+  </tile>
+  <tile id="522">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+  </tile>
+  <tile id="523">
+   <properties>
+    <property name="Passable" value="T"/>
+    <property name="Water" value="T"/>
+   </properties>
+  </tile>
+  <tile id="524">
+   <animation>
+    <frame tileid="524" duration="500"/>
+    <frame tileid="525" duration="500"/>
+    <frame tileid="526" duration="500"/>
+    <frame tileid="527" duration="500"/>
+   </animation>
+  </tile>
+  <tile id="544">
+   <properties>
+    <property name="CustomTouchAction" value="PlaySound"/>
+    <property name="PlaySound" value="waterSlosh"/>
+   </properties>
+   <animation>
+    <frame tileid="544" duration="500"/>
+    <frame tileid="545" duration="500"/>
+    <frame tileid="546" duration="500"/>
+    <frame tileid="547" duration="500"/>
+   </animation>
+  </tile>
+  <tile id="545">
+   <properties>
+    <property name="CustomTouchAction" value="PlaySound"/>
+    <property name="PlaySound" value="waterSlosh"/>
+   </properties>
+  </tile>
+  <tile id="546">
+   <properties>
+    <property name="CustomTouchAction" value="PlaySound"/>
+    <property name="PlaySound" value="waterSlosh"/>
+   </properties>
+  </tile>
+  <tile id="547">
+   <properties>
+    <property name="CustomTouchAction" value="PlaySound"/>
+    <property name="PlaySound" value="waterSlosh"/>
+   </properties>
+  </tile>
+  <tile id="548">
+   <animation>
+    <frame tileid="548" duration="500"/>
+    <frame tileid="549" duration="500"/>
+    <frame tileid="550" duration="500"/>
+    <frame tileid="551" duration="500"/>
+   </animation>
+  </tile>
+ </tileset>
+ <layer id="1" name="Back" width="16" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,401,0,0,0,359,0,401,0,359,0,401,0,0,0,
+0,0,425,0,0,0,377,0,425,0,377,0,425,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,473,473,473,473,473,473,473,473,473,473,473,473,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="11" name="Back1" width="16" height="9" opacity="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,545,545,545,545,545,545,545,545,545,545,545,545,545,545,0,
+0,545,545,545,545,545,545,545,545,545,545,545,545,545,545,0,
+0,545,545,545,545,545,545,545,545,545,545,545,545,545,545,0,
+0,545,545,545,545,545,545,545,545,545,545,545,545,545,545,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="Buildings" width="16" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,373,469,0,0,359,470,376,0,359,469,375,0,0,0,
+0,0,425,493,0,0,374,493,425,0,372,493,425,0,0,0,
+0,0,449,0,0,0,449,0,449,0,449,0,449,0,418,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,441,442,0,
+0,224,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,419,0,
+0,419,0,0,0,0,0,0,0,0,0,0,441,465,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="12" name="Buildings1" width="16" height="9" opacity="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,400,448,448,448,448,448,448,448,448,448,448,448,448,0,0,
+0,422,447,447,447,447,447,447,447,447,447,447,447,443,444,0,
+0,248,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,420,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="Paths" width="16" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="4" name="Front" width="16" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="9" name="AlwaysFront" width="16" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,121,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,417,0,0,
+0,201,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,395,0,
+0,395,0,0,0,0,0,0,0,0,0,0,417,418,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="5" name="Back"/>
+ <objectgroup id="6" name="Buildings">
+  <object id="2" name="TileData" x="64" y="48" width="16" height="16">
+   <properties>
+    <property name="Action" value="Warp 38 24 Custom_FishingTrawler "/>
+   </properties>
+  </object>
+  <object id="5" name="TileData" x="32" y="16" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="HullHole"/>
+    <property name="IsLeaking" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="7" name="TileData" x="128" y="16" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="HullHole"/>
+    <property name="IsLeaking" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="8" name="TileData" x="160" y="32" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="HullHole"/>
+    <property name="IsLeaking" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="9" name="TileData" x="96" y="32" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="HullHole"/>
+    <property name="IsLeaking" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="10" name="TileData" x="192" y="16" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="HullHole"/>
+    <property name="IsLeaking" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="Paths"/>
+ <objectgroup id="8" name="Front"/>
+ <objectgroup id="10" name="AlwaysFront"/>
+</map>

@@ -24,6 +24,8 @@ namespace FishingTrawler.GameLocations
         private const int TRAWLER_TILESHEET_INDEX = 2;
         private const float MINIMUM_WATER_LEVEL_FOR_FLOOR = 5f;
         private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
+        private const string FLOOD_WATER_LAYER = "Back1";
+        private const string FLOOD_ITEMS_LAYER = "Buildings1";
 
         internal static int waterLevel;
         internal bool areLeaksEnabled;
@@ -105,15 +107,15 @@ namespace FishingTrawler.GameLocations
         {
             Vector2 playerStandingPosition = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
 
-            if (lastTouchActionLocation.Equals(Vector2.Zero) && map.GetLayer("FloodWater").Properties["@Opacity"] > 0f)
+            if (lastTouchActionLocation.Equals(Vector2.Zero) && map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] > 0f)
             {
-                string touchActionProperty = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", "FloodWater");
+                string touchActionProperty = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", FLOOD_WATER_LAYER);
                 lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
                 if (touchActionProperty != null)
                 {
                     if (touchActionProperty == "PlaySound")
                     {
-                        string soundName = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", "FloodWater");
+                        string soundName = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", FLOOD_WATER_LAYER);
                         if (string.IsNullOrEmpty(soundName))
                         {
                             FishingTrawler.monitor.Log($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
@@ -317,8 +319,8 @@ namespace FishingTrawler.GameLocations
             }
 
             // Using PyTK for these layers and opacity
-            map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? waterLevel * 0.01f + 0.1f : 0f;
-            map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
+            map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? waterLevel * 0.01f + 0.1f : 0f;
+            map.GetLayer(FLOOD_ITEMS_LAYER).Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
         }
 
         public void ChangeWaterLevel(int change)
@@ -360,7 +362,7 @@ namespace FishingTrawler.GameLocations
 
         public bool IsFlooding()
         {
-            return map.GetLayer("FloodWater").Properties["@Opacity"] > 0f;
+            return map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] > 0f;
         }
     }
 }
