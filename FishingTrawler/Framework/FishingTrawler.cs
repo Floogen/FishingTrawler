@@ -1011,7 +1011,7 @@ namespace FishingTrawler
         private void DebugSkipRequirements(string command, string[] args)
         {
             Game1.player.mailReceived.Add(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED);
-            Monitor.Log($"Skipping requirements to meet Murphy {Game1.player.Name}.", LogLevel.Debug);
+            Monitor.Log($"Skipping requirements to meet Murphy for {Game1.player.Name}.", LogLevel.Debug);
         }
     }
 }
