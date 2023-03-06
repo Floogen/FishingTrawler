@@ -13,6 +13,7 @@ using xTile.Tiles;
 using System.Reflection;
 using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects;
+using FishingTrawler.Framework.Managers;
 
 namespace FishingTrawler.Patches.Locations
 {
@@ -102,7 +103,7 @@ namespace FishingTrawler.Patches.Locations
                 return;
             }
 
-            Texture2D boatTexture = ModResources.boatTexture;
+            Texture2D boatTexture = AssetManager.boatTexture;
             if (boatTexture != null)
             {
                 b.Draw(boatTexture, Game1.GlobalToLocal(FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);

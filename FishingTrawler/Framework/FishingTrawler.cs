@@ -25,6 +25,8 @@ using StardewValley.Locations;
 using StardewValley.Objects;
 using StardewValley.Tools;
 using xTile.Dimensions;
+using FishingTrawler.Framework.External.GenericModConfigMenu;
+using FishingTrawler.Framework.Managers;
 
 namespace FishingTrawler
 {
@@ -107,7 +109,7 @@ namespace FishingTrawler
             i18n = helper.Translation;
 
             // Load in our assets
-            ModResources.SetUpAssets(helper);
+            AssetManager.SetUpAssets(helper);
 
             // Initialize the timer for fishing trip
             fishingTripTimer.Value = 0;
@@ -653,15 +655,15 @@ namespace FishingTrawler
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
 
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(ModResources.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(AssetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(surfaceLocation);
 
             // Add the hull location
-            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
+            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(hullLocation);
 
             // Add the cabin location
-            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(ModResources.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
+            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(cabinLocation);
 
             // Verify our locations were added and establish our location variables
@@ -851,11 +853,11 @@ namespace FishingTrawler
         {
             if (location is IslandSouthEast)
             {
-                murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(12.05f, 39.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
+                murphyNPC = new Murphy(new AnimatedSprite(AssetManager.murphyTexturePath, 0, 16, 32), new Vector2(12.05f, 39.5f) * 64f, 2, i18n.Get("etc.murphy_name"), AssetManager.murphyPortraitTexture);
             }
             else
             {
-                murphyNPC = new Murphy(new AnimatedSprite(ModResources.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), ModResources.murphyPortraitTexture);
+                murphyNPC = new Murphy(new AnimatedSprite(AssetManager.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), AssetManager.murphyPortraitTexture);
             }
         }
 

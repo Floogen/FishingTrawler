@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FishingTrawler.Framework.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -57,7 +58,7 @@ namespace FishingTrawler.Objects.Rewards
 
         public AncientFlag(FlagType flagType, Vector2 tile) : base(1900, tile)
         {
-            flagTexture = ModResources.ancientFlagsTexture;
+            flagTexture = AssetManager.ancientFlagsTexture;
             defaultSourceRect.Value = new Rectangle(32 * (int)flagType % flagTexture.Width, 32 * (int)flagType / flagTexture.Width * 32, 32, 32);
             modData.Add(FishingTrawler.ANCIENT_FLAG_KEY, flagType.ToString());
         }

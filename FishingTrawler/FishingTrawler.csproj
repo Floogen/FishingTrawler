@@ -36,22 +36,24 @@
 			$(PostBuildEventDependsOn);
 			PostBuildMacros;
 		</PostBuildEventDependsOn>
-		<PostBuildEvent>powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '$(Version)' | sc -LiteralPath \"$f\" })"
+		<PostBuildEvent>
+			powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '$(Version)' | sc -LiteralPath \"$f\" })"
 
-powershell Remove-Item -Path '$(SolutionDir)releases\latest"' -Recurse -Force
-xcopy /s /y /i "$(SolutionDir)bin\Debug\net5.0" "$(SolutionDir)releases\latest\$(SolutionName)"
+			powershell Remove-Item -Path '$(SolutionDir)releases\latest"' -Recurse -Force
+			xcopy /s /y /i "$(SolutionDir)bin\Debug\net5.0" "$(SolutionDir)releases\latest\$(SolutionName)"
 
-:: Start of Fishing Trawler specific copy logic block
-mkdir "$(SolutionDir)releases\latest\temp"
-move "$(SolutionDir)releases\latest\$(SolutionName)" "$(SolutionDir)releases\latest\temp"
-xcopy /s /y /i "$(SolutionDir)[CP] FishingTrawler" "$(SolutionDir)releases\latest\temp\[CP] FishingTrawler"
-ren "$(SolutionDir)releases\latest\temp" "$(SolutionName)"
-:: End of block
+			:: Start of Fishing Trawler specific copy logic block
+			mkdir "$(SolutionDir)releases\latest\temp"
+			move "$(SolutionDir)releases\latest\$(SolutionName)" "$(SolutionDir)releases\latest\temp"
+			xcopy /s /y /i "$(SolutionDir)[CP] FishingTrawler" "$(SolutionDir)releases\latest\temp\[CP] FishingTrawler"
+			ren "$(SolutionDir)releases\latest\temp" "$(SolutionName)"
+			:: End of block
 
-7z a -tzip "$(SolutionDir)releases\$(SolutionName)-$(Version).zip" "$(SolutionDir)releases\latest\$(SolutionName)"
+			7z a -tzip "$(SolutionDir)releases\$(SolutionName)-$(Version).zip" "$(SolutionDir)releases\latest\$(SolutionName)"
 
-powershell Remove-Item -Path '$(GameModsPath)\$(SolutionName)' -Recurse -Force
+			powershell Remove-Item -Path '$(GameModsPath)\$(SolutionName)' -Recurse -Force
 
-xcopy /s /y /i "$(SolutionDir)releases\latest\$(SolutionName)" "$(GameModsPath)\$(SolutionName)"</PostBuildEvent>
+			xcopy /s /y /i "$(SolutionDir)releases\latest\$(SolutionName)" "$(GameModsPath)\$(SolutionName)"
+		</PostBuildEvent>
 	</PropertyGroup>
 </Project>

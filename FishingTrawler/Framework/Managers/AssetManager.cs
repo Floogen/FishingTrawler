@@ -12,9 +12,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FishingTrawler
+namespace FishingTrawler.Framework.Managers
 {
-    public static class ModResources
+    public static class AssetManager
     {
         internal static string assetFolderPath;
         internal static string murphyTexturePath;
