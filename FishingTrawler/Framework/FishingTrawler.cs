@@ -990,18 +990,19 @@ namespace FishingTrawler
             {
                 Game1.player.addItemByMenuIfNecessary(new AncientFlag(flagType));
             }
-            Monitor.Log($"Giving all ancient flags to {Game1.player}.", LogLevel.Trace);
+            Monitor.Log($"Giving all ancient flags to {Game1.player}.", LogLevel.Debug);
         }
 
         private void DebugGetSpecialRewards(string command, string[] args)
         {
             Game1.player.addItemByMenuIfNecessary(new AnglerRing());
-            Monitor.Log($"Giving all special rewards to {Game1.player}.", LogLevel.Trace);
+            Monitor.Log($"Giving all special rewards to {Game1.player}.", LogLevel.Debug);
         }
 
         private void DebugSkipRequirements(string command, string[] args)
         {
             Game1.player.mailReceived.Add(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED);
+            Monitor.Log($"Skipping requirements to meet Murphy {Game1.player}.", LogLevel.Debug);
         }
     }
 }
