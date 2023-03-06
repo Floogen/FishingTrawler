@@ -1,5 +1,4 @@
-﻿using FishingTrawler.API;
-using FishingTrawler.Framework.External.GenericModConfigMenu;
+﻿using FishingTrawler.Framework.External.GenericModConfigMenu;
 using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
