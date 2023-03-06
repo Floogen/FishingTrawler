@@ -65,7 +65,7 @@ namespace FishingTrawler.Patches.Locations
                     FishingTrawler.rewardChest.ShowMenu();
                     break;
                 case "TrawlerNote":
-                    if (!who.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
+                    if (!who.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED))
                     {
                         Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.messy_note"));
                         break;

@@ -19,6 +19,10 @@
 
         internal const string HOISTED_FLAG_KEY = "PeacefulEnd.FishingTrawler_HoistedFlag";
 
+        // Mail related
+        internal const string MAIL_FLAG_MURPHY_WAS_INTRODUCED = "PeacefulEnd.FishingTrawler_WillyIntroducesMurphy";
+        internal const string MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND = "PeacefulEnd.FishingTrawler_MurphyGingerIsland";
+
         // Location related
         internal const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
         internal const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";

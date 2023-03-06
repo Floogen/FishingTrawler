@@ -579,20 +579,20 @@ namespace FishingTrawler
             if (Context.IsMainPlayer)
             {
                 // Must be a user set date (default Wednesday), the player's fishing level >= 3 and the bridge must be fixed on the beach
-                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR])
+                if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
                     Helper.Content.AssetEditors.Add(new CustomMail());
-                    Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy");
+                    Game1.MasterPlayer.mailbox.Add(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED);
                 }
 
                 // Must be a user set island date (default Satuday), met Murphy and Ginger Island's resort must be built
                 IslandSouth resort = Game1.getLocationFromName("IslandSouth") as IslandSouth;
-                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland") && Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
+                if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND) && Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} Ginger Island letter about Murphy!", LogLevel.Trace);
                     Helper.Content.AssetEditors.Add(new CustomMail());
-                    Game1.MasterPlayer.mailbox.Add("PeacefulEnd.FishingTrawler_MurphyGingerIsland");
+                    Game1.MasterPlayer.mailbox.Add(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND);
                 }
             }
 
@@ -803,7 +803,7 @@ namespace FishingTrawler
 
         internal static bool ShouldMurphyAppear(GameLocation location)
         {
-            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
+            if (Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED))
             {
                 if (location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
                 {
@@ -811,7 +811,7 @@ namespace FishingTrawler
                 }
             }
 
-            if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland"))
+            if (Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND))
             {
                 if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
                 {

@@ -1,4 +1,4 @@
-﻿using FishingTrawler.API.Interfaces;
+﻿using FishingTrawler.Framework.Interfaces;
 using StardewModdingAPI;
 
 namespace FishingTrawler.Framework.Managers
