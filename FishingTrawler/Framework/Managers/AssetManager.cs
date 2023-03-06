@@ -30,17 +30,17 @@ namespace FishingTrawler.Framework.Managers
 
         internal static void SetUpAssets(IModHelper helper)
         {
-            assetFolderPath = helper.Content.GetActualAssetKey("Assets", ContentSource.ModFolder);
+            assetFolderPath = helper.ModContent.GetInternalAssetName(Path.Combine("Framework", "Assets")).Name;
             murphyTexturePath = Path.Combine(assetFolderPath, "Characters", "Murphy.png");
             murphyDialoguePath = Path.Combine(assetFolderPath, "Characters", "Dialogue", "Murphy.json");
 
             // Load in textures
-            murphyPortraitTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Characters", "MurphyPortrait.png"));
-            boatTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Trawler.png"));
-            ancientFlagsTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Flags.png"));
-            anglerRingTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "AnglerRing.png"));
-            bucketTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
-            uiTexture = helper.Content.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
+            murphyPortraitTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Characters", "MurphyPortrait.png"));
+            boatTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Trawler.png"));
+            ancientFlagsTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Flags.png"));
+            anglerRingTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "AnglerRing.png"));
+            bucketTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
+            uiTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
 
             // Set any static Texture assets
             AncientFlag.flagTexture = ancientFlagsTexture;
