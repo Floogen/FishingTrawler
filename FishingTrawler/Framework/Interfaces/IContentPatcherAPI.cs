@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FishingTrawler.API.Interfaces
+namespace FishingTrawler.Framework.Interfaces
 {
     /// <summary>The Content Patcher API which other mods can access.</summary>
     public interface IContentPatcherAPI
