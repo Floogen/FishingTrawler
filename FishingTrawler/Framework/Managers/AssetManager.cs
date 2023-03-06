@@ -29,7 +29,7 @@ namespace FishingTrawler.Framework.Managers
 
         internal static void SetUpAssets(IModHelper helper)
         {
-            assetFolderPath = helper.Content.GetActualAssetKey("assets", ContentSource.ModFolder);
+            assetFolderPath = helper.Content.GetActualAssetKey("Assets", ContentSource.ModFolder);
             murphyTexturePath = Path.Combine(assetFolderPath, "Characters", "Murphy.png");
             murphyDialoguePath = Path.Combine(assetFolderPath, "Characters", "Dialogue", "Murphy.json");
 
