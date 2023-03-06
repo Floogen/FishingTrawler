@@ -1,4 +1,5 @@
 ﻿using FishingTrawler.Objects.Rewards;
+using FishingTrawler.Objects.Rewards;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
@@ -136,8 +137,8 @@ namespace FishingTrawler.Objects
                                 possibles.Add(390);
                             }
                             possibles.Add(382);
-                            treasures.Add(new Object(possibles.ElementAt(Game1.random.Next(possibles.Count)), Game1.random.Next(2, 7) * ((!(Game1.random.NextDouble() < 0.05 + (double)(int)_farmer.luckLevel * 0.015)) ? 1 : 2)));
-                            if (Game1.random.NextDouble() < 0.05 + (double)_farmer.LuckLevel * 0.03)
+                            treasures.Add(new Object(possibles.ElementAt(Game1.random.Next(possibles.Count)), Game1.random.Next(2, 7) * (!(Game1.random.NextDouble() < 0.05 + (int)_farmer.luckLevel * 0.015) ? 1 : 2)));
+                            if (Game1.random.NextDouble() < 0.05 + _farmer.LuckLevel * 0.03)
                             {
                                 treasures.Last().Stack *= 2;
                             }
@@ -150,7 +151,7 @@ namespace FishingTrawler.Objects
                         }
                         else if (Game1.random.NextDouble() < 0.25 && _farmer.craftingRecipes.ContainsKey("Wild Bait"))
                         {
-                            treasures.Add(new Object(774, 5 + ((Game1.random.NextDouble() < 0.25) ? 5 : 0)));
+                            treasures.Add(new Object(774, 5 + (Game1.random.NextDouble() < 0.25 ? 5 : 0)));
                         }
                         else if (_farmer.FishingLevel >= 6)
                         {
@@ -192,17 +193,17 @@ namespace FishingTrawler.Objects
                             case 0:
                                 if (clearWaterDistance >= 4)
                                 {
-                                    treasures.Add(new Object(537 + ((Game1.random.NextDouble() < 0.4) ? Game1.random.Next(-2, 0) : 0), Game1.random.Next(1, 4)));
+                                    treasures.Add(new Object(537 + (Game1.random.NextDouble() < 0.4 ? Game1.random.Next(-2, 0) : 0), Game1.random.Next(1, 4)));
                                 }
                                 else if (clearWaterDistance >= 3)
                                 {
-                                    treasures.Add(new Object(536 + ((Game1.random.NextDouble() < 0.4) ? (-1) : 0), Game1.random.Next(1, 4)));
+                                    treasures.Add(new Object(536 + (Game1.random.NextDouble() < 0.4 ? -1 : 0), Game1.random.Next(1, 4)));
                                 }
                                 else
                                 {
                                     treasures.Add(new Object(535, Game1.random.Next(1, 4)));
                                 }
-                                if (Game1.random.NextDouble() < 0.05 + (double)_farmer.LuckLevel * 0.03)
+                                if (Game1.random.NextDouble() < 0.05 + _farmer.LuckLevel * 0.03)
                                 {
                                     treasures.Last().Stack *= 2;
                                 }
@@ -215,17 +216,17 @@ namespace FishingTrawler.Objects
                                 }
                                 if (clearWaterDistance >= 4)
                                 {
-                                    treasures.Add(new Object((Game1.random.NextDouble() < 0.3) ? 82 : ((Game1.random.NextDouble() < 0.5) ? 64 : 60), Game1.random.Next(1, 3)));
+                                    treasures.Add(new Object(Game1.random.NextDouble() < 0.3 ? 82 : Game1.random.NextDouble() < 0.5 ? 64 : 60, Game1.random.Next(1, 3)));
                                 }
                                 else if (clearWaterDistance >= 3)
                                 {
-                                    treasures.Add(new Object((Game1.random.NextDouble() < 0.3) ? 84 : ((Game1.random.NextDouble() < 0.5) ? 70 : 62), Game1.random.Next(1, 3)));
+                                    treasures.Add(new Object(Game1.random.NextDouble() < 0.3 ? 84 : Game1.random.NextDouble() < 0.5 ? 70 : 62, Game1.random.Next(1, 3)));
                                 }
                                 else
                                 {
-                                    treasures.Add(new Object((Game1.random.NextDouble() < 0.3) ? 86 : ((Game1.random.NextDouble() < 0.5) ? 66 : 68), Game1.random.Next(1, 3)));
+                                    treasures.Add(new Object(Game1.random.NextDouble() < 0.3 ? 86 : Game1.random.NextDouble() < 0.5 ? 66 : 68, Game1.random.Next(1, 3)));
                                 }
-                                if (Game1.random.NextDouble() < 0.028 * (double)((float)clearWaterDistance / 5f))
+                                if (Game1.random.NextDouble() < 0.028 * (double)(clearWaterDistance / 5f))
                                 {
                                     treasures.Add(new Object(72, 1));
                                 }
@@ -241,7 +242,7 @@ namespace FishingTrawler.Objects
                                         treasures.Add(new Object(770, Game1.random.Next(1, 4)));
                                         break;
                                     }
-                                    float luckModifier = (1f + (float)_farmer.DailyLuck) * ((float)clearWaterDistance / 5f);
+                                    float luckModifier = (1f + (float)_farmer.DailyLuck) * (clearWaterDistance / 5f);
                                     if (Game1.random.NextDouble() < 0.05 * (double)luckModifier && !_farmer.specialItems.Contains(14))
                                     {
                                         treasures.Add(new MeleeWeapon(14)
@@ -261,10 +262,10 @@ namespace FishingTrawler.Objects
                                         switch (Game1.random.Next(3))
                                         {
                                             case 0:
-                                                treasures.Add(new Ring(516 + ((Game1.random.NextDouble() < (double)((float)_farmer.LuckLevel / 11f)) ? 1 : 0)));
+                                                treasures.Add(new Ring(516 + (Game1.random.NextDouble() < (double)(_farmer.LuckLevel / 11f) ? 1 : 0)));
                                                 break;
                                             case 1:
-                                                treasures.Add(new Ring(518 + ((Game1.random.NextDouble() < (double)((float)_farmer.LuckLevel / 11f)) ? 1 : 0)));
+                                                treasures.Add(new Ring(518 + (Game1.random.NextDouble() < (double)(_farmer.LuckLevel / 11f) ? 1 : 0)));
                                                 break;
                                             case 2:
                                                 treasures.Add(new Ring(Game1.random.Next(529, 535)));
@@ -361,8 +362,8 @@ namespace FishingTrawler.Objects
             }
 
             // See if this run generates an special reward
-            ModEntry.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]} : {Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 400f}", LogLevel.Trace);
-            if (Game1.random.NextDouble() <= Math.Min((int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1), 100) / 400f)
+            ModEntry.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
+            if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[ModEntry.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
             {
                 ModEntry.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
                 switch (Game1.random.Next(0, 1))
@@ -405,7 +406,7 @@ namespace FishingTrawler.Objects
                     if (specificFishData[1] == "trap")
                     {
                         double chance = Convert.ToDouble(specificFishData[2]);
-                        chance += (double)((float)_farmer.FishingLevel / 50f);
+                        chance += (double)(_farmer.FishingLevel / 50f);
                         chance /= 1.2f;  // Reduce chance of trap-based catches by 1.2
                         chance = Math.Min(chance, 0.89999997615814209);
 
@@ -429,15 +430,15 @@ namespace FishingTrawler.Objects
                         double chance = Convert.ToDouble(specificFishData[10]);
                         double dropOffAmount = Convert.ToDouble(specificFishData[11]) * chance;
                         minWaterDistance = Convert.ToInt32(specificFishData[9]);
-                        chance -= (double)Math.Max(0, minWaterDistance - 5) * dropOffAmount;
-                        chance += (double)((float)_farmer.FishingLevel / 50f);
+                        chance -= Math.Max(0, minWaterDistance - 5) * dropOffAmount;
+                        chance += (double)(_farmer.FishingLevel / 50f);
 
                         chance = Math.Min(chance, 0.89999997615814209);
                         if (Game1.random.NextDouble() <= chance - fishCatchChanceOffset)
                         {
                             caughtFish = true;
                             selectedReward = new Object(Convert.ToInt32(keys[i]), randomQuantity);
-                            caughtXP = 3f + (difficulty / 3);
+                            caughtXP = 3f + difficulty / 3;
                             break;
                         }
                     }
@@ -505,14 +506,14 @@ namespace FishingTrawler.Objects
 
             // Now give XP reward (give 5% of total caught XP)
             //_farmer.gainExperience(1, (int)((totalRewardXP % (100 - baseXpReduction)) + bonusXP));
-            int xpGained = (int)((totalRewardXP % (100 - baseXpReduction)));
+            int xpGained = (int)(totalRewardXP % (100 - baseXpReduction));
             _farmer.gainExperience(1, xpGained + (int)bonusXP);
-            Game1.addHUDMessage(new HUDMessage(String.Format(ModEntry.i18n.Get("game_message.xp_gained"), xpGained), null));
+            Game1.addHUDMessage(new HUDMessage(string.Format(ModEntry.i18n.Get("game_message.xp_gained"), xpGained), null));
 
             ModEntry.monitor.Log($"Gave player {bonusXP} bonus XP, {xpGained} normal XP", LogLevel.Trace);
             if (bonusXP > 0f)
             {
-                Game1.addHUDMessage(new HUDMessage(String.Format(ModEntry.i18n.Get("game_message.bonus_xp_gained"), bonusXP), null));
+                Game1.addHUDMessage(new HUDMessage(string.Format(ModEntry.i18n.Get("game_message.bonus_xp_gained"), bonusXP), null));
             }
         }
     }

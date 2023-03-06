@@ -1,6 +1,7 @@
-﻿using StardewModdingAPI;
+﻿using FishingTrawler.API.Interfaces;
+using StardewModdingAPI;
 
-namespace FishingTrawler.API.Interfaces
+namespace FishingTrawler.API
 {
     public static class ApiManager
     {

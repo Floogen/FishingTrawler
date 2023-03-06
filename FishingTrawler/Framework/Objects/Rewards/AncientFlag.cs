@@ -9,7 +9,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Objects;
-using PyTK.CustomElementHandler;
+//using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Objects.Rewards
 {
@@ -27,7 +27,7 @@ namespace FishingTrawler.Objects.Rewards
         KingCrab
     }
 
-    public class AncientFlag : Furniture, ISaveElement, ICustomObject
+    public class AncientFlag : Furniture
     {
         internal static Texture2D flagTexture;
 
@@ -35,7 +35,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             get
             {
-                if (this.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && Enum.TryParse(this.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
+                if (modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && Enum.TryParse(modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
                 {
                     return flagType;
                 }
@@ -58,13 +58,13 @@ namespace FishingTrawler.Objects.Rewards
         public AncientFlag(FlagType flagType, Vector2 tile) : base(1900, tile)
         {
             flagTexture = ModResources.ancientFlagsTexture;
-            base.defaultSourceRect.Value = new Rectangle(32 * (int)flagType % flagTexture.Width, 32 * (int)flagType / flagTexture.Width * 32, 32, 32);
-            base.modData.Add(ModEntry.ANCIENT_FLAG_KEY, flagType.ToString());
+            defaultSourceRect.Value = new Rectangle(32 * (int)flagType % flagTexture.Width, 32 * (int)flagType / flagTexture.Width * 32, 32, 32);
+            modData.Add(ModEntry.ANCIENT_FLAG_KEY, flagType.ToString());
         }
 
         public object getReplacement()
         {
-            return new Furniture(1900, base.TileLocation) { modData = this.modData };
+            return new Furniture(1900, TileLocation) { modData = modData };
         }
 
         public Dictionary<string, string> getAdditionalSaveData()
@@ -78,11 +78,12 @@ namespace FishingTrawler.Objects.Rewards
             // Unused
         }
 
+        /*
         public ICustomObject recreate(Dictionary<string, string> additionalSaveData, object replacement)
         {
-            Furniture baseFlag = (replacement as Furniture);
+            Furniture baseFlag = replacement as Furniture;
             flagTexture = ModResources.ancientFlagsTexture;
-            base.defaultSourceRect.Value = new Rectangle(32 * (int)this.FlagType % flagTexture.Width, 32 * (int)this.FlagType / flagTexture.Width * 32, 32, 32);
+            defaultSourceRect.Value = new Rectangle(32 * (int)FlagType % flagTexture.Width, 32 * (int)FlagType / flagTexture.Width * 32, 32, 32);
 
             if (baseFlag.modData.ContainsKey(ModEntry.ANCIENT_FLAG_KEY) && Enum.TryParse(baseFlag.modData[ModEntry.ANCIENT_FLAG_KEY], out FlagType flagType))
             {
@@ -90,30 +91,31 @@ namespace FishingTrawler.Objects.Rewards
             }
             return new AncientFlag(FlagType.Unknown, baseFlag.TileLocation);
         }
+        */
 
         public override void draw(SpriteBatch spriteBatch, int x, int y, float alpha = 1f)
         {
-            if (base.isTemporarilyInvisible)
+            if (isTemporarilyInvisible)
             {
                 return;
             }
 
-            if (Furniture.isDrawingLocationFurniture)
+            if (isDrawingLocationFurniture)
             {
-                spriteBatch.Draw(flagTexture, Game1.GlobalToLocal(Game1.viewport, this.drawPosition + ((base.shakeTimer > 0) ? new Vector2(Game1.random.Next(-1, 2), Game1.random.Next(-1, 2)) : Vector2.Zero)), this.defaultSourceRect, Color.White * alpha, 0f, Vector2.Zero, 4f, base.flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, ((int)this.furniture_type == 12) ? (2E-09f + base.tileLocation.Y / 100000f) : ((float)(base.boundingBox.Value.Bottom - (((int)this.furniture_type == 6 || (int)this.furniture_type == 17 || (int)this.furniture_type == 13) ? 48 : 8)) / 10000f));
+                spriteBatch.Draw(flagTexture, Game1.GlobalToLocal(Game1.viewport, drawPosition + (shakeTimer > 0 ? new Vector2(Game1.random.Next(-1, 2), Game1.random.Next(-1, 2)) : Vector2.Zero)), defaultSourceRect, Color.White * alpha, 0f, Vector2.Zero, 4f, flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, (int)furniture_type == 12 ? 2E-09f + tileLocation.Y / 100000f : (boundingBox.Value.Bottom - ((int)furniture_type == 6 || (int)furniture_type == 17 || (int)furniture_type == 13 ? 48 : 8)) / 10000f);
             }
             else
             {
-                spriteBatch.Draw(flagTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2(x * 64, y * 64 - (this.sourceRect.Height * 4 - base.boundingBox.Height) + ((base.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0))), this.defaultSourceRect, Color.White * alpha, 0f, Vector2.Zero, 4f, base.flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, ((int)this.furniture_type == 12) ? (2E-09f + base.tileLocation.Y / 100000f) : ((float)(base.boundingBox.Value.Bottom - (((int)this.furniture_type == 6 || (int)this.furniture_type == 17 || (int)this.furniture_type == 13) ? 48 : 8)) / 10000f));
+                spriteBatch.Draw(flagTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2(x * 64, y * 64 - (sourceRect.Height * 4 - boundingBox.Height) + (shakeTimer > 0 ? Game1.random.Next(-1, 2) : 0))), defaultSourceRect, Color.White * alpha, 0f, Vector2.Zero, 4f, flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, (int)furniture_type == 12 ? 2E-09f + tileLocation.Y / 100000f : (boundingBox.Value.Bottom - ((int)furniture_type == 6 || (int)furniture_type == 17 || (int)furniture_type == 13 ? 48 : 8)) / 10000f);
             }
         }
 
         public override void drawInMenu(SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, Color color, bool drawShadow)
         {
-            spriteBatch.Draw(flagTexture, location + new Vector2(32f, 32f), this.defaultSourceRect, color * transparency, 0f, new Vector2(this.defaultSourceRect.Width / 2, this.defaultSourceRect.Height / 2), 2f * scaleSize, SpriteEffects.None, layerDepth);
-            if (((drawStackNumber == StackDrawType.Draw && this.maximumStackSize() > 1 && this.Stack > 1) || drawStackNumber == StackDrawType.Draw_OneInclusive) && (double)scaleSize > 0.3 && this.Stack != int.MaxValue)
+            spriteBatch.Draw(flagTexture, location + new Vector2(32f, 32f), defaultSourceRect, color * transparency, 0f, new Vector2(defaultSourceRect.Width / 2, defaultSourceRect.Height / 2), 2f * scaleSize, SpriteEffects.None, layerDepth);
+            if ((drawStackNumber == StackDrawType.Draw && maximumStackSize() > 1 && Stack > 1 || drawStackNumber == StackDrawType.Draw_OneInclusive) && (double)scaleSize > 0.3 && Stack != int.MaxValue)
             {
-                Utility.drawTinyDigits(base.stack, spriteBatch, location + new Vector2((float)(64 - Utility.getWidthOfTinyDigitString(base.stack, 3f * scaleSize)) + 3f * scaleSize, 64f - 18f * scaleSize + 2f), 3f * scaleSize, 1f, color);
+                Utility.drawTinyDigits(stack, spriteBatch, location + new Vector2(64 - Utility.getWidthOfTinyDigitString(stack, 3f * scaleSize) + 3f * scaleSize, 64f - 18f * scaleSize + 2f), 3f * scaleSize, 1f, color);
             }
         }
 
@@ -130,18 +132,18 @@ namespace FishingTrawler.Objects.Rewards
 
         protected override string loadDisplayName()
         {
-            return GetFlagName(this.FlagType);
+            return GetFlagName(FlagType);
         }
 
         public override string getDescription()
         {
-            return Game1.parseText(GetFlagDescription(this.FlagType), Game1.smallFont, this.getDescriptionWidth());
+            return Game1.parseText(GetFlagDescription(FlagType), Game1.smallFont, getDescriptionWidth());
             //return Game1.parseText(GetFlagDescription((FlagType)base.SpecialVariable), Game1.smallFont, this.getDescriptionWidth());
         }
 
         public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
         {
-            if (this.FlagType is FlagType.Unknown)
+            if (FlagType is FlagType.Unknown)
             {
                 Game1.showRedMessage(ModEntry.i18n.Get("game_message.identify_flag_first"));
                 return false;

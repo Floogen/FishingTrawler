@@ -33,7 +33,7 @@ namespace FishingTrawler.Objects
         public Trawler(GameLocation location)
         {
             this.location = location;
-            this._boatPosition = GetStartingPosition();
+            _boatPosition = GetStartingPosition();
         }
 
         internal Vector2 GetStartingPosition()
@@ -57,13 +57,13 @@ namespace FishingTrawler.Objects
 
         internal void Reset()
         {
-            this._nextSmoke = 0f;
-            this._nextBubble = 0f;
-            this._boatAnimating = false;
-            this._boatPosition = GetStartingPosition();
-            this._boatOffset = 0;
-            this._boatDirection = 0;
-            this._closeGate = false;
+            _nextSmoke = 0f;
+            _nextBubble = 0f;
+            _boatAnimating = false;
+            _boatPosition = GetStartingPosition();
+            _boatOffset = 0;
+            _boatDirection = 0;
+            _closeGate = false;
         }
 
         internal void TriggerDepartureEvent()
@@ -127,9 +127,9 @@ namespace FishingTrawler.Objects
             _boatEvent.setExitLocation("Custom_TrawlerCabin", 8, 5);
             Game1.player.locationBeforeForcedEvent.Value = "Custom_TrawlerCabin";
 
-            Event boatEvent = this._boatEvent;
+            Event boatEvent = _boatEvent;
             boatEvent.onEventFinished = (Action)Delegate.Combine(boatEvent.onEventFinished, new Action(OnBoatEventEnd));
-            location.currentEvent = this._boatEvent;
+            location.currentEvent = _boatEvent;
             _boatEvent.checkForNextCommand(location, Game1.currentGameTime);
 
             Game1.eventUp = true;
@@ -156,22 +156,22 @@ namespace FishingTrawler.Objects
 
         internal void OnBoatEventEnd()
         {
-            if (this._boatEvent == null)
+            if (_boatEvent == null)
             {
                 return;
             }
-            foreach (NPC actor in this._boatEvent.actors)
+            foreach (NPC actor in _boatEvent.actors)
             {
                 actor.shouldShadowBeOffset = false;
                 actor.drawOffset.X = 0f;
             }
-            foreach (Farmer farmerActor in this._boatEvent.farmerActors)
+            foreach (Farmer farmerActor in _boatEvent.farmerActors)
             {
                 farmerActor.shouldShadowBeOffset = false;
                 farmerActor.drawOffset.X = 0f;
             }
-            this.Reset();
-            this._boatEvent = null;
+            Reset();
+            _boatEvent = null;
         }
 
         internal List<Farmer> GetFarmersToDepart()

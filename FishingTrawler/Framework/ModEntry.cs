@@ -4,14 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using FishingTrawler.API;
-using FishingTrawler.API.Interfaces;
+using FishingTrawler.API;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
 using FishingTrawler.Objects;
 using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Tools;
-using FishingTrawler.Patches.Locations;
 using FishingTrawler.UI;
+using FishingTrawler.Objects.Rewards;
+using FishingTrawler.Patches.Locations;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -114,14 +115,14 @@ namespace FishingTrawler
             // Set up our notification system on the trawler
             _eventSecondInterval = 600;
             _isTripEnding.Value = false;
-            _activeNotification = String.Empty;
+            _activeNotification = string.Empty;
             _notificationAlpha = 1f;
             _isNotificationFading = false;
 
             // Load our Harmony patches
             try
             {
-                var harmony = new Harmony(this.ModManifest.UniqueID);
+                var harmony = new Harmony(ModManifest.UniqueID);
 
                 // Apply our patches
                 new BeachPatch(monitor).Apply(harmony);
@@ -135,34 +136,34 @@ namespace FishingTrawler
             }
 
             // Add in our debug commands
-            helper.ConsoleCommands.Add("ft_getflags", "Gives all the variations of the ancient flag.\n\nUsage: ft_getflags", this.DebugGetAllFlags);
-            helper.ConsoleCommands.Add("ft_getspecials", "Gives all the special rewards.\n\nUsage: ft_getspecials", this.DebugGetSpecialRewards);
+            helper.ConsoleCommands.Add("ft_getflags", "Gives all the variations of the ancient flag.\n\nUsage: ft_getflags", DebugGetAllFlags);
+            helper.ConsoleCommands.Add("ft_getspecials", "Gives all the special rewards.\n\nUsage: ft_getspecials", DebugGetSpecialRewards);
 
             // Hook into GameLoops related events
-            helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
-            helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
-            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
-            helper.Events.GameLoop.DayEnding += this.OnDayEnding;
+            helper.Events.GameLoop.UpdateTicking += OnUpdateTicking;
+            helper.Events.GameLoop.OneSecondUpdateTicking += OnOneSecondUpdateTicking;
+            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
+            helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.DayEnding += OnDayEnding;
 
             // Hook into Display related events
-            helper.Events.Display.RenderingHud += this.OnRenderingHud;
-            helper.Events.Display.RenderedHud += this.OnRenderedHud;
+            helper.Events.Display.RenderingHud += OnRenderingHud;
+            helper.Events.Display.RenderedHud += OnRenderedHud;
 
             // Hook into Player related events
-            helper.Events.Player.Warped += this.OnWarped;
+            helper.Events.Player.Warped += OnWarped;
 
             // Hook into MouseClicked
-            helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+            helper.Events.Input.ButtonPressed += OnButtonPressed;
 
             // Hook into Multiplayer related
-            helper.Events.Multiplayer.PeerConnected += this.OnPeerConnected;
-            helper.Events.Multiplayer.ModMessageReceived += this.OnModMessageReceived;
+            helper.Events.Multiplayer.PeerConnected += OnPeerConnected;
+            helper.Events.Multiplayer.ModMessageReceived += OnModMessageReceived;
         }
 
         private void OnModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
-            if (e.FromModID != this.ModManifest.UniqueID)
+            if (e.FromModID != ModManifest.UniqueID)
             {
                 return;
             }
@@ -205,7 +206,7 @@ namespace FishingTrawler
                 return;
             }
 
-            if (!String.IsNullOrEmpty(_activeNotification))
+            if (!string.IsNullOrEmpty(_activeNotification))
             {
                 TrawlerUI.DrawNotification(e.SpriteBatch, Game1.player.currentLocation, _activeNotification, _notificationAlpha);
             }
@@ -229,7 +230,7 @@ namespace FishingTrawler
                 if (murphyNPC is null && (e.NewLocation is Beach || e.NewLocation is IslandSouthEast))
                 {
                     // Spawn Murphy, if he isn't already there
-                    e.NewLocation.modData[ModEntry.MURPHY_ON_TRIP] = "false";
+                    e.NewLocation.modData[MURPHY_ON_TRIP] = "false";
                     SpawnMurphy(e.NewLocation);
                 }
 
@@ -348,7 +349,7 @@ namespace FishingTrawler
 
             if (_notificationAlpha < 0f)
             {
-                _activeNotification = String.Empty;
+                _activeNotification = string.Empty;
                 _isNotificationFading = false;
                 _notificationAlpha = 1f;
             }
@@ -374,7 +375,7 @@ namespace FishingTrawler
 
             if (e.IsMultipleOf(150))
             {
-                if (!String.IsNullOrEmpty(_activeNotification))
+                if (!string.IsNullOrEmpty(_activeNotification))
                 {
                     _isNotificationFading = true;
                 }
@@ -422,9 +423,9 @@ namespace FishingTrawler
             {
                 themeSongUpdated = false;
 
-                _trawlerCabin.Value.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-                _trawlerHull.Value.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-                _trawlerSurface.Value.miniJukeboxTrack.Value = String.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                _trawlerCabin.Value.miniJukeboxTrack.Value = string.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                _trawlerHull.Value.miniJukeboxTrack.Value = string.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
+                _trawlerSurface.Value.miniJukeboxTrack.Value = string.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
             }
 
             if (IsMainDeckhand())
@@ -439,7 +440,7 @@ namespace FishingTrawler
                 // Every random interval check for new event (leak, net tearing, etc.) on Trawler
                 if (e.IsMultipleOf(_eventSecondInterval))
                 {
-                    string message = String.Empty;
+                    string message = string.Empty;
 
                     // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
                     if (Game1.random.NextDouble() < 0.05)
@@ -452,7 +453,7 @@ namespace FishingTrawler
                     }
 
                     // Check for empty string 
-                    if (String.IsNullOrEmpty(message))
+                    if (string.IsNullOrEmpty(message))
                     {
                         message = i18n.Get("status_message.default");
                     }
@@ -485,7 +486,7 @@ namespace FishingTrawler
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if ((!e.IsDown(SButton.MouseRight) && !e.IsDown(Buttons.A.ToSButton())) || !Context.IsWorldReady || Game1.activeClickableMenu != null)
+            if (!e.IsDown(SButton.MouseRight) && !e.IsDown(Buttons.A.ToSButton()) || !Context.IsWorldReady || Game1.activeClickableMenu != null)
             {
                 return;
             }
@@ -496,24 +497,24 @@ namespace FishingTrawler
                 {
                     for (int y = 0; y < 4; y++)
                     {
-                        _trawlerHull.Value.AttemptPlugLeak((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
-                        BroadcastTrawlerEvent(EventType.HullHole, new Vector2((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
+                        _trawlerHull.Value.AttemptPlugLeak(Game1.player.getTileX(), Game1.player.getTileY() - y, Game1.player);
+                        BroadcastTrawlerEvent(EventType.HullHole, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
                 else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
                 {
                     for (int y = 0; y < 3; y++)
                     {
-                        _trawlerSurface.Value.AttemptFixNet((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
-                        BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
+                        _trawlerSurface.Value.AttemptFixNet(Game1.player.getTileX(), Game1.player.getTileY() - y, Game1.player);
+                        BroadcastTrawlerEvent(EventType.NetTear, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
                 else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
                 {
                     for (int y = 0; y < 3; y++)
                     {
-                        _trawlerCabin.Value.AttemptPlugLeak((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y, Game1.player);
-                        BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2((int)Game1.player.getTileX(), (int)Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
+                        _trawlerCabin.Value.AttemptPlugLeak(Game1.player.getTileX(), Game1.player.getTileY() - y, Game1.player);
+                        BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
             }
@@ -553,13 +554,13 @@ namespace FishingTrawler
                 // Register our config options
                 var configAPI = ApiManager.GetGMCMInterface();
                 configAPI.RegisterModConfig(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.required_fishing_level.name"), i18n.Get("config.option.required_fishing_level.description"), () => config.minimumFishingLevel, (int val) => config.minimumFishingLevel = val, 0, 10);
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.net_output.name"), i18n.Get("config.option.net_output.description"), () => config.fishPerNet, (float val) => config.fishPerNet = val, 0f, 1f, 0.5f);
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.engine_boost.name"), i18n.Get("config.option.engine_boost.description"), () => config.engineFishBonus, (int val) => config.engineFishBonus = val, 0, 2);
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.event_frequency_lower.description"), () => config.eventFrequencyLower, (int val) => config.eventFrequencyLower = val, 1, 15);
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.event_frequency_upper.description"), () => config.eventFrequencyUpper, (int val) => config.eventFrequencyUpper = val, 1, 15);
-                configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day.name"), i18n.Get("config.option.murphy_appearance_day.description"), () => config.dayOfWeekChoice, (string val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
-                configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day_island.name"), i18n.Get("config.option.murphy_appearance_day_island.description"), () => config.dayOfWeekChoiceIsland, (string val) => config.dayOfWeekChoiceIsland = val, ModConfig.murphyDayToAppear);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.required_fishing_level.name"), i18n.Get("config.option.required_fishing_level.description"), () => config.minimumFishingLevel, (val) => config.minimumFishingLevel = val, 0, 10);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.net_output.name"), i18n.Get("config.option.net_output.description"), () => config.fishPerNet, (val) => config.fishPerNet = val, 0f, 1f, 0.5f);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.engine_boost.name"), i18n.Get("config.option.engine_boost.description"), () => config.engineFishBonus, (val) => config.engineFishBonus = val, 0, 2);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.event_frequency_lower.description"), () => config.eventFrequencyLower, (val) => config.eventFrequencyLower = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.event_frequency_upper.description"), () => config.eventFrequencyUpper, (val) => config.eventFrequencyUpper = val, 1, 15);
+                configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day.name"), i18n.Get("config.option.murphy_appearance_day.description"), () => config.dayOfWeekChoice, (val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
+                configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day_island.name"), i18n.Get("config.option.murphy_appearance_day_island.description"), () => config.dayOfWeekChoiceIsland, (val) => config.dayOfWeekChoiceIsland = val, ModConfig.murphyDayToAppear);
 
                 Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Event Freq Lower]: {config.eventFrequencyLower} | [Event Freq Upper]: {config.eventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
             }
@@ -638,7 +639,7 @@ namespace FishingTrawler
             }
 
             // Create the trawler object for the beach
-            var locationContext = (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] ? GameLocation.LocationContext.Island : GameLocation.LocationContext.Default);
+            var locationContext = todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] ? GameLocation.LocationContext.Island : GameLocation.LocationContext.Default;
             if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
             {
                 trawlerObject = new Trawler(island);
@@ -683,7 +684,7 @@ namespace FishingTrawler
             for (int x = 0; x < 4; x++)
             {
                 // Chance of skipping an event increases with each pass of this loop
-                if (Game1.random.NextDouble() < 0.1 + (x * 0.1f))
+                if (Game1.random.NextDouble() < 0.1 + x * 0.1f)
                 {
                     // Skip event
                     continue;

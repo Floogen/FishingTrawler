@@ -41,7 +41,7 @@ namespace FishingTrawler.GameLocations
             hasWeakHull = false;
             _hullHoleLocations = new List<Location>();
 
-            Layer buildingsLayer = this.map.GetLayer("Buildings");
+            Layer buildingsLayer = map.GetLayer("Buildings");
             for (int x = 0; x < buildingsLayer.LayerWidth; x++)
             {
                 for (int y = 0; y < buildingsLayer.LayerHeight; y++)
@@ -73,12 +73,12 @@ namespace FishingTrawler.GameLocations
         protected override void resetLocalState()
         {
             base.resetLocalState();
-            base.critters = new List<Critter>();
+            critters = new List<Critter>();
 
             AmbientLocationSounds.addSound(new Vector2(7f, 0f), 0);
             AmbientLocationSounds.addSound(new Vector2(13f, 0f), 0);
 
-            if (String.IsNullOrEmpty(this.miniJukeboxTrack.Value))
+            if (string.IsNullOrEmpty(miniJukeboxTrack.Value))
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }
@@ -105,16 +105,16 @@ namespace FishingTrawler.GameLocations
         {
             Vector2 playerStandingPosition = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
 
-            if (this.lastTouchActionLocation.Equals(Vector2.Zero) && this.map.GetLayer("FloodWater").Properties["@Opacity"] > 0f)
+            if (lastTouchActionLocation.Equals(Vector2.Zero) && map.GetLayer("FloodWater").Properties["@Opacity"] > 0f)
             {
-                string touchActionProperty = this.doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", "FloodWater");
-                this.lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
+                string touchActionProperty = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", "FloodWater");
+                lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
                 if (touchActionProperty != null)
                 {
                     if (touchActionProperty == "PlaySound")
                     {
-                        string soundName = this.doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", "FloodWater");
-                        if (String.IsNullOrEmpty(soundName))
+                        string soundName = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", "FloodWater");
+                        if (string.IsNullOrEmpty(soundName))
                         {
                             ModEntry.monitor.Log($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
                             return;
@@ -123,7 +123,7 @@ namespace FishingTrawler.GameLocations
                         TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, Game1.player.Position, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
                         sprite2.acceleration = new Vector2(Game1.player.xVelocity, Game1.player.yVelocity);
                         ModEntry.multiplayer.broadcastSprites(this, sprite2);
-                        this.playSound(soundName);
+                        playSound(soundName);
                     }
                 }
             }
@@ -138,7 +138,7 @@ namespace FishingTrawler.GameLocations
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
-            string actionProperty = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
+            string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
             if (actionProperty != null && actionProperty == "HullHole")
             {
                 if (!IsWithinRangeOfLeak(xTile, yTile, who))
@@ -169,8 +169,8 @@ namespace FishingTrawler.GameLocations
 
         private bool IsHoleLeaking(int tileX, int tileY)
         {
-            Tile hole = this.map.GetLayer("Buildings").Tiles[tileX, tileY];
-            if (hole != null && this.doesTileHaveProperty(tileX, tileY, "CustomAction", "Buildings") == "HullHole")
+            Tile hole = map.GetLayer("Buildings").Tiles[tileX, tileY];
+            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", "Buildings") == "HullHole")
             {
                 return bool.Parse(hole.Properties["IsLeaking"]);
             }
@@ -181,7 +181,7 @@ namespace FishingTrawler.GameLocations
 
         public bool AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
-            AnimatedTile firstTile = this.map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
+            AnimatedTile firstTile = map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
             //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Trace);
 
             if (firstTile is null)
@@ -211,12 +211,12 @@ namespace FishingTrawler.GameLocations
                     if (isFirstTile)
                     {
                         // Board up the hole
-                        this.setMapTile(tileX, y, GetRandomBoardTile(), "Buildings", null, TRAWLER_TILESHEET_INDEX);
+                        setMapTile(tileX, y, GetRandomBoardTile(), "Buildings", null, TRAWLER_TILESHEET_INDEX);
 
                         // Add the custom properties for tracking
-                        this.map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+                        map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
-                        this.playSound("crafting");
+                        playSound("crafting");
 
                         isFirstTile = false;
                         continue;
@@ -224,10 +224,10 @@ namespace FishingTrawler.GameLocations
 
                     string targetLayer = y == 4 ? "Back" : "Buildings";
 
-                    AnimatedTile animatedTile = this.map.GetLayer(targetLayer).Tiles[tileX, y] as AnimatedTile;
+                    AnimatedTile animatedTile = map.GetLayer(targetLayer).Tiles[tileX, y] as AnimatedTile;
                     int tileIndex = animatedTile.TileFrames[0].TileIndex - 1;
 
-                    this.setMapTile(tileX, y, tileIndex, targetLayer, null, TRAWLER_TILESHEET_INDEX);
+                    setMapTile(tileX, y, tileIndex, targetLayer, null, TRAWLER_TILESHEET_INDEX);
                 }
             }
 
@@ -269,7 +269,7 @@ namespace FishingTrawler.GameLocations
             }
 
             // Set the hole as leaking
-            Tile firstTile = this.map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y];
+            Tile firstTile = map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y];
             firstTile.Properties["IsLeaking"] = true;
 
             bool isFirstTile = true;
@@ -278,10 +278,10 @@ namespace FishingTrawler.GameLocations
                 if (isFirstTile)
                 {
                     // Break open the hole, copying over the properties
-                    this.setAnimatedMapTile(holeLocation.X, holeLocation.Y, holeLocation.Y == 1 ? GetHullLeakTileIndexes(401) : GetHullLeakTileIndexes(377), 60, "Buildings", null, TRAWLER_TILESHEET_INDEX);
-                    this.map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y].Properties.CopyFrom(firstTile.Properties);
+                    setAnimatedMapTile(holeLocation.X, holeLocation.Y, holeLocation.Y == 1 ? GetHullLeakTileIndexes(401) : GetHullLeakTileIndexes(377), 60, "Buildings", null, TRAWLER_TILESHEET_INDEX);
+                    map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
-                    this.playSound("barrelBreak");
+                    playSound("barrelBreak");
 
                     isFirstTile = false;
                     continue;
@@ -289,8 +289,8 @@ namespace FishingTrawler.GameLocations
 
                 string targetLayer = y == 4 ? "Back" : "Buildings";
 
-                int[] animatedHullTileIndexes = GetHullLeakTileIndexes(this.map.GetLayer(targetLayer).Tiles[holeLocation.X, y].TileIndex + 1);
-                this.setAnimatedMapTile(holeLocation.X, y, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
+                int[] animatedHullTileIndexes = GetHullLeakTileIndexes(map.GetLayer(targetLayer).Tiles[holeLocation.X, y].TileIndex + 1);
+                setAnimatedMapTile(holeLocation.X, y, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
             }
 
             return true;
@@ -317,8 +317,8 @@ namespace FishingTrawler.GameLocations
             }
 
             // Using PyTK for these layers and opacity
-            this.map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? (waterLevel * 0.01f) + 0.1f : 0f;
-            this.map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
+            map.GetLayer("FloodWater").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? waterLevel * 0.01f + 0.1f : 0f;
+            map.GetLayer("FloodItems").Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
         }
 
         public void ChangeWaterLevel(int change)
@@ -360,7 +360,7 @@ namespace FishingTrawler.GameLocations
 
         public bool IsFlooding()
         {
-            return this.map.GetLayer("FloodWater").Properties["@Opacity"] > 0f;
+            return map.GetLayer("FloodWater").Properties["@Opacity"] > 0f;
         }
     }
 }

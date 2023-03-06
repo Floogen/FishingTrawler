@@ -1,5 +1,4 @@
-﻿using BmFont;
-using FishingTrawler.GameLocations;
+﻿using FishingTrawler.GameLocations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
@@ -16,7 +15,7 @@ namespace FishingTrawler.UI
     {
         internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, bool isHullLeaking, int rippedNetsCount, int leakingPipes)
         {
-            int languageOffset = ((LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en) ? 8 : (LocalizedContentManager.CurrentLanguageLatin ? 16 : 8));
+            int languageOffset = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en ? 8 : LocalizedContentManager.CurrentLanguageLatin ? 16 : 8;
 
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
@@ -84,10 +83,10 @@ namespace FishingTrawler.UI
 
                 speech_position.X += text_width / 2;
 
-                speech_position.X = Utility.Clamp(speech_position.X, position.X, position.X + (float)text_width - 24f);
+                speech_position.X = Utility.Clamp(speech_position.X, position.X, position.X + text_width - 24f);
             }
 
-            position *= (1f / Game1.options.zoomLevel);
+            position *= 1f / Game1.options.zoomLevel;
             b.Draw(Game1.mouseCursors, position + new Vector2(-7f, -3f) * 4f, new Rectangle(324, 299, 7, 17), Color.White * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, layerDepth - 0.001f);
             b.Draw(Game1.mouseCursors, position + new Vector2(0f, -3f) * 4f, new Rectangle(331, 299, 1, 17), Color.White * alpha, 0f, Vector2.Zero, new Vector2(SpriteText.getWidthOfString(s), 4f), SpriteEffects.None, layerDepth - 0.001f);
             b.Draw(Game1.mouseCursors, position + new Vector2(text_width, -12f), new Rectangle(332, 299, 7, 17), Color.White * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, layerDepth - 0.001f);
@@ -125,7 +124,7 @@ namespace FishingTrawler.UI
                     }
                     accumulatedHorizontalSpaceBetweenCharacters = (int)(0f * SpriteText.fontPixelZoom);
                     bool upper = char.IsUpper(s[i]) || s[i] == 'ß';
-                    Vector2 spriteFontOffset = new Vector2(0f, -1 + ((upper) ? (-3) : 0));
+                    Vector2 spriteFontOffset = new Vector2(0f, -1 + (upper ? -3 : 0));
                     if (s[i] == 'Ç')
                     {
                         spriteFontOffset.Y += 2f;
@@ -141,54 +140,56 @@ namespace FishingTrawler.UI
                             continue;
                         }
                     }
-                    b.Draw((color != -1) ? SpriteText.coloredTexture : SpriteText.spriteTexture, position + spriteFontOffset * SpriteText.fontPixelZoom, ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "getSourceRectForChar").Invoke<Rectangle>(s[i], false), ((ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i])) ? Color.White : SpriteText.getColorFromIndex(color)) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
+                    b.Draw(color != -1 ? SpriteText.coloredTexture : SpriteText.spriteTexture, position + spriteFontOffset * SpriteText.fontPixelZoom, ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "getSourceRectForChar").Invoke<Rectangle>(s[i], false), (ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i]) ? Color.White : SpriteText.getColorFromIndex(color)) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
                     if (i < s.Length - 1)
                     {
-                        position.X += 8f * SpriteText.fontPixelZoom + (float)accumulatedHorizontalSpaceBetweenCharacters + (float)SpriteText.getWidthOffsetForChar(s[i + 1]) * SpriteText.fontPixelZoom;
+                        position.X += 8f * SpriteText.fontPixelZoom + accumulatedHorizontalSpaceBetweenCharacters + SpriteText.getWidthOffsetForChar(s[i + 1]) * SpriteText.fontPixelZoom;
                     }
                     if (s[i] != '^')
                     {
-                        position.X += (float)SpriteText.getWidthOffsetForChar(s[i]) * SpriteText.fontPixelZoom;
+                        position.X += SpriteText.getWidthOffsetForChar(s[i]) * SpriteText.fontPixelZoom;
                     }
                     SpriteText.fontPixelZoom = tempzoom;
                     continue;
                 }
-                if (s[i] == '^')
-                {
-                    position.Y += (float)(ModEntry.modHelper.Reflection.GetField<FontFile>(typeof(SpriteText), "FontFile").GetValue().Common.LineHeight + 2) * SpriteText.fontPixelZoom;
-                    position.X = x;
-                    accumulatedHorizontalSpaceBetweenCharacters = 0;
-                    continue;
-                }
-                if (i > 0 && ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i - 1]))
-                {
-                    position.X += 24f;
-                }
-                if (ModEntry.modHelper.Reflection.GetField<Dictionary<char, FontChar>>(typeof(SpriteText), "_characterMap").GetValue().TryGetValue(s[i], out var fc))
-                {
-                    Rectangle sourcerect = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
-                    Texture2D _texture = ModEntry.modHelper.Reflection.GetField<List<Texture2D>>(typeof(SpriteText), "fontPages").GetValue()[fc.Page];
-                    if (SpriteText.positionOfNextSpace(s, i, (int)position.X, accumulatedHorizontalSpaceBetweenCharacters) >= x + width - 4)
-                    {
-                        position.Y += (float)(ModEntry.modHelper.Reflection.GetField<FontFile>(typeof(SpriteText), "FontFile").GetValue().Common.LineHeight + 2) * SpriteText.fontPixelZoom;
-                        accumulatedHorizontalSpaceBetweenCharacters = 0;
-                        position.X = x;
-                    }
-                    Vector2 position2 = new Vector2(position.X + (float)fc.XOffset * SpriteText.fontPixelZoom, position.Y + (float)fc.YOffset * SpriteText.fontPixelZoom);
-                    if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko)
-                    {
-                        position2.Y -= 8f;
-                    }
-                    if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru)
-                    {
-                        Vector2 offset = new Vector2(-1f, 1f) * SpriteText.fontPixelZoom;
-                        b.Draw(_texture, position2 + offset, sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                        b.Draw(_texture, position2 + new Vector2(0f, offset.Y), sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                        b.Draw(_texture, position2 + new Vector2(offset.X, 0f), sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                    }
-                    b.Draw(_texture, position2, sourcerect, SpriteText.getColorFromIndex(color) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                    position.X += (float)fc.XAdvance * SpriteText.fontPixelZoom;
-                }
+                /*
+                                 if (s[i] == '^')
+                                {
+                                    position.Y += (float)(ModEntry.modHelper.Reflection.GetField<FontFile>(typeof(SpriteText), "FontFile").GetValue().Common.LineHeight + 2) * SpriteText.fontPixelZoom;
+                                    position.X = x;
+                                    accumulatedHorizontalSpaceBetweenCharacters = 0;
+                                    continue;
+                                }
+                                if (i > 0 && ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i - 1]))
+                                {
+                                    position.X += 24f;
+                                }
+                                if (ModEntry.modHelper.Reflection.GetField<Dictionary<char, FontChar>>(typeof(SpriteText), "_characterMap").GetValue().TryGetValue(s[i], out var fc))
+                                {
+                                    Rectangle sourcerect = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
+                                    Texture2D _texture = ModEntry.modHelper.Reflection.GetField<List<Texture2D>>(typeof(SpriteText), "fontPages").GetValue()[fc.Page];
+                                    if (SpriteText.positionOfNextSpace(s, i, (int)position.X, accumulatedHorizontalSpaceBetweenCharacters) >= x + width - 4)
+                                    {
+                                        position.Y += (float)(ModEntry.modHelper.Reflection.GetField<FontFile>(typeof(SpriteText), "FontFile").GetValue().Common.LineHeight + 2) * SpriteText.fontPixelZoom;
+                                        accumulatedHorizontalSpaceBetweenCharacters = 0;
+                                        position.X = x;
+                                    }
+                                    Vector2 position2 = new Vector2(position.X + (float)fc.XOffset * SpriteText.fontPixelZoom, position.Y + (float)fc.YOffset * SpriteText.fontPixelZoom);
+                                    if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko)
+                                    {
+                                        position2.Y -= 8f;
+                                    }
+                                    if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru)
+                                    {
+                                        Vector2 offset = new Vector2(-1f, 1f) * SpriteText.fontPixelZoom;
+                                        b.Draw(_texture, position2 + offset, sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
+                                        b.Draw(_texture, position2 + new Vector2(0f, offset.Y), sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
+                                        b.Draw(_texture, position2 + new Vector2(offset.X, 0f), sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
+                                    }
+                                    b.Draw(_texture, position2, sourcerect, SpriteText.getColorFromIndex(color) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
+                                    position.X += (float)fc.XAdvance * SpriteText.fontPixelZoom;
+                                }
+                */
             }
         }
     }

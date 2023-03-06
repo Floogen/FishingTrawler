@@ -50,14 +50,14 @@ namespace FishingTrawler.GameLocations
 
         internal TrawlerSurface(string mapPath, string name) : base(mapPath, name)
         {
-            base.ignoreDebrisWeather.Value = true;
-            base.critters = new List<Critter>();
+            ignoreDebrisWeather.Value = true;
+            critters = new List<Critter>();
 
             fishCaughtQuantity = 0;
             fishCaughtMultiplier = 1;
             _netRipLocations = new List<Location>();
 
-            Layer alwaysFrontLayer = this.map.GetLayer("AlwaysFront");
+            Layer alwaysFrontLayer = map.GetLayer("AlwaysFront");
             for (int x = 0; x < alwaysFrontLayer.LayerWidth; x++)
             {
                 for (int y = 0; y < alwaysFrontLayer.LayerHeight; y++)
@@ -91,16 +91,16 @@ namespace FishingTrawler.GameLocations
 
         protected override void resetLocalState()
         {
-            base.critters = new List<Critter>();
+            critters = new List<Critter>();
 
             List<TemporaryAnimatedSprite> preservedSprites = new List<TemporaryAnimatedSprite>();
-            foreach (TemporaryAnimatedSprite sprite in base.temporarySprites)
+            foreach (TemporaryAnimatedSprite sprite in temporarySprites)
             {
                 preservedSprites.Add(sprite);
             }
 
             base.resetLocalState();
-            base.temporarySprites = preservedSprites;
+            temporarySprites = preservedSprites;
 
             AmbientLocationSounds.addSound(new Vector2(44f, 23f), 2);
         }
@@ -109,10 +109,10 @@ namespace FishingTrawler.GameLocations
         {
             if (Game1.random.NextDouble() < 0.006 && !(Game1.isSnowing || Game1.isRaining))
             {
-                base.localSound("seagulls");
+                localSound("seagulls");
             }
 
-            if (String.IsNullOrEmpty(this.miniJukeboxTrack.Value) && Game1.getMusicTrackName() != "fieldofficeTentMusic")
+            if (string.IsNullOrEmpty(miniJukeboxTrack.Value) && Game1.getMusicTrackName() != "fieldofficeTentMusic")
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }
@@ -181,9 +181,9 @@ namespace FishingTrawler.GameLocations
         {
             base.UpdateWhenCurrentLocation(time);
 
-            if (this._nextSmoke > 0f)
+            if (_nextSmoke > 0f)
             {
-                this._nextSmoke -= (float)time.ElapsedGameTime.TotalSeconds;
+                _nextSmoke -= (float)time.ElapsedGameTime.TotalSeconds;
             }
             else
             {
@@ -191,14 +191,14 @@ namespace FishingTrawler.GameLocations
 
                 TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 1600, 64, 128), 200f, 9, 1, smokePosition, flicker: false, flipped: false, 1f, 0.015f, Color.Gray, 1f, 0.025f, 0f, 0f);
                 sprite.acceleration = new Vector2(-0.30f, -0.15f);
-                base.temporarySprites.Add(sprite);
+                temporarySprites.Add(sprite);
 
-                this._nextSmoke = 0.2f;
+                _nextSmoke = 0.2f;
             }
 
             if (!Game1.isSnowing && !Game1.isRaining)
             {
-                if (!base.temporarySprites.Any(t => t.id == CLOUD_ID) || (Game1.random.NextDouble() < 0.05 && base.temporarySprites.Where(t => t.id == CLOUD_ID).Count() < 10))
+                if (!temporarySprites.Any(t => t.id == CLOUD_ID) || Game1.random.NextDouble() < 0.05 && temporarySprites.Where(t => t.id == CLOUD_ID).Count() < 10)
                 {
                     string assetPath = ModResources.assetFolderPath;
 
@@ -213,12 +213,12 @@ namespace FishingTrawler.GameLocations
                         cloud.drawAboveAlwaysFront = true;
                         cloud.id = CLOUD_ID;
 
-                        base.temporarySprites.Add(cloud);
+                        temporarySprites.Add(cloud);
                     }
                 }
             }
 
-            if (!base.temporarySprites.Any(t => t.id == GROUND_ID) && Game1.random.NextDouble() < 0.10)
+            if (!temporarySprites.Any(t => t.id == GROUND_ID) && Game1.random.NextDouble() < 0.10)
             {
                 string assetPath = ModResources.assetFolderPath;
                 bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
@@ -227,7 +227,7 @@ namespace FishingTrawler.GameLocations
                 decoration.motion = new Vector2(_fastOffset, 0f);
                 decoration.id = GROUND_ID;
 
-                base.temporarySprites.Add(decoration);
+                temporarySprites.Add(decoration);
             }
         }
 
@@ -239,7 +239,7 @@ namespace FishingTrawler.GameLocations
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
-            string actionProperty = this.doesTileHaveProperty(xTile, yTile, "CustomAction", "AlwaysFront");
+            string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "AlwaysFront");
             if (actionProperty != null && actionProperty == "RippedNet")
             {
                 if (!IsWithinRangeOfNet(who))
@@ -280,8 +280,8 @@ namespace FishingTrawler.GameLocations
 
         private bool IsNetRipped(int tileX, int tileY)
         {
-            Tile hole = this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY];
-            if (hole != null && this.doesTileHaveProperty(tileX, tileY, "CustomAction", "AlwaysFront") == "RippedNet")
+            Tile hole = map.GetLayer("AlwaysFront").Tiles[tileX, tileY];
+            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", "AlwaysFront") == "RippedNet")
             {
                 return bool.Parse(hole.Properties["IsRipped"]);
             }
@@ -306,13 +306,13 @@ namespace FishingTrawler.GameLocations
             if (flagType == FlagType.Unknown)
             {
                 // Clear the flag
-                this.setMapTileIndex(39, 21, -1, "Flags");
-                this.setMapTileIndex(40, 21 - 1, -1, "Flags");
+                setMapTileIndex(39, 21, -1, "Flags");
+                setMapTileIndex(40, 21 - 1, -1, "Flags");
                 return;
             }
 
-            this.setAnimatedMapTile(39, 21, GetFlagTileIndexes(2 * (int)flagType), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
-            this.setAnimatedMapTile(40, 21, GetFlagTileIndexes(2 * (int)flagType + 1), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
+            setAnimatedMapTile(39, 21, GetFlagTileIndexes(2 * (int)flagType), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
+            setAnimatedMapTile(40, 21, GetFlagTileIndexes(2 * (int)flagType + 1), 60, "Flags", null, FLAGS_TILESHEET_INDEX);
         }
 
         public bool AttemptCreateNetRip(int tileX = -1, int tileY = -1)
@@ -339,23 +339,23 @@ namespace FishingTrawler.GameLocations
             }
 
             // Set the net as ripped
-            Tile firstTile = this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y];
+            Tile firstTile = map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y];
             firstTile.Properties["IsRipped"] = true;
 
-            this.setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
-            this.setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+            setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+            setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
 
             // Copy over the old properties
-            this.map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
+            map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
-            this.playSound("crit");
+            playSound("crit");
 
             return true;
         }
 
         public bool AttemptFixNet(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
-            AnimatedTile firstTile = this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY] as AnimatedTile;
+            AnimatedTile firstTile = map.GetLayer("AlwaysFront").Tiles[tileX, tileY] as AnimatedTile;
             //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
 
             if (firstTile is null)
@@ -379,13 +379,13 @@ namespace FishingTrawler.GameLocations
                 firstTile.Properties["IsRipped"] = false;
 
                 // Patch up the net
-                this.setMapTile(tileX, tileY, 435, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
-                this.setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                setMapTile(tileX, tileY, 435, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
 
                 // Add the custom properties for tracking
-                this.map.GetLayer("AlwaysFront").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+                map.GetLayer("AlwaysFront").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
-                this.playSound("harvest");
+                playSound("harvest");
             }
 
 
@@ -401,7 +401,7 @@ namespace FishingTrawler.GameLocations
             else
             {
                 // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
-                fishCaughtQuantity += (int)((_netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() * ModEntry.config.fishPerNet * fishCaughtMultiplier) + (isEngineFailing ? -1 : ModEntry.config.engineFishBonus));
+                fishCaughtQuantity += (int)(_netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() * ModEntry.config.fishPerNet * fishCaughtMultiplier + (isEngineFailing ? -1 : ModEntry.config.engineFishBonus));
                 if (fishCaughtQuantity < 0)
                 {
                     fishCaughtQuantity = 0;
@@ -416,7 +416,7 @@ namespace FishingTrawler.GameLocations
             int playerX = who.getStandingX() / 64;
             int playerY = who.getStandingY() / 64;
 
-            string actionProperty = this.doesTileHaveProperty(playerX, playerY, "CustomAction", "Back");
+            string actionProperty = doesTileHaveProperty(playerX, playerY, "CustomAction", "Back");
             if (actionProperty != null && actionProperty == "EmptyBucketSpot")
             {
                 return true;

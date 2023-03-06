@@ -9,20 +9,20 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Objects;
-using PyTK.CustomElementHandler;
+//using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Objects.Rewards
 {
-    public class AnglerRing : Ring, ISaveElement, ICustomObject
+    public class AnglerRing : Ring
     {
         internal static Texture2D ringTexture;
 
         public AnglerRing() : base(531)
         {
-            base.Category = -96;
-            this.displayName = ModEntry.i18n.Get("item.angler_ring.name");
-            this.description = ModEntry.i18n.Get("item.angler_ring.description");
-            this.price.Value = 0;
+            Category = -96;
+            displayName = ModEntry.i18n.Get("item.angler_ring.name");
+            description = ModEntry.i18n.Get("item.angler_ring.description");
+            price.Value = 0;
         }
 
         public override Item getOne()
@@ -48,11 +48,6 @@ namespace FishingTrawler.Objects.Rewards
             // Unused
         }
 
-        public ICustomObject recreate(Dictionary<string, string> additionalSaveData, object replacement)
-        {
-            return new AnglerRing();
-        }
-
         public override void drawInMenu(SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, Color color, bool drawShadow)
         {
             spriteBatch.Draw(ringTexture, location + new Vector2(32f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, scaleSize * 3f, SpriteEffects.None, layerDepth);
@@ -60,8 +55,8 @@ namespace FishingTrawler.Objects.Rewards
 
         public override void drawTooltip(SpriteBatch spriteBatch, ref int x, ref int y, SpriteFont font, float alpha, StringBuilder overrideText)
         {
-            Utility.drawTextWithShadow(spriteBatch, Game1.parseText(this.description, Game1.smallFont, this.getDescriptionWidth()), font, new Vector2(x + 16, y + 16 + 4), Game1.textColor);
-            y += (int)font.MeasureString(Game1.parseText(this.description, Game1.smallFont, this.getDescriptionWidth())).Y;
+            Utility.drawTextWithShadow(spriteBatch, Game1.parseText(description, Game1.smallFont, getDescriptionWidth()), font, new Vector2(x + 16, y + 16 + 4), Game1.textColor);
+            y += (int)font.MeasureString(Game1.parseText(description, Game1.smallFont, getDescriptionWidth())).Y;
 
             Utility.drawWithShadow(spriteBatch, Game1.mouseCursors, new Vector2(x + 16 + 4, y + 16 + 4), new Rectangle(20, 428, 10, 10), Color.White, 0f, Vector2.Zero, 4f, flipped: false, 1f);
             Utility.drawTextWithShadow(spriteBatch, "+2 Fishing", font, new Vector2(x + 16 + 52, y + 16 + 12), Game1.textColor * 0.9f * alpha);
@@ -73,7 +68,7 @@ namespace FishingTrawler.Objects.Rewards
             Point dimensions = new Point(0, startingHeight);
             int extra_rows_needed = 1;
 
-            dimensions.X = (int)Math.Max(minWidth, font.MeasureString(Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", 9999)).X + (float)horizontalBuffer);
+            dimensions.X = (int)Math.Max(minWidth, font.MeasureString(Game1.content.LoadString("Strings\\UI:ItemHover_DefenseBonus", 9999)).X + horizontalBuffer);
             dimensions.Y += extra_rows_needed * Math.Max((int)font.MeasureString("TT").Y, 48);
             return dimensions;
         }
@@ -90,7 +85,7 @@ namespace FishingTrawler.Objects.Rewards
 
         public override void onDayUpdate(Farmer who, GameLocation location)
         {
-            this.onEquip(who, location);
+            onEquip(who, location);
         }
     }
 }

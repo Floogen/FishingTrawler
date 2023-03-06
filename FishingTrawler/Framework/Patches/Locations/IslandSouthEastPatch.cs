@@ -5,7 +5,6 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using System;
-using FishingTrawler.Objects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +12,7 @@ using System.Threading.Tasks;
 using xTile.Tiles;
 using System.Reflection;
 using FishingTrawler.Objects.Rewards;
+using FishingTrawler.Objects;
 
 namespace FishingTrawler.Patches.Locations
 {
@@ -76,11 +76,11 @@ namespace FishingTrawler.Patches.Locations
 
                     if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en)
                     {
-                        Game1.drawObjectDialogue(String.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR_ISLAND]));
+                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR_ISLAND]));
                         break;
                     }
 
-                    Game1.drawObjectDialogue(String.Format(ModEntry.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]));
+                    Game1.drawObjectDialogue(string.Format(ModEntry.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[ModEntry.MURPHY_DAY_TO_APPEAR]));
                     break;
                 default:
                     break;
@@ -175,10 +175,10 @@ namespace FishingTrawler.Patches.Locations
                 }
             }
 
-            Microsoft.Xna.Framework.Rectangle back_rectangle = new Microsoft.Xna.Framework.Rectangle(24, 188, 16, 220);
+            Rectangle back_rectangle = new Rectangle(24, 188, 16, 220);
             back_rectangle.X += (int)trawler.GetTrawlerPosition().X;
             back_rectangle.Y += (int)trawler.GetTrawlerPosition().Y;
-            if ((float)trawler._boatDirection != 0f)
+            if (trawler._boatDirection != 0f)
             {
                 if (trawler._nextBubble > 0f)
                 {
@@ -187,8 +187,8 @@ namespace FishingTrawler.Patches.Locations
                 else
                 {
                     Vector2 position2 = Utility.getRandomPositionInThisRectangle(back_rectangle, Game1.random);
-                    TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64), 50f, 9, 1, position2, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
-                    sprite2.acceleration = new Vector2(-0.25f * (float)Math.Sign(trawler._boatDirection), 0f);
+                    TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 0, 64, 64), 50f, 9, 1, position2, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
+                    sprite2.acceleration = new Vector2(-0.25f * Math.Sign(trawler._boatDirection), 0f);
                     if (Context.IsSplitScreen)
                     {
                         ModEntry.multiplayer.broadcastSprites(__instance, sprite2);
@@ -218,7 +218,7 @@ namespace FishingTrawler.Patches.Locations
                     return;
                 }
                 Vector2 position = new Vector2(158f, -32f) * 4f + trawler.GetTrawlerPosition();
-                TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Microsoft.Xna.Framework.Rectangle(0, 1600, 64, 128), 200f, 9, 1, position, flicker: false, flipped: false, 1f, 0.025f, Color.Gray, 1f, 0.025f, 0f, 0f);
+                TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 1600, 64, 128), 200f, 9, 1, position, flicker: false, flipped: false, 1f, 0.025f, Color.Gray, 1f, 0.025f, 0f, 0f);
                 sprite.acceleration = new Vector2(-0.25f, -0.15f);
                 __instance.temporarySprites.Add(sprite);
                 trawler._nextSmoke = 0.2f;

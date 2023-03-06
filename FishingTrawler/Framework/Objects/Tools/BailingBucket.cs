@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
-using PyTK.CustomElementHandler;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
@@ -12,10 +11,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Objects.Tools
 {
-    internal class BailingBucket : MilkPail, ISaveElement
+    internal class BailingBucket : MilkPail
     {
         private string _displayName = ModEntry.i18n.Get("item.bailing_bucket.name");
         private readonly NetEvent0 _finishEvent = new NetEvent0();
@@ -25,8 +25,8 @@ namespace FishingTrawler.Objects.Tools
 
         public BailingBucket() : base()
         {
-            this.modData.Add(ModEntry.BAILING_BUCKET_KEY, "true");
-            this.description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
+            modData.Add(ModEntry.BAILING_BUCKET_KEY, "true");
+            description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
         }
 
         public object getReplacement()
@@ -41,7 +41,7 @@ namespace FishingTrawler.Objects.Tools
 
         public void rebuild(Dictionary<string, string> additionalSaveData, object replacement)
         {
-            this.modData = (replacement as MilkPail).modData;
+            modData = (replacement as MilkPail).modData;
         }
 
         public override Item getOne()
@@ -68,22 +68,22 @@ namespace FishingTrawler.Objects.Tools
 
         public override void drawInMenu(SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, Color color, bool drawShadow)
         {
-            base.IndexOfMenuItemView = 0;
+            IndexOfMenuItemView = 0;
 
-            int spriteOffset = this._containsWater ? 16 : 0;
-            spriteBatch.Draw(ModResources.bucketTexture, location + new Vector2(32f, 32f), new Rectangle(spriteOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f), 4f * (scaleSize + this._bucketScale), SpriteEffects.None, layerDepth);
+            int spriteOffset = _containsWater ? 16 : 0;
+            spriteBatch.Draw(ModResources.bucketTexture, location + new Vector2(32f, 32f), new Rectangle(spriteOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f), 4f * (scaleSize + _bucketScale), SpriteEffects.None, layerDepth);
         }
 
         protected override void initNetFields()
         {
             base.initNetFields();
-            base.NetFields.AddFields(this._finishEvent);
-            this._finishEvent.onEvent += doFinish;
+            NetFields.AddFields(_finishEvent);
+            _finishEvent.onEvent += doFinish;
         }
 
         public override bool beginUsing(GameLocation location, int x, int y, Farmer who)
         {
-            if (!ModEntry.IsPlayerOnTrawler() || who is null || (who != null && !Game1.player.Equals(who)))
+            if (!ModEntry.IsPlayerOnTrawler() || who is null || who != null && !Game1.player.Equals(who))
             {
                 who.forceCanMove();
                 return false;
@@ -91,15 +91,15 @@ namespace FishingTrawler.Objects.Tools
 
             if (location is TrawlerHull trawlerHull)
             {
-                if (this._containsWater)
+                if (_containsWater)
                 {
                     Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3));
                 }
                 else if (trawlerHull.IsFlooding())
                 {
-                    this._containsWater = true;
-                    this._bucketScale = 0.5f;
-                    this.description = ModEntry.i18n.Get("item.bailing_bucket.description_full");
+                    _containsWater = true;
+                    _bucketScale = 0.5f;
+                    description = ModEntry.i18n.Get("item.bailing_bucket.description_full");
 
                     trawlerHull.ChangeWaterLevel(-5);
                     trawlerHull.localSound("slosh");
@@ -110,13 +110,13 @@ namespace FishingTrawler.Objects.Tools
                     Game1.addHUDMessage(new HUDMessage(ModEntry.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3));
                 }
             }
-            else if (location is TrawlerSurface trawlerSurface && this._containsWater)
+            else if (location is TrawlerSurface trawlerSurface && _containsWater)
             {
                 if (trawlerSurface.IsPlayerByBoatEdge(who))
                 {
-                    this._containsWater = false;
-                    this._bucketScale = 0.5f;
-                    this.description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
+                    _containsWater = false;
+                    _bucketScale = 0.5f;
+                    description = ModEntry.i18n.Get("item.bailing_bucket.description_empty");
 
                     who.currentLocation.localSound("waterSlosh");
                 }
@@ -136,37 +136,37 @@ namespace FishingTrawler.Objects.Tools
 
         public override void tickUpdate(GameTime time, Farmer who)
         {
-            if (this._bucketScale > 0f)
+            if (_bucketScale > 0f)
             {
-                this._bucketScale -= 0.01f;
+                _bucketScale -= 0.01f;
             }
 
-            base.lastUser = who;
+            lastUser = who;
             base.tickUpdate(time, who);
-            this._finishEvent.Poll();
+            _finishEvent.Poll();
         }
 
         public override void DoFunction(GameLocation location, int x, int y, int power, Farmer who)
         {
             base.DoFunction(location, x, y, power, who);
             who.Stamina -= 4f;
-            base.CurrentParentTileIndex = 0;
-            base.IndexOfMenuItemView = 0;
+            CurrentParentTileIndex = 0;
+            IndexOfMenuItemView = 0;
 
-            this.finish();
+            finish();
         }
 
         private void finish()
         {
-            this._finishEvent.Fire();
+            _finishEvent.Fire();
         }
 
         private void doFinish()
         {
-            base.lastUser.CanMove = true;
-            base.lastUser.completelyStopAnimatingOrDoingAction();
-            base.lastUser.UsingTool = false;
-            base.lastUser.canReleaseTool = true;
+            lastUser.CanMove = true;
+            lastUser.completelyStopAnimatingOrDoingAction();
+            lastUser.UsingTool = false;
+            lastUser.canReleaseTool = true;
         }
     }
 }
