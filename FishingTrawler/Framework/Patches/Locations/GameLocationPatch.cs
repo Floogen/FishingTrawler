@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace FishingTrawler.Patches.Locations
 {
-    public class GameLocationPatch : Patch
+    internal class GameLocationPatch : PatchTemplate
     {
         private readonly Type _gameLocation = typeof(GameLocation);
 
-        internal GameLocationPatch(IMonitor monitor) : base(monitor)
+        internal GameLocationPatch(IMonitor modMonitor, IModHelper modHelper) : base(modMonitor, modHelper)
         {
 
         }

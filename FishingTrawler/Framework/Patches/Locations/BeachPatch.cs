@@ -18,11 +18,11 @@ using FishingTrawler.Framework.Utilities;
 
 namespace FishingTrawler.Patches.Locations
 {
-    public class BeachPatch : Patch
+    internal class BeachPatch : PatchTemplate
     {
         private readonly Type _beach = typeof(Beach);
 
-        internal BeachPatch(IMonitor monitor) : base(monitor)
+        internal BeachPatch(IMonitor modMonitor, IModHelper modHelper) : base(modMonitor, modHelper)
         {
 
         }

@@ -105,10 +105,10 @@ namespace FishingTrawler
             {
                 var harmony = new Harmony(ModManifest.UniqueID);
 
-                // Apply our patches
-                new BeachPatch(monitor).Apply(harmony);
-                new IslandSouthEastPatch(monitor).Apply(harmony);
-                new GameLocationPatch(monitor).Apply(harmony);
+                // Apply location patches
+                new BeachPatch(monitor, modHelper).Apply(harmony);
+                new IslandSouthEastPatch(monitor, modHelper).Apply(harmony);
+                new GameLocationPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {
