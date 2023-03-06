@@ -1,19 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
-using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using xTile.Dimensions;
 using xTile.Layers;
-using xTile.ObjectModel;
 using xTile.Tiles;
 
 namespace FishingTrawler.GameLocations

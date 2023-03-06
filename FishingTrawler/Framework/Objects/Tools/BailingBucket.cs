@@ -4,15 +4,9 @@ using FishingTrawler.GameLocations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 //using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Objects.Tools

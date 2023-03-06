@@ -1,11 +1,6 @@
 ﻿using FishingTrawler.Framework.Utilities;
 using StardewModdingAPI;
 using StardewValley;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FishingTrawler.Objects
 {

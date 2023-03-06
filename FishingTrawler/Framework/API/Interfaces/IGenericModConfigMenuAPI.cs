@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
+using System;
 
 namespace FishingTrawler.API.Interfaces
 {

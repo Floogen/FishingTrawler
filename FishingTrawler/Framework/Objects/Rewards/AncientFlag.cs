@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FishingTrawler.Framework.Managers;
+﻿using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Objects;
+using System;
+using System.Collections.Generic;
 //using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Objects.Rewards

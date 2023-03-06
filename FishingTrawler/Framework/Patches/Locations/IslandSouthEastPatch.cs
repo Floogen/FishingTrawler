@@ -1,20 +1,15 @@
-﻿using HarmonyLib;
+﻿using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Utilities;
+using FishingTrawler.Objects;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using xTile.Tiles;
-using System.Reflection;
-using FishingTrawler.Objects.Rewards;
-using FishingTrawler.Objects;
-using FishingTrawler.Framework.Managers;
-using FishingTrawler.Framework.Utilities;
 
 namespace FishingTrawler.Patches.Locations
 {

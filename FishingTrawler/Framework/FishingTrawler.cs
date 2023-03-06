@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using FishingTrawler.API;
-using FishingTrawler.API;
+﻿using FishingTrawler.API;
+using FishingTrawler.Framework.External.GenericModConfigMenu;
+using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
 using FishingTrawler.Objects;
 using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Tools;
-using FishingTrawler.UI;
-using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Patches.Locations;
+using FishingTrawler.UI;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -20,14 +16,13 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
-using StardewValley.Buildings;
 using StardewValley.Locations;
 using StardewValley.Objects;
-using StardewValley.Tools;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using xTile.Dimensions;
-using FishingTrawler.Framework.External.GenericModConfigMenu;
-using FishingTrawler.Framework.Managers;
-using FishingTrawler.Framework.Utilities;
 
 namespace FishingTrawler
 {

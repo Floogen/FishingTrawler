@@ -1,6 +1,5 @@
 ﻿using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Objects.Rewards;
-using FishingTrawler.Objects.Rewards;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
@@ -8,8 +7,6 @@ using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Object = StardewValley.Object;
 
 namespace FishingTrawler.Objects
