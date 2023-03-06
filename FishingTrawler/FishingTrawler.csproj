@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Framework\Assets\appearance_button.png">
+		<None Update="Framework\Assets\**">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="i18n\default.json">
