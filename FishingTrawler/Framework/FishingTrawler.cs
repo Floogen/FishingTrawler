@@ -27,6 +27,7 @@ using StardewValley.Tools;
 using xTile.Dimensions;
 using FishingTrawler.Framework.External.GenericModConfigMenu;
 using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Utilities;
 
 namespace FishingTrawler
 {
@@ -58,30 +59,8 @@ namespace FishingTrawler
         private PerScreen<bool> _isTripEnding = new PerScreen<bool>();
         private string _trawlerItemsPath = Path.Combine("assets", "TrawlerItems");
 
-        // Location names
-        private const string TRAWLER_SURFACE_LOCATION_NAME = "Custom_FishingTrawler";
-        private const string TRAWLER_HULL_LOCATION_NAME = "Custom_TrawlerHull";
-        private const string TRAWLER_CABIN_LOCATION_NAME = "Custom_TrawlerCabin";
-
         // Day to appear settings
         internal const int BOAT_DEPART_EVENT_ID = 840603900;
-
-        // Mod data related
-        internal const string REWARD_CHEST_DATA_KEY = "PeacefulEnd.FishingTrawler_RewardChest";
-        internal const string MURPHY_WAS_GREETED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphyGreeted";
-        internal const string MURPHY_SAILED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphySailedToday";
-        internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "PeacefulEnd.FishingTrawler_MurphyTripSuccessful";
-        internal const string MURPHY_FINISHED_TALKING_KEY = "PeacefulEnd.FishingTrawler_MurphyFinishedTalking";
-        internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
-        internal const string MURPHY_ON_TRIP = "PeacefulEnd.FishingTrawler_MurphyOnTrip";
-        internal const string MURPHY_DAY_TO_APPEAR = "PeacefulEnd.FishingTrawler_MurphyDayToAppear";
-        internal const string MURPHY_DAY_TO_APPEAR_ISLAND = "PeacefulEnd.FishingTrawler_MurphyDayToAppearIsland";
-        internal const string MURPHY_TRIPS_COMPLETED = "PeacefulEnd.FishingTrawler_MurphyTripsCompleted";
-
-        internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
-        internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
-
-        internal const string HOISTED_FLAG_KEY = "PeacefulEnd.FishingTrawler_HoistedFlag";
 
         // Notificiation messages
         private KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING;
@@ -232,7 +211,7 @@ namespace FishingTrawler
                 if (murphyNPC is null && (e.NewLocation is Beach || e.NewLocation is IslandSouthEast))
                 {
                     // Spawn Murphy, if he isn't already there
-                    e.NewLocation.modData[MURPHY_ON_TRIP] = "false";
+                    e.NewLocation.modData[ModDataKeys.MURPHY_ON_TRIP] = "false";
                     SpawnMurphy(e.NewLocation);
                 }
 
@@ -389,8 +368,8 @@ namespace FishingTrawler
                 _trawlerSurface.Value.fishCaughtQuantity /= 4;
 
                 // Set the status as failed
-                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
-                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "true";
+                Game1.player.modData[ModDataKeys.MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
+                Game1.player.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY] = "true";
 
                 // End trip due to flooding
                 Game1.player.currentLocation.playSound("fishEscape");
@@ -473,8 +452,8 @@ namespace FishingTrawler
             if (fishingTripTimer.Value <= 0f)
             {
                 // Set the status as successful
-                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "true";
-                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "true";
+                Game1.player.modData[ModDataKeys.MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "true";
+                Game1.player.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY] = "true";
 
                 // End trip due to timer finishing
                 Game1.player.currentLocation.playSound("trainWhistle");
@@ -495,7 +474,7 @@ namespace FishingTrawler
 
             if (e.IsDown(Buttons.A.ToSButton()))
             {
-                if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
+                if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_HULL_LOCATION_NAME)
                 {
                     for (int y = 0; y < 4; y++)
                     {
@@ -503,7 +482,7 @@ namespace FishingTrawler
                         BroadcastTrawlerEvent(EventType.HullHole, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
-                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
+                else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME)
                 {
                     for (int y = 0; y < 3; y++)
                     {
@@ -511,7 +490,7 @@ namespace FishingTrawler
                         BroadcastTrawlerEvent(EventType.NetTear, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
-                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
+                else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_CABIN_LOCATION_NAME)
                 {
                     for (int y = 0; y < 3; y++)
                     {
@@ -522,12 +501,12 @@ namespace FishingTrawler
             }
             else
             {
-                if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_HULL_LOCATION_NAME)
+                if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_HULL_LOCATION_NAME)
                 {
                     _trawlerHull.Value.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
                     BroadcastTrawlerEvent(EventType.HullHole, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y), true, GetFarmersOnTrawler());
                 }
-                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_SURFACE_LOCATION_NAME)
+                else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME)
                 {
                     // Attempt two checks, in case the user clicks above the rope
                     _trawlerSurface.Value.AttemptFixNet((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
@@ -536,7 +515,7 @@ namespace FishingTrawler
                     BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y), true, GetFarmersOnTrawler());
                     BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1), true, GetFarmersOnTrawler());
                 }
-                else if (Game1.player.currentLocation.NameOrUniqueName == TRAWLER_CABIN_LOCATION_NAME)
+                else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_CABIN_LOCATION_NAME)
                 {
                     _trawlerCabin.Value.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
 
@@ -572,11 +551,11 @@ namespace FishingTrawler
                 var patcherAPI = ApiManager.GetContentPatcherInterface();
                 patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDay", () =>
                 {
-                    return new[] { Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
+                    return new[] { Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
                 });
                 patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDayIsland", () =>
                 {
-                    return new[] { Game1.MasterPlayer.modData.ContainsKey(MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland };
+                    return new[] { Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland };
                 });
             }
         }
@@ -595,10 +574,10 @@ namespace FishingTrawler
             todayDayOfWeek = SDate.Now().DayOfWeek.ToString();
 
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
-            beach.modData[MURPHY_ON_TRIP] = "false";
+            beach.modData[ModDataKeys.MURPHY_ON_TRIP] = "false";
 
             IslandSouthEast island = Game1.getLocationFromName("IslandSouthEast") as IslandSouthEast;
-            island.modData[MURPHY_ON_TRIP] = "false";
+            island.modData[ModDataKeys.MURPHY_ON_TRIP] = "false";
 
             // Set Farmer moddata used for this mod
             EstablishPlayerData();
@@ -606,7 +585,7 @@ namespace FishingTrawler
             if (Context.IsMainPlayer)
             {
                 // Must be a user set date (default Wednesday), the player's fishing level >= 3 and the bridge must be fixed on the beach
-                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR])
+                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
                     Helper.Content.AssetEditors.Add(new CustomMail());
@@ -615,7 +594,7 @@ namespace FishingTrawler
 
                 // Must be a user set island date (default Satuday), met Murphy and Ginger Island's resort must be built
                 IslandSouth resort = Game1.getLocationFromName("IslandSouth") as IslandSouth;
-                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland") && Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
+                if (!Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland") && Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy") && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} Ginger Island letter about Murphy!", LogLevel.Trace);
                     Helper.Content.AssetEditors.Add(new CustomMail());
@@ -630,19 +609,19 @@ namespace FishingTrawler
             // Set the reward chest
             Vector2 rewardChestPosition = new Vector2(-100, -100);
             Farm farm = Game1.getLocationFromName("Farm") as Farm;
-            rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(REWARD_CHEST_DATA_KEY)) as Chest;
+            rewardChest = farm.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(ModDataKeys.REWARD_CHEST_DATA_KEY)) as Chest;
             if (rewardChest is null)
             {
                 Monitor.Log($"Creating reward chest {rewardChestPosition}", LogLevel.Trace);
                 rewardChest = new Chest(true, rewardChestPosition) { Name = "Trawler Rewards" };
-                rewardChest.modData.Add(REWARD_CHEST_DATA_KEY, "true");
+                rewardChest.modData.Add(ModDataKeys.REWARD_CHEST_DATA_KEY, "true");
 
                 farm.setObject(rewardChestPosition, rewardChest);
             }
 
             // Create the trawler object for the beach
-            var locationContext = todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] ? GameLocation.LocationContext.Island : GameLocation.LocationContext.Default;
-            if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND])
+            var locationContext = todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] ? GameLocation.LocationContext.Island : GameLocation.LocationContext.Default;
+            if (todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
             {
                 trawlerObject = new Trawler(island);
             }
@@ -655,21 +634,21 @@ namespace FishingTrawler
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
 
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(AssetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(AssetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(surfaceLocation);
 
             // Add the hull location
-            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
+            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), ModDataKeys.TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(hullLocation);
 
             // Add the cabin location
-            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
+            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(cabinLocation);
 
             // Verify our locations were added and establish our location variables
-            _trawlerHull.Value = Game1.getLocationFromName(TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
-            _trawlerSurface.Value = Game1.getLocationFromName(TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
-            _trawlerCabin.Value = Game1.getLocationFromName(TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
+            _trawlerHull.Value = Game1.getLocationFromName(ModDataKeys.TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+            _trawlerSurface.Value = Game1.getLocationFromName(ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
+            _trawlerCabin.Value = Game1.getLocationFromName(ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
         }
 
         private void OnDayEnding(object sender, DayEndingEventArgs e)
@@ -832,7 +811,7 @@ namespace FishingTrawler
         {
             if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_WillyIntroducesMurphy"))
             {
-                if (location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
+                if (location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
                 {
                     return true;
                 }
@@ -840,7 +819,7 @@ namespace FishingTrawler
 
             if (Game1.MasterPlayer.mailReceived.Contains("PeacefulEnd.FishingTrawler_MurphyGingerIsland"))
             {
-                if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(MURPHY_ON_TRIP) || location.modData[MURPHY_ON_TRIP] == "false"))
+                if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
                 {
                     return true;
                 }
@@ -869,34 +848,34 @@ namespace FishingTrawler
         internal static FlagType GetHoistedFlag()
         {
             Farmer flagOwner = mainDeckhand != null ? mainDeckhand : Game1.player;
-            return Enum.TryParse(flagOwner.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown;
+            return Enum.TryParse(flagOwner.modData[ModDataKeys.HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown;
         }
 
         internal static void SetHoistedFlag(FlagType flagType)
         {
-            Game1.player.modData[HOISTED_FLAG_KEY] = flagType.ToString();
+            Game1.player.modData[ModDataKeys.HOISTED_FLAG_KEY] = flagType.ToString();
         }
 
         internal static bool HasFarmerGoneSailing(Farmer who)
         {
-            return who.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY) && who.modData[MURPHY_SAILED_TODAY_KEY] == "true";
+            return who.modData.ContainsKey(ModDataKeys.MURPHY_SAILED_TODAY_KEY) && who.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY] == "true";
         }
 
         private void EstablishPlayerData()
         {
-            if (!Game1.player.modData.ContainsKey(HOISTED_FLAG_KEY))
+            if (!Game1.player.modData.ContainsKey(ModDataKeys.HOISTED_FLAG_KEY))
             {
-                Game1.player.modData.Add(HOISTED_FLAG_KEY, FlagType.Unknown.ToString());
+                Game1.player.modData.Add(ModDataKeys.HOISTED_FLAG_KEY, FlagType.Unknown.ToString());
             }
             else
             {
-                SetHoistedFlag(Enum.TryParse(Game1.player.modData[HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown);
+                SetHoistedFlag(Enum.TryParse(Game1.player.modData[ModDataKeys.HOISTED_FLAG_KEY], out FlagType flagType) ? flagType : FlagType.Unknown);
             }
 
-            Game1.player.modData[MURPHY_WAS_GREETED_TODAY_KEY] = "false";
-            Game1.player.modData[MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoice;
+            Game1.player.modData[ModDataKeys.MURPHY_WAS_GREETED_TODAY_KEY] = "false";
+            Game1.player.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] = config.dayOfWeekChoice;
 
-            Game1.player.modData[MURPHY_DAY_TO_APPEAR_ISLAND] = config.dayOfWeekChoiceIsland;
+            Game1.player.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] = config.dayOfWeekChoiceIsland;
             if (config.dayOfWeekChoice == config.dayOfWeekChoiceIsland)
             {
                 // Prevent Murphy from showing up on the beach and island on same day by offsetting it by 1 (or setting it the first index)
@@ -906,31 +885,31 @@ namespace FishingTrawler
                     currentIndex = 0;
                 }
 
-                Game1.player.modData[MURPHY_DAY_TO_APPEAR_ISLAND] = ModConfig.murphyDayToAppear[currentIndex];
+                Game1.player.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] = ModConfig.murphyDayToAppear[currentIndex];
             }
 
-            if (!Game1.player.modData.ContainsKey(MURPHY_SAILED_TODAY_KEY))
+            if (!Game1.player.modData.ContainsKey(ModDataKeys.MURPHY_SAILED_TODAY_KEY))
             {
-                Game1.player.modData.Add(MURPHY_SAILED_TODAY_KEY, "false");
-                Game1.player.modData.Add(MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
-                Game1.player.modData.Add(MURPHY_FINISHED_TALKING_KEY, "false");
+                Game1.player.modData.Add(ModDataKeys.MURPHY_SAILED_TODAY_KEY, "false");
+                Game1.player.modData.Add(ModDataKeys.MURPHY_WAS_TRIP_SUCCESSFUL_KEY, "false");
+                Game1.player.modData.Add(ModDataKeys.MURPHY_FINISHED_TALKING_KEY, "false");
             }
-            else if (todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR] || todayDayOfWeek == Game1.MasterPlayer.modData[MURPHY_DAY_TO_APPEAR_ISLAND]) // This is intended, as we want MasterPlayer to determine Murphy appearance
+            else if (todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] || todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND]) // This is intended, as we want MasterPlayer to determine Murphy appearance
             {
-                Game1.player.modData[MURPHY_SAILED_TODAY_KEY] = "false";
-                Game1.player.modData[MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
-                Game1.player.modData[MURPHY_FINISHED_TALKING_KEY] = "false";
+                Game1.player.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY] = "false";
+                Game1.player.modData[ModDataKeys.MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "false";
+                Game1.player.modData[ModDataKeys.MURPHY_FINISHED_TALKING_KEY] = "false";
             }
 
             // One time events, do not renew
-            if (!Game1.player.modData.ContainsKey(MURPHY_HAS_SEEN_FLAG_KEY))
+            if (!Game1.player.modData.ContainsKey(ModDataKeys.MURPHY_HAS_SEEN_FLAG_KEY))
             {
-                Game1.player.modData.Add(MURPHY_HAS_SEEN_FLAG_KEY, "false");
+                Game1.player.modData.Add(ModDataKeys.MURPHY_HAS_SEEN_FLAG_KEY, "false");
             }
 
-            if (!Game1.player.modData.ContainsKey(MURPHY_TRIPS_COMPLETED))
+            if (!Game1.player.modData.ContainsKey(ModDataKeys.MURPHY_TRIPS_COMPLETED))
             {
-                Game1.player.modData[MURPHY_TRIPS_COMPLETED] = "0";
+                Game1.player.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED] = "0";
             }
         }
 
@@ -992,7 +971,7 @@ namespace FishingTrawler
             _isTripEnding.Value = true;
 
             // Increment trip counter for this player by one
-            Game1.player.modData[MURPHY_TRIPS_COMPLETED] = (int.Parse(Game1.player.modData[MURPHY_TRIPS_COMPLETED]) + 1).ToString();
+            Game1.player.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED] = (int.Parse(Game1.player.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1).ToString();
         }
 
         // Debug commands

@@ -14,6 +14,7 @@ using System.Reflection;
 using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects;
 using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Utilities;
 
 namespace FishingTrawler.Patches.Locations
 {
@@ -77,11 +78,11 @@ namespace FishingTrawler.Patches.Locations
 
                     if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en)
                     {
-                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[FishingTrawler.MURPHY_DAY_TO_APPEAR]));
+                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]));
                         break;
                     }
 
-                    Game1.drawObjectDialogue(string.Format(FishingTrawler.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[FishingTrawler.MURPHY_DAY_TO_APPEAR]));
+                    Game1.drawObjectDialogue(string.Format(FishingTrawler.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]));
                     break;
                 default:
                     break;
@@ -136,7 +137,7 @@ namespace FishingTrawler.Patches.Locations
             {
                 FishingTrawler.murphyNPC.update(time, __instance);
 
-                if (__instance.modData.ContainsKey(FishingTrawler.MURPHY_ON_TRIP) && __instance.modData[FishingTrawler.MURPHY_ON_TRIP] == "true")
+                if (__instance.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) && __instance.modData[ModDataKeys.MURPHY_ON_TRIP] == "true")
                 {
                     FishingTrawler.murphyNPC = null;
                 }

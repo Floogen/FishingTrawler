@@ -1,4 +1,5 @@
 ﻿using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,7 +27,7 @@ namespace FishingTrawler.Objects.Tools
 
         public BailingBucket() : base()
         {
-            modData.Add(FishingTrawler.BAILING_BUCKET_KEY, "true");
+            modData.Add(ModDataKeys.BAILING_BUCKET_KEY, "true");
             description = FishingTrawler.i18n.Get("item.bailing_bucket.description_empty");
         }
 

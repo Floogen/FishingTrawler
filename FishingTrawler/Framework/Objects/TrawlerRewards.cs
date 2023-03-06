@@ -1,4 +1,5 @@
-﻿using FishingTrawler.Objects.Rewards;
+﻿using FishingTrawler.Framework.Utilities;
+using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Rewards;
 using StardewModdingAPI;
 using StardewValley;
@@ -362,8 +363,8 @@ namespace FishingTrawler.Objects
             }
 
             // See if this run generates an special reward
-            FishingTrawler.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[FishingTrawler.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[FishingTrawler.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
-            if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[FishingTrawler.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
+            FishingTrawler.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
+            if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
             {
                 FishingTrawler.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
                 switch (Game1.random.Next(0, 1))

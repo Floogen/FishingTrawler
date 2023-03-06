@@ -1,4 +1,5 @@
-﻿using FishingTrawler.Objects.Rewards;
+﻿using FishingTrawler.Framework.Utilities;
+using FishingTrawler.Objects.Rewards;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -36,10 +37,10 @@ namespace FishingTrawler.Objects
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.introduction", playerTerm), this));
                 Game1.drawDialogue(this);
 
-                who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
+                who.modData[ModDataKeys.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
                 Game1.addMailForTomorrow("FishingTrawler_IntroductionsMurphy", true);
             }
-            else if (who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false" && who.modData[FishingTrawler.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
+            else if (who.modData[ModDataKeys.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "false" && who.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
                 if (Game1.IsRainingHere(currentLocation) || Game1.IsSnowingHere(currentLocation))
                 {
@@ -60,36 +61,36 @@ namespace FishingTrawler.Objects
                     Game1.afterDialogues = AskQuestionAfterGreeting;
                 }
 
-                who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
+                who.modData[ModDataKeys.MURPHY_WAS_GREETED_TODAY_KEY] = "true";
             }
-            else if (who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[FishingTrawler.MURPHY_HAS_SEEN_FLAG_KEY].ToLower() == "false" && PlayerHasUnidentifiedFlagInInventory(who))
+            else if (who.modData[ModDataKeys.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[ModDataKeys.MURPHY_HAS_SEEN_FLAG_KEY].ToLower() == "false" && PlayerHasUnidentifiedFlagInInventory(who))
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.reward_explanation_flags", playerTerm), this));
                 Game1.drawDialogue(this);
                 Game1.afterDialogues = TakeAndIdentifyFlag;
 
-                who.modData[FishingTrawler.MURPHY_HAS_SEEN_FLAG_KEY] = "true";
+                who.modData[ModDataKeys.MURPHY_HAS_SEEN_FLAG_KEY] = "true";
             }
-            else if (who.modData[FishingTrawler.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[FishingTrawler.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
+            else if (who.modData[ModDataKeys.MURPHY_WAS_GREETED_TODAY_KEY].ToLower() == "true" && who.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY].ToLower() == "false")
             {
                 // Show questions
                 AskQuestionAfterGreeting();
             }
-            else if (who.modData[FishingTrawler.MURPHY_SAILED_TODAY_KEY].ToLower() == "true" && who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY].ToLower() == "false")
+            else if (who.modData[ModDataKeys.MURPHY_SAILED_TODAY_KEY].ToLower() == "true" && who.modData[ModDataKeys.MURPHY_FINISHED_TALKING_KEY].ToLower() == "false")
             {
-                string tripState = who.modData[FishingTrawler.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "successful" : "failure";
+                string tripState = who.modData[ModDataKeys.MURPHY_WAS_TRIP_SUCCESSFUL_KEY].ToLower() == "true" ? "successful" : "failure";
                 CurrentDialogue.Push(new Dialogue(GetDialogue(string.Concat("dialogue.after_trip_", tripState), playerTerm), this));
                 Game1.drawDialogue(this);
 
-                who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY] = "true";
+                who.modData[ModDataKeys.MURPHY_FINISHED_TALKING_KEY] = "true";
             }
-            else if (who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true" && PlayerHasUnidentifiedFlagInInventory(who))
+            else if (who.modData[ModDataKeys.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true" && PlayerHasUnidentifiedFlagInInventory(who))
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.identify_flag", playerTerm), this));
                 Game1.drawDialogue(this);
                 Game1.afterDialogues = TakeAndIdentifyFlag;
             }
-            else if (who.modData[FishingTrawler.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
+            else if (who.modData[ModDataKeys.MURPHY_FINISHED_TALKING_KEY].ToLower() == "true")
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.trip_finished", playerTerm), this));
                 Game1.drawDialogue(this);
@@ -301,7 +302,7 @@ namespace FishingTrawler.Objects
             {
                 answers.Add(new Response("WantToHoist", FishingTrawler.i18n.Get("response.like_to_hoist_flag")));
             }
-            if (Game1.player.modData[FishingTrawler.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
+            if (Game1.player.modData[ModDataKeys.MURPHY_HAS_SEEN_FLAG_KEY] == "true")
             {
                 answers.Add(new Response("WhatFlag", FishingTrawler.i18n.Get("response.what_flag_is_trawler_flying")));
             }
@@ -365,12 +366,12 @@ namespace FishingTrawler.Objects
 
         private bool PlayerHasUnidentifiedFlagInInventory(Farmer who)
         {
-            return who.items.Any(i => i != null && i.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY) && i.modData[FishingTrawler.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString());
+            return who.items.Any(i => i != null && i.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && i.modData[ModDataKeys.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString());
         }
 
         private bool PlayerHasIdentifiedFlagInInventory(Farmer who)
         {
-            return who.items.Any(i => i != null && i.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY) && i.modData[FishingTrawler.ANCIENT_FLAG_KEY] != FlagType.Unknown.ToString());
+            return who.items.Any(i => i != null && i.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && i.modData[ModDataKeys.ANCIENT_FLAG_KEY] != FlagType.Unknown.ToString());
         }
 
         private void TakeAndIdentifyFlag()

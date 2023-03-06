@@ -1,4 +1,5 @@
-﻿using FishingTrawler.Objects.Rewards;
+﻿using FishingTrawler.Framework.Utilities;
+using FishingTrawler.Objects.Rewards;
 using FishingTrawler.Objects.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,7 +53,7 @@ namespace FishingTrawler.Framework.Managers
             {
                 if (IsItemCustom(customFurniture))
                 {
-                    if (customFurniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                    if (customFurniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                     {
                         location.furniture.Remove(customFurniture);
                         location.furniture.Add(new Furniture(1900, customFurniture.TileLocation) { modData = customFurniture.modData });
@@ -78,7 +79,7 @@ namespace FishingTrawler.Framework.Managers
                                 chest.items.Add(new MilkPail() { modData = customItem.modData });
                                 break;
                             case Furniture furniture:
-                                if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                                if (furniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                                 {
                                     chest.items.Remove(customItem);
                                     chest.items.Add(new Furniture(1900, Vector2.Zero) { modData = customItem.modData });
@@ -99,9 +100,9 @@ namespace FishingTrawler.Framework.Managers
             {
                 if (IsItemCustom(baseFurniture))
                 {
-                    if (baseFurniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                    if (baseFurniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                     {
-                        if (!System.Enum.TryParse(baseFurniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
+                        if (!System.Enum.TryParse(baseFurniture.modData[ModDataKeys.ANCIENT_FLAG_KEY], out FlagType flagType))
                         {
                             FishingTrawler.monitor.Log($"Failed to convert base furniture {baseFurniture.Name} at {location.NameOrUniqueName} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                             break;
@@ -124,9 +125,9 @@ namespace FishingTrawler.Framework.Managers
                     switch (baseObject)
                     {
                         case Furniture furniture:
-                            if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                            if (furniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                             {
-                                if (!System.Enum.TryParse(furniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
+                                if (!System.Enum.TryParse(furniture.modData[ModDataKeys.ANCIENT_FLAG_KEY], out FlagType flagType))
                                 {
                                     FishingTrawler.monitor.Log($"Failed to convert placed object {baseObject.Name} at {location.NameOrUniqueName} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                                     break;
@@ -155,9 +156,9 @@ namespace FishingTrawler.Framework.Managers
                                 chest.items.Add(new BailingBucket() { modData = baseItem.modData });
                                 break;
                             case Furniture furniture:
-                                if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                                if (furniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                                 {
-                                    if (!System.Enum.TryParse(furniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
+                                    if (!System.Enum.TryParse(furniture.modData[ModDataKeys.ANCIENT_FLAG_KEY], out FlagType flagType))
                                     {
                                         FishingTrawler.monitor.Log($"Failed to convert {baseItem.Name} at {location.NameOrUniqueName} within chest {chest.Name} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                                         break;
@@ -187,7 +188,7 @@ namespace FishingTrawler.Framework.Managers
                         who.addItemToInventory(new MilkPail() { modData = customItem.modData });
                         break;
                     case Furniture furniture:
-                        if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                        if (furniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                         {
                             who.removeItemFromInventory(customItem);
                             who.addItemToInventory(new Furniture(1900, Vector2.Zero) { modData = customItem.modData });
@@ -211,9 +212,9 @@ namespace FishingTrawler.Framework.Managers
                         who.addItemToInventory(new BailingBucket() { modData = baseItem.modData });
                         break;
                     case Furniture furniture:
-                        if (furniture.modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY))
+                        if (furniture.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY))
                         {
-                            if (!System.Enum.TryParse(furniture.modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
+                            if (!System.Enum.TryParse(furniture.modData[ModDataKeys.ANCIENT_FLAG_KEY], out FlagType flagType))
                             {
                                 FishingTrawler.monitor.Log($"Failed to convert {baseItem.Name} at {who.currentLocation.NameOrUniqueName} within player {who.Name} back into an Ancient Flag: Unable to determine FlagType.", LogLevel.Trace);
                                 break;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -36,7 +37,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             get
             {
-                if (modData.ContainsKey(FishingTrawler.ANCIENT_FLAG_KEY) && Enum.TryParse(modData[FishingTrawler.ANCIENT_FLAG_KEY], out FlagType flagType))
+                if (modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && Enum.TryParse(modData[ModDataKeys.ANCIENT_FLAG_KEY], out FlagType flagType))
                 {
                     return flagType;
                 }
@@ -60,7 +61,7 @@ namespace FishingTrawler.Objects.Rewards
         {
             flagTexture = AssetManager.ancientFlagsTexture;
             defaultSourceRect.Value = new Rectangle(32 * (int)flagType % flagTexture.Width, 32 * (int)flagType / flagTexture.Width * 32, 32, 32);
-            modData.Add(FishingTrawler.ANCIENT_FLAG_KEY, flagType.ToString());
+            modData.Add(ModDataKeys.ANCIENT_FLAG_KEY, flagType.ToString());
         }
 
         public object getReplacement()

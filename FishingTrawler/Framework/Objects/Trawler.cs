@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FishingTrawler.Framework.Utilities;
+using Microsoft.Xna.Framework;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
@@ -143,7 +144,7 @@ namespace FishingTrawler.Objects
             FishingTrawler.numberOfDeckhands = farmersToDepart.Count();
             FishingTrawler.monitor.Log($"There are {farmersToDepart.Count()} farm hands departing!", LogLevel.Trace);
 
-            location.modData[FishingTrawler.MURPHY_ON_TRIP] = "true";
+            location.modData[ModDataKeys.MURPHY_ON_TRIP] = "true";
 
             TriggerDepartureEvent();
 
