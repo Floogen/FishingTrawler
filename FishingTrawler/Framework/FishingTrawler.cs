@@ -115,6 +115,9 @@ namespace FishingTrawler
             helper.ConsoleCommands.Add("ft_get_specials", "Gives all the special rewards.\n\nUsage: ft_get_specials", DebugGetSpecialRewards);
             helper.ConsoleCommands.Add("ft_skip_requirements", "Skips all requirements to meet Murphy and enables the minigame.\n\nUsage: ft_skip_requirements", DebugSkipRequirements);
 
+            // Hook into Content related events
+            helper.Events.Content.AssetRequested += OnAssetRequested;
+
             // Hook into GameLoops related events
             helper.Events.GameLoop.UpdateTicking += OnUpdateTicking;
             helper.Events.GameLoop.OneSecondUpdateTicking += OnOneSecondUpdateTicking;
@@ -302,6 +305,19 @@ namespace FishingTrawler
                 }
 
                 return;
+            }
+        }
+
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/Mail"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+                    data[ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED] = string.Format(FishingTrawler.i18n.Get("letter.meet_murphy"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]);
+                    data[ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND] = string.Format(FishingTrawler.i18n.Get("letter.island_murphy"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]);
+                });
             }
         }
 
@@ -583,7 +599,6 @@ namespace FishingTrawler
                 if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
-                    Helper.Content.AssetEditors.Add(new CustomMail());
                     Game1.MasterPlayer.mailbox.Add(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED);
                 }
 
@@ -592,7 +607,6 @@ namespace FishingTrawler
                 if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND) && Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} Ginger Island letter about Murphy!", LogLevel.Trace);
-                    Helper.Content.AssetEditors.Add(new CustomMail());
                     Game1.MasterPlayer.mailbox.Add(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND);
                 }
             }
