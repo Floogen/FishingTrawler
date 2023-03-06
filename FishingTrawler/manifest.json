@@ -11,10 +11,6 @@
     {
       "UniqueID": "Pathoschild.ContentPatcher",
       "IsRequired": true
-    },
-    {
-      "UniqueID": "aedenthorn.ExtraMapLayers",
-      "IsRequired": true
     }
   ]
 }

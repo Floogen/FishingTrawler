@@ -68,7 +68,7 @@
 			move "$(SolutionDir)releases\latest\$(SolutionName)" "$(SolutionDir)releases\latest\temp"
 			xcopy /s /y /i "$(SolutionDir)[CP] FishingTrawler" "$(SolutionDir)releases\latest\temp\[CP] FishingTrawler"
 			ren "$(SolutionDir)releases\latest\temp" "$(SolutionName)"
-			
+
 			powershell -Command "(Get-ChildItem -LiteralPath \"$(SolutionDir)releases\latest\$(SolutionName)\" -Filter "*manifest.json" -Recurse | ForEach-Object { (Get-Content -LiteralPath $_.FullName).Replace('REPLACE_ME_WITH_VERSION',  '$(Version)') | Set-Content -LiteralPath $_.FullName })"
 			:: End of block
 

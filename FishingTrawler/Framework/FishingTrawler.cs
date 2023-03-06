@@ -1,5 +1,7 @@
 ﻿using FishingTrawler.Framework.External.GenericModConfigMenu;
 using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Patches.SMAPI;
+using FishingTrawler.Framework.Patches.xTiles;
 using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
@@ -103,6 +105,12 @@ namespace FishingTrawler
                 new BeachPatch(monitor, modHelper).Apply(harmony);
                 new IslandSouthEastPatch(monitor, modHelper).Apply(harmony);
                 new GameLocationPatch(monitor, modHelper).Apply(harmony);
+
+                // Apply SMAPI patches
+                new DisplayDevicePatch(monitor, modHelper).Apply(harmony);
+
+                // Apply xTile patches
+                new LayerPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {

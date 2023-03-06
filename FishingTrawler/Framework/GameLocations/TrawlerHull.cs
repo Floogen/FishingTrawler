@@ -17,8 +17,8 @@ namespace FishingTrawler.GameLocations
         private const int TRAWLER_TILESHEET_INDEX = 2;
         private const float MINIMUM_WATER_LEVEL_FOR_FLOOR = 5f;
         private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
-        private const string FLOOD_WATER_LAYER = "Back1";
-        private const string FLOOD_ITEMS_LAYER = "Buildings1";
+        private const string FLOOD_WATER_LAYER = "FloodWater";
+        private const string FLOOD_ITEMS_LAYER = "FloodItems";
 
         internal static int waterLevel;
         internal bool areLeaksEnabled;

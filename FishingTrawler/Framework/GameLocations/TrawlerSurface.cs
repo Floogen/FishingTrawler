@@ -36,7 +36,7 @@ namespace FishingTrawler.GameLocations
         private float _fastOffset = -7f;
 
         private float _nextSmoke = 0f;
-        private const string FLAG_LAYER_NAME = "AlwaysFront1";
+        private const string FLAG_LAYER_NAME = "Flags";
         private const int CLOUD_ID = 1010101;
         private const int GROUND_ID = 2020202;
         private const int FLAGS_TILESHEET_INDEX = 2;
