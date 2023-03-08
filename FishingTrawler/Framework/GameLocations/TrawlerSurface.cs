@@ -37,10 +37,11 @@ namespace FishingTrawler.GameLocations
 
         private float _nextSmoke = 0f;
         private const string FLAG_LAYER_NAME = "Flags";
+        private const string ROPE_LAYER_NAME = "Front";
         private const int CLOUD_ID = 1010101;
         private const int GROUND_ID = 2020202;
         private const int FLAGS_TILESHEET_INDEX = 2;
-        private const int TRAWLER_TILESHEET_INDEX = 3;
+        private const int TRAWLER_TILESHEET_INDEX = 4;
 
         public TrawlerSurface()
         {
@@ -56,12 +57,13 @@ namespace FishingTrawler.GameLocations
             fishCaughtMultiplier = 1;
             _netRipLocations = new List<Location>();
 
-            Layer alwaysFrontLayer = map.GetLayer("AlwaysFront");
-            for (int x = 0; x < alwaysFrontLayer.LayerWidth; x++)
+            // TODO: Fix ropes by replacing AlwaysFront to Front and modifying tilesheet to correct rope sprites
+            Layer ropeLayer = map.GetLayer(ROPE_LAYER_NAME);
+            for (int x = 0; x < ropeLayer.LayerWidth; x++)
             {
-                for (int y = 0; y < alwaysFrontLayer.LayerHeight; y++)
+                for (int y = 0; y < ropeLayer.LayerHeight; y++)
                 {
-                    Tile tile = alwaysFrontLayer.Tiles[x, y];
+                    Tile tile = ropeLayer.Tiles[x, y];
                     if (tile is null)
                     {
                         continue;
@@ -238,10 +240,10 @@ namespace FishingTrawler.GameLocations
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
-            string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "AlwaysFront");
+            string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", ROPE_LAYER_NAME);
             if (actionProperty != null && actionProperty == "RippedNet")
             {
-                if (!IsWithinRangeOfNet(who))
+                if (!IsWithinRangeOfNet(xTile, yTile, who))
                 {
                     Game1.mouseCursorTransparency = 0.5f;
                 }
@@ -252,15 +254,17 @@ namespace FishingTrawler.GameLocations
             return base.isActionableTile(xTile, yTile, who);
         }
 
-        private bool IsWithinRangeOfNet(Farmer who)
+        private bool IsWithinRangeOfNet(int tileX, int tileY, Farmer who)
         {
             int playerX = (int)(who.Position.X / 64f);
             int playerY = (int)(who.Position.Y / 64f);
-            //ModEntry.monitor.Log($"({who.Position.X / 64}, {who.Position.Y / 64})", LogLevel.Debug);
 
-            if (Enumerable.Range(34, 3).Contains(playerX) && Enumerable.Range(24, 2).Contains(playerY))
+            if (Enumerable.Range(tileX - 1, 2).Contains(playerX))
             {
-                return true;
+                if (Enumerable.Range(tileY, 4).Contains(playerY))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -279,8 +283,8 @@ namespace FishingTrawler.GameLocations
 
         private bool IsNetRipped(int tileX, int tileY)
         {
-            Tile hole = map.GetLayer("AlwaysFront").Tiles[tileX, tileY];
-            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", "AlwaysFront") == "RippedNet")
+            Tile hole = map.GetLayer(ROPE_LAYER_NAME).Tiles[tileX, tileY];
+            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", ROPE_LAYER_NAME) == "RippedNet")
             {
                 return bool.Parse(hole.Properties["IsRipped"]);
             }
@@ -338,14 +342,13 @@ namespace FishingTrawler.GameLocations
             }
 
             // Set the net as ripped
-            Tile firstTile = map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y];
+            Tile firstTile = map.GetLayer(ROPE_LAYER_NAME).Tiles[netLocation.X, netLocation.Y];
             firstTile.Properties["IsRipped"] = true;
 
-            setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
-            setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+            setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(74), 90, ROPE_LAYER_NAME, null, TRAWLER_TILESHEET_INDEX);
 
             // Copy over the old properties
-            map.GetLayer("AlwaysFront").Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
+            map.GetLayer(ROPE_LAYER_NAME).Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
             playSound("crit");
 
@@ -354,15 +357,14 @@ namespace FishingTrawler.GameLocations
 
         public bool AttemptFixNet(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
-            AnimatedTile firstTile = map.GetLayer("AlwaysFront").Tiles[tileX, tileY] as AnimatedTile;
-            //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
+            AnimatedTile firstTile = map.GetLayer(ROPE_LAYER_NAME).Tiles[tileX, tileY] as AnimatedTile;
 
             if (firstTile is null)
             {
                 return false;
             }
 
-            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(who)))
+            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(tileX, tileY, who)))
             {
                 return false;
             }
@@ -378,11 +380,10 @@ namespace FishingTrawler.GameLocations
                 firstTile.Properties["IsRipped"] = false;
 
                 // Patch up the net
-                setMapTile(tileX, tileY, 435, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
-                setMapTile(tileX, tileY - 1, 436, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                setMapTile(tileX, tileY, 99, ROPE_LAYER_NAME, null, TRAWLER_TILESHEET_INDEX);
 
                 // Add the custom properties for tracking
-                map.GetLayer("AlwaysFront").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+                map.GetLayer(ROPE_LAYER_NAME).Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
                 playSound("harvest");
             }
@@ -439,9 +440,13 @@ namespace FishingTrawler.GameLocations
             return _netRipLocations.Count(loc => IsNetRipped(loc.X, loc.Y));
         }
 
-        public Location GetRandomWorkingNet()
+        public Location? GetRandomWorkingNet()
         {
-            List<Location> validNetLocations = _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).ToList();
+            var validNetLocations = _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y));
+            if (validNetLocations.Count() == 0)
+            {
+                return null;
+            }
 
             // Pick a random valid spot to leak
             return _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validNetLocations.Count()));

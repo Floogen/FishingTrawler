@@ -698,10 +698,14 @@ namespace FishingTrawler
             {
                 if (!_trawlerSurface.Value.AreAllNetsRipped() && Game1.random.NextDouble() < 0.35)
                 {
-                    Location tile = _trawlerSurface.Value.GetRandomWorkingNet();
+                    Location? tile = _trawlerSurface.Value.GetRandomWorkingNet();
+                    if (tile is null)
+                    {
+                        continue;
+                    }
 
-                    _trawlerSurface.Value.AttemptCreateNetRip(tile.X, tile.Y);
-                    BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
+                    _trawlerSurface.Value.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);;
+                    BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.Value.X, tile.Value.Y), false, GetFarmersOnTrawler());
 
                     possibleMessages.Add(_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
 
