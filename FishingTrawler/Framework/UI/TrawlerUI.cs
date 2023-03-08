@@ -48,12 +48,12 @@ namespace FishingTrawler.UI
                 case TrawlerSurface trawlerSurface:
                     x = 41;
                     y = 23;
-                    position = Game1.GlobalToLocal(new Vector2(40.45f, 22.8f) * 64f);
+                    position = Game1.GlobalToLocal(new Vector2(41.5f, 23.7f) * 64f);
                     break;
                 case TrawlerHull trawlerHull:
                     x = 14;
                     y = 1;
-                    position = Game1.GlobalToLocal(new Vector2(13.95f, 0.58f) * 64f);
+                    position = Game1.GlobalToLocal(new Vector2(1.59f, 0.58f) * 64f);
                     break;
                 case TrawlerCabin trawlerCabin:
                     x = 8;

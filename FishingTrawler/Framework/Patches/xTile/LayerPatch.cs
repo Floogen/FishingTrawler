@@ -47,6 +47,9 @@ namespace FishingTrawler.Framework.Patches.xTiles
                     floodLayer.Draw(displayDevice, mapViewport, displayOffset, wrapAround, pixelZoom);
 
                     DisplayDevicePatch.Opacity = null;
+
+                    var splashLayer = trawlerHull.Map.GetLayer("WaterSplash");
+                    splashLayer.Draw(displayDevice, mapViewport, displayOffset, wrapAround, pixelZoom);
                 }
                 else if (__instance.Id.Equals("Buildings", StringComparison.OrdinalIgnoreCase) is true)
                 {

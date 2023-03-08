@@ -14,11 +14,12 @@ namespace FishingTrawler.GameLocations
     internal class TrawlerHull : GameLocation
     {
         private List<Location> _hullHoleLocations;
-        private const int TRAWLER_TILESHEET_INDEX = 2;
+        private const int TRAWLER_TILESHEET_INDEX = 3;
         private const float MINIMUM_WATER_LEVEL_FOR_FLOOR = 5f;
         private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
         private const string FLOOD_WATER_LAYER = "FloodWater";
         private const string FLOOD_ITEMS_LAYER = "FloodItems";
+        private const string WATER_SPLASH_LAYER = "WaterSplash";
 
         internal static int waterLevel;
         internal bool areLeaksEnabled;
@@ -128,15 +129,32 @@ namespace FishingTrawler.GameLocations
 
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
+            if (String.IsNullOrEmpty(doesTileHaveProperty(tileLocation.X, tileLocation.Y, "Action", "Buildings")) is false)
+            {
+                if (who.getTileX() != 9 || who.getTileY() != 6)
+                {
+                    return false;
+                }
+            }
+
             return base.checkAction(tileLocation, viewport, who);
         }
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
             string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
-            if (actionProperty != null && actionProperty == "HullHole")
+            if (String.IsNullOrEmpty(actionProperty) is false && actionProperty == "HullHole")
             {
                 if (!IsWithinRangeOfLeak(xTile, yTile, who))
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                return true;
+            }
+            else if (String.IsNullOrEmpty(doesTileHaveProperty(xTile, yTile, "Action", "Buildings")) is false)
+            {
+                if (who.getTileX() != 9 || who.getTileY() != 6)
                 {
                     Game1.mouseCursorTransparency = 0.5f;
                 }
@@ -217,7 +235,7 @@ namespace FishingTrawler.GameLocations
                         continue;
                     }
 
-                    string targetLayer = y == 4 ? "Back" : "Buildings";
+                    string targetLayer = y == 4 ? WATER_SPLASH_LAYER : "Buildings";
 
                     AnimatedTile animatedTile = map.GetLayer(targetLayer).Tiles[tileX, y] as AnimatedTile;
                     int tileIndex = animatedTile.TileFrames[0].TileIndex - 1;
@@ -282,7 +300,7 @@ namespace FishingTrawler.GameLocations
                     continue;
                 }
 
-                string targetLayer = y == 4 ? "Back" : "Buildings";
+                string targetLayer = y == 4 ? WATER_SPLASH_LAYER : "Buildings";
 
                 int[] animatedHullTileIndexes = GetHullLeakTileIndexes(map.GetLayer(targetLayer).Tiles[holeLocation.X, y].TileIndex + 1);
                 setAnimatedMapTile(holeLocation.X, y, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
