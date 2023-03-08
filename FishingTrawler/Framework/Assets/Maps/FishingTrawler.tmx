@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="80" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="76">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="80" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="79">
  <properties>
   <property name="BrookSounds" value="44 23 2"/>
   <property name="Outdoors" value="T"/>
@@ -1058,69 +1058,6 @@
  </tileset>
  <tileset firstgid="564" name="z_trawlerTiles" tilewidth="16" tileheight="16" tilecount="576" columns="24">
   <image source="TrawlerTiles.png" width="384" height="384"/>
-  <tile id="4">
-   <animation>
-    <frame tileid="4" duration="150"/>
-    <frame tileid="28" duration="150"/>
-    <frame tileid="52" duration="150"/>
-    <frame tileid="76" duration="150"/>
-    <frame tileid="100" duration="150"/>
-   </animation>
-  </tile>
-  <tile id="5">
-   <animation>
-    <frame tileid="5" duration="60"/>
-    <frame tileid="29" duration="60"/>
-    <frame tileid="53" duration="60"/>
-    <frame tileid="77" duration="60"/>
-    <frame tileid="101" duration="60"/>
-   </animation>
-  </tile>
-  <tile id="6">
-   <animation>
-    <frame tileid="6" duration="60"/>
-    <frame tileid="30" duration="60"/>
-    <frame tileid="54" duration="60"/>
-    <frame tileid="78" duration="60"/>
-    <frame tileid="102" duration="60"/>
-   </animation>
-  </tile>
-  <tile id="7">
-   <animation>
-    <frame tileid="7" duration="60"/>
-    <frame tileid="31" duration="60"/>
-    <frame tileid="55" duration="60"/>
-    <frame tileid="79" duration="60"/>
-    <frame tileid="103" duration="60"/>
-   </animation>
-  </tile>
-  <tile id="8">
-   <animation>
-    <frame tileid="8" duration="60"/>
-    <frame tileid="32" duration="60"/>
-    <frame tileid="56" duration="60"/>
-    <frame tileid="80" duration="60"/>
-    <frame tileid="104" duration="60"/>
-   </animation>
-  </tile>
-  <tile id="9">
-   <animation>
-    <frame tileid="9" duration="90"/>
-    <frame tileid="33" duration="90"/>
-    <frame tileid="57" duration="90"/>
-    <frame tileid="81" duration="90"/>
-    <frame tileid="105" duration="90"/>
-   </animation>
-  </tile>
-  <tile id="10">
-   <animation>
-    <frame tileid="10" duration="30"/>
-    <frame tileid="34" duration="30"/>
-    <frame tileid="58" duration="30"/>
-    <frame tileid="82" duration="30"/>
-    <frame tileid="106" duration="30"/>
-   </animation>
-  </tile>
   <tile id="60">
    <properties>
     <property name="Type" value="Wood"/>
@@ -1180,6 +1117,15 @@
    <properties>
     <property name="Type" value="Wood"/>
    </properties>
+  </tile>
+  <tile id="74">
+   <animation>
+    <frame tileid="74" duration="90"/>
+    <frame tileid="75" duration="90"/>
+    <frame tileid="76" duration="90"/>
+    <frame tileid="77" duration="90"/>
+    <frame tileid="78" duration="90"/>
+   </animation>
   </tile>
   <tile id="84">
    <properties>
@@ -1396,120 +1342,6 @@
     <property name="Type" value="Wood"/>
    </properties>
   </tile>
-  <tile id="262">
-   <animation>
-    <frame tileid="262" duration="120"/>
-    <frame tileid="310" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="263">
-   <animation>
-    <frame tileid="263" duration="120"/>
-    <frame tileid="311" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="276">
-   <animation>
-    <frame tileid="276" duration="120"/>
-    <frame tileid="324" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="277">
-   <animation>
-    <frame tileid="277" duration="120"/>
-    <frame tileid="325" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="278">
-   <animation>
-    <frame tileid="278" duration="120"/>
-    <frame tileid="326" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="279">
-   <animation>
-    <frame tileid="279" duration="120"/>
-    <frame tileid="327" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="280">
-   <animation>
-    <frame tileid="280" duration="120"/>
-    <frame tileid="328" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="281">
-   <animation>
-    <frame tileid="281" duration="120"/>
-    <frame tileid="329" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="282">
-   <animation>
-    <frame tileid="282" duration="120"/>
-    <frame tileid="330" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="283">
-   <animation>
-    <frame tileid="283" duration="120"/>
-    <frame tileid="331" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="284">
-   <animation>
-    <frame tileid="284" duration="120"/>
-    <frame tileid="332" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="285">
-   <animation>
-    <frame tileid="285" duration="120"/>
-    <frame tileid="333" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="286">
-   <animation>
-    <frame tileid="286" duration="120"/>
-    <frame tileid="334" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="302">
-   <animation>
-    <frame tileid="302" duration="120"/>
-    <frame tileid="350" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="303">
-   <animation>
-    <frame tileid="303" duration="120"/>
-    <frame tileid="351" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="304">
-   <animation>
-    <frame tileid="304" duration="120"/>
-    <frame tileid="352" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="305">
-   <animation>
-    <frame tileid="305" duration="120"/>
-    <frame tileid="353" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="306">
-   <animation>
-    <frame tileid="306" duration="120"/>
-    <frame tileid="354" duration="120"/>
-   </animation>
-  </tile>
-  <tile id="307">
-   <animation>
-    <frame tileid="307" duration="120"/>
-    <frame tileid="355" duration="120"/>
-   </animation>
-  </tile>
   <tile id="506">
    <animation>
     <frame tileid="506" duration="90"/>
@@ -1520,14 +1352,6 @@
     <frame tileid="509" duration="90"/>
     <frame tileid="510" duration="90"/>
     <frame tileid="509" duration="90"/>
-   </animation>
-  </tile>
-  <tile id="511">
-   <animation>
-    <frame tileid="511" duration="60"/>
-    <frame tileid="512" duration="60"/>
-    <frame tileid="513" duration="60"/>
-    <frame tileid="514" duration="60"/>
    </animation>
   </tile>
   <tile id="530">
@@ -2036,7 +1860,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1397,1398,0,0,0,0,0,0,0,1742,1743,1744,1745,1746,1747,1412,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1421,1758,0,0,0,0,0,0,1429,1766,1767,1768,1769,1770,1771,1436,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1445,1782,0,0,0,0,0,0,1453,1790,1791,1792,1793,1794,1622,1460,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1469,1806,1807,1808,1809,0,0,0,0,0,0,0,0,0,1483,1484,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1469,1806,1807,1808,1809,0,0,0,0,0,0,0,0,0,0,1484,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1493,1494,1495,1496,1497,1498,1499,1500,1501,1502,1503,1504,1505,1506,1507,1508,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1517,1518,1519,1520,1521,1522,1523,1524,1525,1526,1527,1528,1529,1530,1531,1532,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2087,10 +1911,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1606,1607,1661,1662,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1628,1629,1630,1631,1685,1686,1687,1688,1689,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1733,1734,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1654,1655,1656,1757,1758,1759,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1677,1678,0,0,1781,1782,1783,1784,1785,0,0,0,0,0,0,0,0,0,1795,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1606,1607,1757,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1628,1629,1630,1631,1781,0,1783,1784,1785,0,0,0,0,0,0,0,0,0,1795,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1806,1807,1808,1809,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2196,8 +2020,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1624,0,0,1054,0,0,0,0,0,0,0,0,1693,1694,1695,1696,1697,1698,1699,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1717,1718,1719,1720,1721,1722,1723,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1623,1742,1743,1744,1745,1746,1747,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1657,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1672,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1608,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1624,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1566,1567,1568,1569,1570,1571,1572,1573,1574,1575,1576,1577,1578,1579,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1493,1494,1495,1496,1497,1498,1499,1500,1501,1502,1503,1504,1505,1506,1507,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2381,6 +2205,11 @@
     <property name="CustomAction" value="EmptyBucketSpot"/>
    </properties>
   </object>
+  <object id="76" name="TileData" x="560" y="416" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="EmptyBucketSpot"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="7" name="Buildings">
   <object id="60" name="TileData" x="688" y="416" width="16" height="16">
@@ -2405,20 +2234,20 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="8" name="Front"/>
- <objectgroup id="9" name="Paths"/>
- <objectgroup id="10" name="AlwaysFront">
-  <object id="65" name="TileData" x="576" y="352" width="16" height="16">
+ <objectgroup id="8" name="Front">
+  <object id="77" name="TileData" x="576" y="352" width="16" height="16">
    <properties>
     <property name="CustomAction" value="RippedNet"/>
     <property name="IsRipped" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="66" name="TileData" x="576" y="416" width="16" height="16">
+  <object id="78" name="TileData" x="576" y="416" width="16" height="16">
    <properties>
     <property name="CustomAction" value="RippedNet"/>
     <property name="IsRipped" type="bool" value="false"/>
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="9" name="Paths"/>
+ <objectgroup id="10" name="AlwaysFront"/>
 </map>
