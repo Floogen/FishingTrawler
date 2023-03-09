@@ -200,7 +200,7 @@ namespace FishingTrawler.GameLocations
             {
                 if (!temporarySprites.Any(t => t.id == CLOUD_ID) || Game1.random.NextDouble() < 0.05 && temporarySprites.Where(t => t.id == CLOUD_ID).Count() < 10)
                 {
-                    string assetPath = AssetManager.assetFolderPath;
+                    string assetPath = FishingTrawler.assetManager.assetFolderPath;
 
                     // Fill up with some clouds
                     for (int x = 0; x < Game1.random.Next(1, 5); x++)
@@ -220,7 +220,7 @@ namespace FishingTrawler.GameLocations
 
             if (!temporarySprites.Any(t => t.id == GROUND_ID) && Game1.random.NextDouble() < 0.10)
             {
-                string assetPath = AssetManager.assetFolderPath;
+                string assetPath = FishingTrawler.assetManager.assetFolderPath;
                 bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
 
                 TemporaryAnimatedSprite decoration = new TemporaryAnimatedSprite(Path.Combine(assetPath, "Maps", "BellsAndWhistles.png"), PickRandomDecoration(), 200f, 1, 9999, PickSpawnPosition(false), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, 4f, 0f, 0f, 0f);

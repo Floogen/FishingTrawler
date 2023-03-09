@@ -67,7 +67,7 @@ namespace FishingTrawler.Objects.Tools
             IndexOfMenuItemView = 0;
 
             int spriteOffset = _containsWater ? 16 : 0;
-            spriteBatch.Draw(AssetManager.bucketTexture, location + new Vector2(32f, 32f), new Rectangle(spriteOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f), 4f * (scaleSize + _bucketScale), SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(FishingTrawler.assetManager.bucketTexture, location + new Vector2(32f, 32f), new Rectangle(spriteOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f), 4f * (scaleSize + _bucketScale), SpriteEffects.None, layerDepth);
         }
 
         protected override void initNetFields()

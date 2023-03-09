@@ -1,48 +1,54 @@
 ﻿using FishingTrawler.Framework.Interfaces;
 using StardewModdingAPI;
+using System.Threading;
 
 namespace FishingTrawler.Framework.Managers
 {
-    public static class ApiManager
+    public class ApiManager
     {
-        private static IMonitor monitor = FishingTrawler.monitor;
-        private static IGenericModConfigMenuAPI genericModConfigMenuApi;
-        private static IContentPatcherAPI contentPatcherApi;
+        private IMonitor _monitor;
+        private IGenericModConfigMenuAPI genericModConfigMenuApi;
+        private IContentPatcherAPI contentPatcherApi;
 
-        public static bool HookIntoGMCM(IModHelper helper)
+        public ApiManager(IMonitor monitor)
+        {
+            _monitor = monitor;
+        }
+
+        internal bool HookIntoGMCM(IModHelper helper)
         {
             genericModConfigMenuApi = helper.ModRegistry.GetApi<IGenericModConfigMenuAPI>("spacechase0.GenericModConfigMenu");
 
             if (genericModConfigMenuApi is null)
             {
-                monitor.Log("Failed to hook into spacechase0.GenericModConfigMenu.", LogLevel.Error);
+                _monitor.Log("Failed to hook into spacechase0.GenericModConfigMenu.", LogLevel.Error);
                 return false;
             }
 
-            monitor.Log("Successfully hooked into spacechase0.GenericModConfigMenu.", LogLevel.Debug);
+            _monitor.Log("Successfully hooked into spacechase0.GenericModConfigMenu.", LogLevel.Debug);
             return true;
         }
 
-        public static bool HookIntoContentPatcher(IModHelper helper)
+        internal bool HookIntoContentPatcher(IModHelper helper)
         {
             contentPatcherApi = helper.ModRegistry.GetApi<IContentPatcherAPI>("Pathoschild.ContentPatcher");
 
             if (contentPatcherApi is null)
             {
-                monitor.Log("Failed to hook into Pathoschild.ContentPatcher.", LogLevel.Error);
+                _monitor.Log("Failed to hook into Pathoschild.ContentPatcher.", LogLevel.Error);
                 return false;
             }
 
-            monitor.Log("Successfully hooked into Pathoschild.ContentPatcher.", LogLevel.Debug);
+            _monitor.Log("Successfully hooked into Pathoschild.ContentPatcher.", LogLevel.Debug);
             return true;
         }
 
-        public static IGenericModConfigMenuAPI GetGMCMInterface()
+        internal IGenericModConfigMenuAPI GetGMCMInterface()
         {
             return genericModConfigMenuApi;
         }
 
-        public static IContentPatcherAPI GetContentPatcherInterface()
+        internal IContentPatcherAPI GetContentPatcherInterface()
         {
             return contentPatcherApi;
         }

@@ -41,6 +41,10 @@ namespace FishingTrawler
         internal static int numberOfDeckhands;
         internal static string todayDayOfWeek;
 
+        // Managers
+        internal static ApiManager apiManager;
+        internal static AssetManager assetManager;
+
         // Trawler beach map related
         internal static Murphy murphyNPC;
         internal static Trawler trawlerObject;
@@ -83,8 +87,9 @@ namespace FishingTrawler
             multiplayer = helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
             i18n = helper.Translation;
 
-            // Load in our assets
-            AssetManager.SetUpAssets(helper);
+            // Load managers
+            apiManager = new ApiManager(monitor);
+            assetManager = new AssetManager(monitor, modHelper);
 
             // Initialize the timer for fishing trip
             fishingTripTimer.Value = 0;
@@ -550,10 +555,10 @@ namespace FishingTrawler
             config = Helper.ReadConfig<ModConfig>();
 
             // Hook into the APIs we utilize
-            if (Helper.ModRegistry.IsLoaded("spacechase0.GenericModConfigMenu") && ApiManager.HookIntoGMCM(Helper))
+            if (Helper.ModRegistry.IsLoaded("spacechase0.GenericModConfigMenu") && apiManager.HookIntoGMCM(Helper))
             {
                 // Register our config options
-                var configAPI = ApiManager.GetGMCMInterface();
+                var configAPI = apiManager.GetGMCMInterface();
                 configAPI.RegisterModConfig(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.required_fishing_level.name"), i18n.Get("config.option.required_fishing_level.description"), () => config.minimumFishingLevel, (val) => config.minimumFishingLevel = val, 0, 10);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.net_output.name"), i18n.Get("config.option.net_output.description"), () => config.fishPerNet, (val) => config.fishPerNet = val, 0f, 1f, 0.5f);
@@ -566,9 +571,8 @@ namespace FishingTrawler
                 Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Event Freq Lower]: {config.eventFrequencyLower} | [Event Freq Upper]: {config.eventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
             }
 
-            if (Helper.ModRegistry.IsLoaded("Pathoschild.ContentPatcher") && ApiManager.HookIntoContentPatcher(Helper))
+            if (Helper.ModRegistry.IsLoaded("Pathoschild.ContentPatcher") && apiManager.HookIntoContentPatcher(Helper))
             {
-                var patcherAPI = ApiManager.GetContentPatcherInterface();
                 patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDay", () =>
                 {
                     return new[] { Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
@@ -652,15 +656,15 @@ namespace FishingTrawler
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
 
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(AssetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(surfaceLocation);
 
             // Add the hull location
-            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), ModDataKeys.TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
+            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(assetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), ModDataKeys.TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(hullLocation);
 
             // Add the cabin location
-            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(AssetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
+            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(assetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(cabinLocation);
 
             // Verify our locations were added and establish our location variables
@@ -704,7 +708,7 @@ namespace FishingTrawler
                         continue;
                     }
 
-                    _trawlerSurface.Value.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);;
+                    _trawlerSurface.Value.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);
                     BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.Value.X, tile.Value.Y), false, GetFarmersOnTrawler());
 
                     possibleMessages.Add(_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
@@ -854,11 +858,11 @@ namespace FishingTrawler
         {
             if (location is IslandSouthEast)
             {
-                murphyNPC = new Murphy(new AnimatedSprite(AssetManager.murphyTexturePath, 0, 16, 32), new Vector2(12.05f, 39.5f) * 64f, 2, i18n.Get("etc.murphy_name"), AssetManager.murphyPortraitTexture);
+                murphyNPC = new Murphy(new AnimatedSprite(assetManager.murphyTexturePath, 0, 16, 32), new Vector2(12.05f, 39.5f) * 64f, 2, i18n.Get("etc.murphy_name"), assetManager.murphyPortraitTexture);
             }
             else
             {
-                murphyNPC = new Murphy(new AnimatedSprite(AssetManager.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), AssetManager.murphyPortraitTexture);
+                murphyNPC = new Murphy(new AnimatedSprite(assetManager.murphyTexturePath, 0, 16, 32), new Vector2(89f, 38.5f) * 64f, 2, i18n.Get("etc.murphy_name"), assetManager.murphyPortraitTexture);
             }
         }
 
