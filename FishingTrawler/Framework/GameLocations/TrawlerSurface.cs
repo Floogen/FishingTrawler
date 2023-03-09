@@ -57,7 +57,6 @@ namespace FishingTrawler.GameLocations
             fishCaughtMultiplier = 1;
             _netRipLocations = new List<Location>();
 
-            // TODO: Fix ropes by replacing AlwaysFront to Front and modifying tilesheet to correct rope sprites
             Layer ropeLayer = map.GetLayer(ROPE_LAYER_NAME);
             for (int x = 0; x < ropeLayer.LayerWidth; x++)
             {

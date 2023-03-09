@@ -143,6 +143,8 @@ namespace FishingTrawler.GameLocations
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
             string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
+
+            // Check if the tile is a leak
             if (String.IsNullOrEmpty(actionProperty) is false && actionProperty == "HullHole")
             {
                 if (!IsWithinRangeOfLeak(xTile, yTile, who))
@@ -152,7 +154,9 @@ namespace FishingTrawler.GameLocations
 
                 return true;
             }
-            else if (String.IsNullOrEmpty(doesTileHaveProperty(xTile, yTile, "Action", "Buildings")) is false)
+
+            // Check to see if player is standing in front of stairs before clicking            
+            if (String.IsNullOrEmpty(doesTileHaveProperty(xTile, yTile, "Action", "Buildings")) is false)
             {
                 if (who.getTileX() != 9 || who.getTileY() != 6)
                 {
@@ -165,6 +169,7 @@ namespace FishingTrawler.GameLocations
             return base.isActionableTile(xTile, yTile, who);
         }
 
+        #region Boat leak event methods
         private bool IsWithinRangeOfLeak(int tileX, int tileY, Farmer who)
         {
             if (who.getTileY() != 4 || !Enumerable.Range(who.getTileX() - 1, 3).Contains(tileX))
@@ -375,5 +380,8 @@ namespace FishingTrawler.GameLocations
         {
             return map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] > 0f;
         }
+        #endregion
+
+
     }
 }
