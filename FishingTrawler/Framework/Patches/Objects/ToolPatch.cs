@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FishingTrawler.Framework.Patches.Tools
+namespace FishingTrawler.Framework.Patches.Objects
 {
     internal class ToolPatch : PatchTemplate
     {
