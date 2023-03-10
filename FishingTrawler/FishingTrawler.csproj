@@ -56,6 +56,20 @@
 		<UpToDateCheckInput Include="Framework\Assets\**" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Remove="Framework\Assets\Objects\CoalClump.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckInput Remove="Framework\Assets\Objects\CoalClump.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Framework\Assets\Objects\CoalClump.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 	<PropertyGroup>
 		<PostBuildEventDependsOn>
 			$(PostBuildEventDependsOn);

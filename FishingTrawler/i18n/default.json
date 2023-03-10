@@ -77,12 +77,18 @@
   "letter.meet_murphy": "Ahoy there!^ ^My old gambling buddy Murphy recently stopped by. He's looking for some deckhands willing to work on his fishing trawler. I brought your name up, as I've seen you fishing around town, and he seems eager to meet you.^ ^-Willy ^ ^P.S. Murphy also mentioned he would be on the far right docks (across the bridge) on {0} and that he would leave before nightfall.",
   "letter.island_murphy": "Ahoy there!^ ^I caught wind ye recently built a resort on ol' Ginger Island. I'll be stopping by there weekly on {0} to stretch my legs and grab a drink. ^^If yer interested in another fishing trip, meet me at the docks on the eastern part of the island before nightfall.^ ^-Murphy",
 
-  // Tools and special rewards
+  // Tools, resources and special rewards
   "item.bailing_bucket.name": "Bailing Bucket",
   "item.bailing_bucket.description_full": "A bucket filled with sea water. Empty it over the side of the ship.",
   "item.bailing_bucket.description_empty": "A trusty, albeit rusty bucket. Use to pick up water in the hull and empty it into the sea.",
   "item.angler_ring.name": "Angler's Ring",
   "item.angler_ring.description": "It is cold to the touch.\n\nWearing it makes you feel in harmony with the ocean.",
+  "item.coal_clump.name.small": "Fuel Stack (small)",
+  "item.coal_clump.description.small": "A small stack of fuel to refill the boat's engine.",
+  "item.coal_clump.name.medium": "Fuel Stack (medium)",
+  "item.coal_clump.description.medium": "A medium stack of fuel to better refill the boat's engine.",
+  "item.coal_clump.name.large": "Fuel Stack (large)",
+  "item.coal_clump.description.large": "A large stack of fuel to greatly refill the boat's engine.",
 
   // Ancient flag reward names and descriptions
   "item.ancient_flag.parely.name": "Parley Flag",
@@ -128,6 +134,8 @@
   "game_message.speak_to_captain": "You should speak to the captain before boarding his ship!",
   "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea...",
   "game_message.pathos_cat": "A cat with an interesting black and white pattern.",
+  "game_message.coal_clump.max_stack": "You can't hold any more fuel!",
+  "game_message.coal_clump.must_be_holding": "You must be holding the fuel to refill the engine!",
 
   // UI related
   "ui.flooding.name": "Flooding",

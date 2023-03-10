@@ -1,4 +1,5 @@
 ﻿using FishingTrawler.Framework.GameLocations;
+using FishingTrawler.Framework.Objects.Items.Resources;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
@@ -63,11 +64,11 @@ namespace FishingTrawler.GameLocations
                         {
                             _hullHoleLocations.Add(new Location(x, y));
                         }
-                        else if (tile.Properties["CustomAction"] == "RefillEngine")
+                        else if (tile.Properties["CustomAction"] == "GetCoal")
                         {
                             _coalLocations.Add(new Location(x, y));
                         }
-                        else if (tile.Properties["CustomAction"] == "GetCoal")
+                        else if (tile.Properties["CustomAction"] == "RefillEngine")
                         {
                             _engineRefillLocations.Add(new Location(x, y));
                         }
@@ -132,20 +133,44 @@ namespace FishingTrawler.GameLocations
 
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
-            /*
             string actionProperty = doesTileHaveProperty(tileLocation.X, tileLocation.Y, "CustomAction", "Buildings");
 
-            // Check if the tile is a coal gathering spot
-            if (String.IsNullOrEmpty(actionProperty) is false && actionProperty == "GetCoal")
+            if (String.IsNullOrEmpty(actionProperty) is false)
             {
-                if (base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is false)
+                // Check if the tile is a coal gathering spot
+                if (actionProperty == "GetCoal" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
                 {
-                    Game1.mouseCursorTransparency = 0.5f;
+                    // Give player coal, if they don't already have max stack
+                    var currentCoalItem = who.Items.FirstOrDefault(i => CoalClump.IsValid(i));
+                    if (currentCoalItem is null)
+                    {
+                        currentCoalItem = CoalClump.CreateInstance(1);
+                        who.addItemToInventory(currentCoalItem);
+                    }
+                    else
+                    {
+                        CoalClump.IncrementSize(currentCoalItem, 1);
+                    }
+                    who.CurrentToolIndex = who.getIndexOfInventoryItem(currentCoalItem);
+                }
+                else if (actionProperty == "RefillEngine" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
+                {
+                    // Attempt to get the player's coal stack
+                    if (CoalClump.IsValid(who.CurrentItem))
+                    {
+                        int fuelSize = CoalClump.GetSize(who.CurrentItem);
+                        AdjustFuelLevel((10 * fuelSize) + (fuelSize == 3 ? 5 : 0));
+
+                        who.removeItemFromInventory(who.CurrentItem);
+                    }
+                    else
+                    {
+                        Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.must_be_holding"), 3));
+                    }
                 }
 
                 return true;
             }
-            */
 
             // Check to see if player is standing in front of stairs before using  
             if (String.IsNullOrEmpty(doesTileHaveProperty(tileLocation.X, tileLocation.Y, "Action", "Buildings")) is false)

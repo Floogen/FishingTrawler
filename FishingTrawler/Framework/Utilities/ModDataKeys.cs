@@ -25,6 +25,7 @@
 
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
         internal const string ANGLER_RING_KEY = "PeacefulEnd.FishingTrawler_AnglerRing";
+        internal const string COAL_CLUMP_KEY = "PeacefulEnd.FishingTrawler_CoalClump";
 
         // Mail related
         internal const string MAIL_FLAG_MURPHY_WAS_INTRODUCED = "PeacefulEnd.FishingTrawler_WillyIntroducesMurphy";

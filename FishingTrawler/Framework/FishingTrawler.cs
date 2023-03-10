@@ -101,6 +101,7 @@ namespace FishingTrawler
                 new LayerPatch(monitor, modHelper).Apply(harmony);
 
                 // Apply Object patches
+                new ObjectPatch(monitor, modHelper).Apply(harmony);
                 new RingPatch(monitor, modHelper).Apply(harmony);
                 new FurniturePatch(monitor, modHelper).Apply(harmony);
                 new ToolPatch(monitor, modHelper).Apply(harmony);
@@ -259,6 +260,9 @@ namespace FishingTrawler
 
                 // Start the timer (2.5 minute default)
                 eventManager.SetTripTimer(150000); //150000
+
+                // Set the fuel level
+                _trawlerHull.Value.AdjustFuelLevel(100);
 
                 // Apply flag benefits
                 switch (GetHoistedFlag())
