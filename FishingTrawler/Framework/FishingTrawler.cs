@@ -3,6 +3,7 @@ using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Objects.Items.Rewards;
 using FishingTrawler.Framework.Objects.Items.Tools;
 using FishingTrawler.Framework.Patches.SMAPI;
+using FishingTrawler.Framework.Patches.Tools;
 using FishingTrawler.Framework.Patches.xTiles;
 using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
@@ -99,6 +100,9 @@ namespace FishingTrawler
 
                 // Apply xTile patches
                 new LayerPatch(monitor, modHelper).Apply(harmony);
+
+                // Apply Tool patches
+                new ToolPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {
@@ -216,7 +220,7 @@ namespace FishingTrawler
                 mainDeckhand = null;
 
                 // Take away any bailing buckets
-                foreach (BailingBucket bucket in Game1.player.Items.Where(i => i != null && i is BailingBucket))
+                foreach (var bucket in Game1.player.Items.Where(i => i is Tool tool && new BailingBucket(tool).IsValid))
                 {
                     Game1.player.removeItemFromInventory(bucket);
                 }
@@ -239,9 +243,9 @@ namespace FishingTrawler
                 Game1.changeMusicTrack("fieldofficeTentMusic");
 
                 // Give them a bailing bucket
-                if (!Game1.player.items.Any(i => i is BailingBucket))
+                if (Game1.player.Items.Any(i => i is Tool tool && new BailingBucket(tool).IsValid) is false)
                 {
-                    Game1.player.addItemToInventory(new BailingBucket());
+                    Game1.player.addItemToInventory(BailingBucket.CreateInstance());
                     Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.given_bailing_bucket"), null));
                 }
 

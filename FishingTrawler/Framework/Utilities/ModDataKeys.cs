@@ -4,6 +4,9 @@
     {
         // General
         internal const string REWARD_CHEST_DATA_KEY = "PeacefulEnd.FishingTrawler_RewardChest";
+        internal const string HOISTED_FLAG_KEY = "PeacefulEnd.FishingTrawler_HoistedFlag";
+
+        // Murphy related
         internal const string MURPHY_WAS_GREETED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphyGreeted";
         internal const string MURPHY_SAILED_TODAY_KEY = "PeacefulEnd.FishingTrawler_MurphySailedToday";
         internal const string MURPHY_WAS_TRIP_SUCCESSFUL_KEY = "PeacefulEnd.FishingTrawler_MurphyTripSuccessful";
@@ -14,10 +17,14 @@
         internal const string MURPHY_DAY_TO_APPEAR_ISLAND = "PeacefulEnd.FishingTrawler_MurphyDayToAppearIsland";
         internal const string MURPHY_TRIPS_COMPLETED = "PeacefulEnd.FishingTrawler_MurphyTripsCompleted";
 
+        // Item related
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";
-        internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
+        internal const string BAILING_BUCKET_CONTAINS_WATER = "PeacefulEnd.FishingTrawler_BailingBucket.ContainsWater";
+        internal const string BAILING_BUCKET_SCALE = "PeacefulEnd.FishingTrawler_BailingBucket.Scale";
 
-        internal const string HOISTED_FLAG_KEY = "PeacefulEnd.FishingTrawler_HoistedFlag";
+
+        internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
+        internal const string ANGLER_RING_KEY = "PeacefulEnd.FishingTrawler_AnglerRing";
 
         // Mail related
         internal const string MAIL_FLAG_MURPHY_WAS_INTRODUCED = "PeacefulEnd.FishingTrawler_WillyIntroducesMurphy";

@@ -7,64 +7,54 @@ using Netcode;
 using StardewValley;
 using StardewValley.Tools;
 using System.Collections.Generic;
+using xTile.Dimensions;
 //using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Framework.Objects.Items.Tools
 {
-    internal class BailingBucket : GenericTool
+    internal class BailingBucket
     {
-        private string _displayName = FishingTrawler.i18n.Get("item.bailing_bucket.name");
-        private readonly NetEvent0 _finishEvent = new NetEvent0();
+        public float Scale { get; set; }
+        public bool ContainsWater { get; set; }
+        public bool IsValid { get; }
 
-        private bool _containsWater = false;
-        private float _bucketScale = 0f;
+        private Tool _tool;
 
-        public BailingBucket() : base()
+        public BailingBucket()
         {
-            modData.Add(ModDataKeys.BAILING_BUCKET_KEY, "true");
-            description = FishingTrawler.i18n.Get("item.bailing_bucket.description_empty");
+            Scale = 0;
+            ContainsWater = false;
+            IsValid = true;
         }
 
-        public override Item getOne()
+        public BailingBucket(Tool tool)
         {
-            BailingBucket bucket = new BailingBucket();
-            bucket._GetOneFrom(this);
-            return bucket;
-        }
-
-        protected override string loadDisplayName()
-        {
-            return _displayName;
-        }
-
-        public override bool canBeTrashed()
-        {
-            if (FishingTrawler.IsPlayerOnTrawler())
+            if (tool is null || tool.modData.ContainsKey(ModDataKeys.BAILING_BUCKET_KEY) is false)
             {
-                return false;
+                IsValid = false;
+                return;
+            }
+            IsValid = true;
+
+            Scale = 0;
+            if (tool.modData.ContainsKey(ModDataKeys.BAILING_BUCKET_SCALE) is true && float.TryParse(tool.modData[ModDataKeys.BAILING_BUCKET_SCALE], out var scale))
+            {
+                Scale = scale;
             }
 
-            return true;
+            ContainsWater = false;
+            if (tool.modData.ContainsKey(ModDataKeys.BAILING_BUCKET_CONTAINS_WATER) is true && bool.TryParse(tool.modData[ModDataKeys.BAILING_BUCKET_CONTAINS_WATER], out var containsWater))
+            {
+                ContainsWater = containsWater;
+            }
+
+            // Set the tool
+            _tool = tool;
         }
 
-        public override void drawInMenu(SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, Color color, bool drawShadow)
+        public bool Use(GameLocation location, int x, int y, Farmer who)
         {
-            IndexOfMenuItemView = 0;
-
-            int spriteOffset = _containsWater ? 16 : 0;
-            spriteBatch.Draw(FishingTrawler.assetManager.bucketTexture, location + new Vector2(32f, 32f), new Rectangle(spriteOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f), 4f * (scaleSize + _bucketScale), SpriteEffects.None, layerDepth);
-        }
-
-        protected override void initNetFields()
-        {
-            base.initNetFields();
-            NetFields.AddFields(_finishEvent);
-            _finishEvent.onEvent += doFinish;
-        }
-
-        public override bool beginUsing(GameLocation location, int x, int y, Farmer who)
-        {
-            if (!FishingTrawler.IsPlayerOnTrawler() || who is null || who != null && !Game1.player.Equals(who))
+            if (FishingTrawler.IsPlayerOnTrawler() is false || who is null || (who is not null && Game1.player.Equals(who) is false))
             {
                 who.forceCanMove();
                 return false;
@@ -72,15 +62,14 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
 
             if (location is TrawlerHull trawlerHull)
             {
-                if (_containsWater)
+                if (ContainsWater)
                 {
                     Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3));
                 }
                 else if (trawlerHull.IsFlooding())
                 {
-                    _containsWater = true;
-                    _bucketScale = 0.5f;
-                    description = FishingTrawler.i18n.Get("item.bailing_bucket.description_full");
+                    ContainsWater = true;
+                    Scale = 0.5f;
 
                     trawlerHull.ChangeWaterLevel(-5);
                     trawlerHull.localSound("slosh");
@@ -91,13 +80,12 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                     Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3));
                 }
             }
-            else if (location is TrawlerSurface trawlerSurface && _containsWater)
+            else if (location is TrawlerSurface trawlerSurface && ContainsWater)
             {
                 if (trawlerSurface.IsPlayerByBoatEdge(who))
                 {
-                    _containsWater = false;
-                    _bucketScale = 0.5f;
-                    description = FishingTrawler.i18n.Get("item.bailing_bucket.description_empty");
+                    ContainsWater = false;
+                    Scale = 0.5f;
 
                     who.currentLocation.localSound("waterSlosh");
                 }
@@ -110,44 +98,30 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             {
                 Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.bail_from_hull"), 3));
             }
+            SaveData();
 
-            who.forceCanMove();
-            return true;
+            who.CanMove = true;
+            who.UsingTool = false;
+            return false;
         }
 
-        public override void tickUpdate(GameTime time, Farmer who)
+        public void SaveData()
         {
-            if (_bucketScale > 0f)
+            if (IsValid is false || _tool is null)
             {
-                _bucketScale -= 0.01f;
+                return;
             }
 
-            lastUser = who;
-            base.tickUpdate(time, who);
-            _finishEvent.Poll();
+            _tool.modData[ModDataKeys.BAILING_BUCKET_SCALE] = Scale.ToString();
+            _tool.modData[ModDataKeys.BAILING_BUCKET_CONTAINS_WATER] = ContainsWater.ToString();
         }
 
-        public override void DoFunction(GameLocation location, int x, int y, int power, Farmer who)
+        public static GenericTool CreateInstance()
         {
-            base.DoFunction(location, x, y, power, who);
-            who.Stamina -= 4f;
-            CurrentParentTileIndex = 0;
-            IndexOfMenuItemView = 0;
+            var bucket = new GenericTool(string.Empty, string.Empty, -1, 6, 6);
+            bucket.modData[ModDataKeys.BAILING_BUCKET_KEY] = true.ToString();
 
-            finish();
-        }
-
-        private void finish()
-        {
-            _finishEvent.Fire();
-        }
-
-        private void doFinish()
-        {
-            lastUser.CanMove = true;
-            lastUser.completelyStopAnimatingOrDoingAction();
-            lastUser.UsingTool = false;
-            lastUser.canReleaseTool = true;
+            return bucket;
         }
     }
 }
