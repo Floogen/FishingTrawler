@@ -102,6 +102,7 @@ namespace FishingTrawler
 
                 // Apply Object patches
                 new RingPatch(monitor, modHelper).Apply(harmony);
+                new FurniturePatch(monitor, modHelper).Apply(harmony);
                 new ToolPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
@@ -824,7 +825,7 @@ namespace FishingTrawler
         {
             foreach (FlagType flagType in Enum.GetValues(typeof(FlagType)))
             {
-                Game1.player.addItemByMenuIfNecessary(new AncientFlag(flagType));
+                Game1.player.addItemByMenuIfNecessary(AncientFlag.CreateInstance(flagType));
             }
             Monitor.Log($"Giving all ancient flags to {Game1.player.Name}.", LogLevel.Debug);
         }

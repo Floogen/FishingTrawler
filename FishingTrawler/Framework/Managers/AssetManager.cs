@@ -45,9 +45,6 @@ namespace FishingTrawler.Framework.Managers
             anglerRingTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "AnglerRing.png"));
             bucketTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
             uiTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
-
-            // Set any static Texture assets
-            AncientFlag.flagTexture = ancientFlagsTexture;
         }
     }
 }

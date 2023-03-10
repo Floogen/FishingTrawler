@@ -97,7 +97,7 @@ namespace FishingTrawler.Objects
 
         public override bool checkAction(Farmer who, GameLocation l)
         {
-            if (who.CurrentItem != null && who.CurrentItem is AncientFlag ancientFlag)
+            if (who.CurrentItem != null && AncientFlag.IsFlag(who.CurrentItem) is true)
             {
                 tryToReceiveActiveObject(who);
                 return true;
@@ -112,9 +112,10 @@ namespace FishingTrawler.Objects
             who.Halt();
             who.faceGeneralDirection(getStandingPosition(), 0, opposite: false, useTileCalculations: false);
 
-            if (who.CurrentItem != null && who.CurrentItem is AncientFlag ancientFlag)
+            if (who.CurrentItem != null && AncientFlag.IsFlag(who.CurrentItem) is true)
             {
-                if (ancientFlag.FlagType == FlagType.Unknown)
+                var ancientFlagType = AncientFlag.GetFlagType(who.CurrentItem);
+                if (ancientFlagType == FlagType.Unknown)
                 {
                     return;
                 }
@@ -131,14 +132,14 @@ namespace FishingTrawler.Objects
                 else
                 {
                     CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.given_flag_to_hoist_return_old", playerTerm), this));
-                    who.addItemByMenuIfNecessary(new AncientFlag(FishingTrawler.GetHoistedFlag()));
+                    who.addItemByMenuIfNecessary(AncientFlag.CreateInstance(FishingTrawler.GetHoistedFlag()));
 
                     // Set their toolbar to one to avoid player accidentally giving back the flag they just got?
                     who.CurrentToolIndex = 0;
                 }
 
                 Game1.drawDialogue(this);
-                FishingTrawler.SetHoistedFlag(ancientFlag.FlagType);
+                FishingTrawler.SetHoistedFlag(ancientFlagType);
             }
         }
 
@@ -259,7 +260,7 @@ namespace FishingTrawler.Objects
             CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.remove_current_flag", playerTerm), this));
             Game1.drawDialogue(this);
 
-            Game1.player.addItemByMenuIfNecessary(new AncientFlag(FishingTrawler.GetHoistedFlag()));
+            Game1.player.addItemByMenuIfNecessary(AncientFlag.CreateInstance(FishingTrawler.GetHoistedFlag()));
             FishingTrawler.SetHoistedFlag(FlagType.Unknown);
         }
 
@@ -364,12 +365,12 @@ namespace FishingTrawler.Objects
 
         private bool PlayerHasUnidentifiedFlagInInventory(Farmer who)
         {
-            return who.items.Any(i => i != null && i.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && i.modData[ModDataKeys.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString());
+            return who.Items.Any(i => i != null && i.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && i.modData[ModDataKeys.ANCIENT_FLAG_KEY] == FlagType.Unknown.ToString());
         }
 
         private bool PlayerHasIdentifiedFlagInInventory(Farmer who)
         {
-            return who.items.Any(i => i != null && i.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && i.modData[ModDataKeys.ANCIENT_FLAG_KEY] != FlagType.Unknown.ToString());
+            return who.Items.Any(i => i != null && i.modData.ContainsKey(ModDataKeys.ANCIENT_FLAG_KEY) && i.modData[ModDataKeys.ANCIENT_FLAG_KEY] != FlagType.Unknown.ToString());
         }
 
         private void TakeAndIdentifyFlag()
@@ -383,10 +384,10 @@ namespace FishingTrawler.Objects
             int uniqueFlagTypes = Enum.GetNames(typeof(FlagType)).Length;
 
             // Remove the ancient flag, then add the randomly identified one
-            AncientFlag ancientFlag = Game1.player.items.FirstOrDefault(i => i is AncientFlag && (i as AncientFlag).FlagType == FlagType.Unknown) as AncientFlag;
+            var ancientFlag = Game1.player.Items.FirstOrDefault(i => AncientFlag.IsFlag(i) && AncientFlag.GetFlagType(i) == FlagType.Unknown);
 
             Game1.player.removeItemFromInventory(ancientFlag);
-            Game1.player.addItemByMenuIfNecessary(new AncientFlag((FlagType)Game1.random.Next(1, uniqueFlagTypes)));
+            Game1.player.addItemByMenuIfNecessary(AncientFlag.CreateInstance((FlagType)Game1.random.Next(1, uniqueFlagTypes)));
         }
     }
 }

@@ -357,7 +357,7 @@ namespace FishingTrawler.Objects
             if (Game1.random.NextDouble() <= amountOfFish / 500f + _farmer.FishingLevel / 100f)
             {
                 FishingTrawler.monitor.Log($"Player got lucky and was rewarded an ancient flag!", LogLevel.Trace);
-                _rewardChest.addItem(new AncientFlag(FlagType.Unknown));
+                _rewardChest.addItem(AncientFlag.CreateInstance(FlagType.Unknown));
             }
 
             // See if this run generates an special reward
