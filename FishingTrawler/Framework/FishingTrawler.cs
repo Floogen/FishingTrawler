@@ -44,6 +44,8 @@ namespace FishingTrawler
         // Managers
         internal static ApiManager apiManager;
         internal static AssetManager assetManager;
+        internal static EventManager eventManager;
+        internal static NotificationManager notificationManager;
 
         // Trawler beach map related
         internal static Murphy murphyNPC;
@@ -62,22 +64,6 @@ namespace FishingTrawler
         // Day to appear settings
         internal const int BOAT_DEPART_EVENT_ID = 840603900;
 
-        // Notificiation messages
-        private KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING;
-        private KeyValuePair<string, int> MESSAGE_LOSING_FISH;
-        private KeyValuePair<string, int> MESSAGE_MAX_LEAKS;
-        private KeyValuePair<string, int> MESSAGE_MULTI_PROBLEMS;
-        private KeyValuePair<string, int> MESSAGE_ENGINE_PROBLEM;
-        private KeyValuePair<string, int> MESSAGE_NET_PROBLEM;
-        private KeyValuePair<string, int> MESSAGE_LEAK_PROBLEM;
-
-        // Notification related
-        private uint _eventSecondInterval;
-        private bool _isNotificationFading;
-        private float _notificationAlpha;
-        private string _activeNotification;
-
-
         public override void Entry(IModHelper helper)
         {
             // Set up the monitor and helper
@@ -90,16 +76,14 @@ namespace FishingTrawler
             // Load managers
             apiManager = new ApiManager(monitor);
             assetManager = new AssetManager(monitor, modHelper);
+            eventManager = new EventManager(monitor);
+            notificationManager = new NotificationManager(monitor);
 
             // Initialize the timer for fishing trip
             fishingTripTimer.Value = 0;
 
             // Set up our notification system on the trawler
-            _eventSecondInterval = 600;
             _isTripEnding.Value = false;
-            _activeNotification = string.Empty;
-            _notificationAlpha = 1f;
-            _isNotificationFading = false;
 
             // Load our Harmony patches
             try
@@ -178,7 +162,7 @@ namespace FishingTrawler
                     break;
                 case nameof(TrawlerNotificationMessage):
                     TrawlerNotificationMessage notificationMessage = e.ReadAs<TrawlerNotificationMessage>();
-                    _activeNotification = notificationMessage.Notification;
+                    notificationManager.SetNotification(notificationMessage.Notification);
                     break;
             }
         }
@@ -199,9 +183,9 @@ namespace FishingTrawler
                 return;
             }
 
-            if (!string.IsNullOrEmpty(_activeNotification))
+            if (!String.IsNullOrEmpty(notificationManager.GetActiveNotification()))
             {
-                TrawlerUI.DrawNotification(e.SpriteBatch, Game1.player.currentLocation, _activeNotification, _notificationAlpha);
+                notificationManager.DrawNotification(e.SpriteBatch, Game1.player.currentLocation);
             }
         }
 
@@ -212,7 +196,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer.Value, _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerCabin.Value.GetLeakingPipesCount());
+            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer.Value, _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -348,24 +332,14 @@ namespace FishingTrawler
                 return;
             }
 
-            if (_isNotificationFading)
-            {
-                _notificationAlpha -= 0.1f;
-            }
-
-            if (_notificationAlpha < 0f)
-            {
-                _activeNotification = string.Empty;
-                _isNotificationFading = false;
-                _notificationAlpha = 1f;
-            }
+            notificationManager.FadeNotification(0.1f);
 
             if (IsMainDeckhand())
             {
                 if (e.IsMultipleOf(150))
                 {
                     // Update water level (from leaks) every second
-                    _trawlerHull.Value.RecaculateWaterLevel();
+                    _trawlerHull.Value.RecalculateWaterLevel();
                     SyncTrawler(SyncType.WaterLevel, _trawlerHull.Value.GetWaterLevel(), GetFarmersOnTrawler());
                 }
             }
@@ -381,10 +355,7 @@ namespace FishingTrawler
 
             if (e.IsMultipleOf(150))
             {
-                if (!string.IsNullOrEmpty(_activeNotification))
-                {
-                    _isNotificationFading = true;
-                }
+                notificationManager.StartFading();
             }
 
             if (_trawlerHull.Value.GetWaterLevel() == 100)
@@ -436,42 +407,7 @@ namespace FishingTrawler
 
             if (IsMainDeckhand())
             {
-                // Every 5 seconds recalculate the amount of fish caught / lost
-                if (e.IsMultipleOf(300))
-                {
-                    _trawlerSurface.Value.UpdateFishCaught(_trawlerCabin.Value.AreAllPipesLeaking());
-                    SyncTrawler(SyncType.FishCaught, _trawlerSurface.Value.fishCaughtQuantity, GetFarmersOnTrawler());
-                }
-
-                // Every random interval check for new event (leak, net tearing, etc.) on Trawler
-                if (e.IsMultipleOf(_eventSecondInterval))
-                {
-                    string message = string.Empty;
-
-                    // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
-                    if (Game1.random.NextDouble() < 0.05)
-                    {
-                        message = i18n.Get("status_message.sea_favors_us");
-                    }
-                    else
-                    {
-                        message = CreateTrawlerEventsAndGetMessage();
-                    }
-
-                    // Check for empty string 
-                    if (string.IsNullOrEmpty(message))
-                    {
-                        message = i18n.Get("status_message.default");
-                    }
-
-                    if (_activeNotification != message)
-                    {
-                        _activeNotification = message;
-                        BroadcastNotification(message, GetFarmersOnTrawler());
-                    }
-
-                    _eventSecondInterval = (uint)Game1.random.Next(config.eventFrequencyLower, config.eventFrequencyUpper + 1) * 100;
-                }
+                eventManager.UpdateEvents(e, _trawlerCabin.Value, _trawlerSurface.Value, _trawlerHull.Value);
             }
 
             if (fishingTripTimer.Value <= 0f)
@@ -517,10 +453,10 @@ namespace FishingTrawler
                 }
                 else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_CABIN_LOCATION_NAME)
                 {
+                    // TODO: Add handling for guidance computer
                     for (int y = 0; y < 3; y++)
                     {
-                        _trawlerCabin.Value.AttemptPlugLeak(Game1.player.getTileX(), Game1.player.getTileY() - y, Game1.player);
-                        BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
+
                     }
                 }
             }
@@ -542,9 +478,7 @@ namespace FishingTrawler
                 }
                 else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_CABIN_LOCATION_NAME)
                 {
-                    _trawlerCabin.Value.AttemptPlugLeak((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y, Game1.player);
-
-                    BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y), true, GetFarmersOnTrawler());
+                    // TODO: Add handling for guidance computer
                 }
             }
         }
@@ -573,6 +507,7 @@ namespace FishingTrawler
 
             if (Helper.ModRegistry.IsLoaded("Pathoschild.ContentPatcher") && apiManager.HookIntoContentPatcher(Helper))
             {
+                var patcherAPI = apiManager.GetContentPatcherInterface();
                 patcherAPI.RegisterToken(ModManifest, "MurphyAppearanceDay", () =>
                 {
                     return new[] { Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice };
@@ -586,15 +521,6 @@ namespace FishingTrawler
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            // Set up notification messages
-            MESSAGE_EVERYTHING_FAILING = new KeyValuePair<string, int>(i18n.Get("status_message.ship_falling_apart"), 10);
-            MESSAGE_LOSING_FISH = new KeyValuePair<string, int>(i18n.Get("status_message.losing_fish"), 9);
-            MESSAGE_MAX_LEAKS = new KeyValuePair<string, int>(i18n.Get("status_message.taking_on_water"), 8);
-            MESSAGE_MULTI_PROBLEMS = new KeyValuePair<string, int>(i18n.Get("status_message.lots_of_problems"), 7);
-            MESSAGE_ENGINE_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.engine_failing"), 7);
-            MESSAGE_NET_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.nets_torn"), 6);
-            MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(i18n.Get("status_message.leak"), 5);
-
             todayDayOfWeek = SDate.Now().DayOfWeek.ToString();
 
             Beach beach = Game1.getLocationFromName("Beach") as Beach;
@@ -679,97 +605,6 @@ namespace FishingTrawler
             Game1.locations.Remove(_trawlerHull.Value);
             Game1.locations.Remove(_trawlerSurface.Value);
             Game1.locations.Remove(_trawlerCabin.Value);
-        }
-
-        private string CreateTrawlerEventsAndGetMessage()
-        {
-            int amountOfEvents = 0;
-            for (int x = 0; x < 4; x++)
-            {
-                // Chance of skipping an event increases with each pass of this loop
-                if (Game1.random.NextDouble() < 0.1 + x * 0.1f)
-                {
-                    // Skip event
-                    continue;
-                }
-
-                amountOfEvents++;
-            }
-
-            int executedEvents = 0;
-            List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
-            for (int x = 0; x < amountOfEvents; x++)
-            {
-                if (!_trawlerSurface.Value.AreAllNetsRipped() && Game1.random.NextDouble() < 0.35)
-                {
-                    Location? tile = _trawlerSurface.Value.GetRandomWorkingNet();
-                    if (tile is null)
-                    {
-                        continue;
-                    }
-
-                    _trawlerSurface.Value.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);
-                    BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.Value.X, tile.Value.Y), false, GetFarmersOnTrawler());
-
-                    possibleMessages.Add(_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
-
-                    executedEvents++;
-                    continue;
-                }
-
-                if (!_trawlerCabin.Value.AreAllPipesLeaking() && Game1.random.NextDouble() < 0.25)
-                {
-                    Location tile = _trawlerCabin.Value.GetRandomWorkingPipe();
-
-                    _trawlerCabin.Value.AttemptCreatePipeLeak(tile.X, tile.Y);
-                    BroadcastTrawlerEvent(EventType.EngineFailure, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
-
-                    possibleMessages.Add(_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() ? MESSAGE_LOSING_FISH : MESSAGE_ENGINE_PROBLEM);
-
-                    executedEvents++;
-                    continue;
-                }
-
-                // Default hull breaking event
-                if (!_trawlerHull.Value.AreAllHolesLeaking() && _trawlerHull.Value.areLeaksEnabled)
-                {
-                    if (_trawlerHull.Value.hasWeakHull)
-                    {
-                        foreach (Location tile in _trawlerHull.Value.GetAllLeakableLocations())
-                        {
-                            _trawlerHull.Value.AttemptCreateHullLeak(tile.X, tile.Y);
-                            BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
-                        }
-                    }
-                    else
-                    {
-                        Location tile = _trawlerHull.Value.GetRandomPatchedHullHole();
-
-                        _trawlerHull.Value.AttemptCreateHullLeak(tile.X, tile.Y);
-                        BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, GetFarmersOnTrawler());
-                    }
-
-                    possibleMessages.Add(_trawlerHull.Value.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
-
-                    executedEvents++;
-                    continue;
-                }
-            }
-
-            // Check if all possible events are activated
-            if (_trawlerSurface.Value.AreAllNetsRipped() && _trawlerCabin.Value.AreAllPipesLeaking() && _trawlerHull.Value.AreAllHolesLeaking())
-            {
-                possibleMessages.Add(MESSAGE_EVERYTHING_FAILING);
-            }
-
-            // Add a generic message if there are lots of issues
-            if (executedEvents > 1)
-            {
-                possibleMessages.Add(MESSAGE_MULTI_PROBLEMS);
-            }
-
-            // Select highest priority item (priority == default_priority_level * frequency)
-            return amountOfEvents == 0 ? i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
         internal static void AlertPlayersOfDeparture(long mainDeckhandID, List<Farmer> farmersToAlert)
@@ -948,7 +783,7 @@ namespace FishingTrawler
                     result = isRepairing ? _trawlerHull.Value.AttemptPlugLeak((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerHull.Value.AttemptCreateHullLeak((int)tile.X, (int)tile.Y);
                     break;
                 case EventType.EngineFailure:
-                    result = isRepairing ? _trawlerCabin.Value.AttemptPlugLeak((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerCabin.Value.AttemptCreatePipeLeak((int)tile.X, (int)tile.Y);
+                    // TODO: Add handling for EngineFailure, if needed
                     break;
                 case EventType.NetTear:
                     result = isRepairing ? _trawlerSurface.Value.AttemptFixNet((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerSurface.Value.AttemptCreateNetRip((int)tile.X, (int)tile.Y);
@@ -966,7 +801,7 @@ namespace FishingTrawler
             {
                 case SyncType.WaterLevel:
                     result = true;
-                    _trawlerHull.Value.RecaculateWaterLevel(quantity);
+                    _trawlerHull.Value.RecalculateWaterLevel(quantity);
                     break;
                 case SyncType.FishCaught:
                     result = true;

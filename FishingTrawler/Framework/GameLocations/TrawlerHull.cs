@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FishingTrawler.Framework.GameLocations;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -11,9 +12,12 @@ using xTile.Tiles;
 
 namespace FishingTrawler.GameLocations
 {
-    internal class TrawlerHull : GameLocation
+    internal class TrawlerHull : TrawlerLocation
     {
         private List<Location> _hullHoleLocations;
+        private List<Location> _coalLocations;
+        private List<Location> _engineRefillLocations;
+
         private const int TRAWLER_TILESHEET_INDEX = 3;
         private const float MINIMUM_WATER_LEVEL_FOR_FLOOR = 5f;
         private const float MINIMUM_WATER_LEVEL_FOR_ITEMS = 20f;
@@ -21,7 +25,9 @@ namespace FishingTrawler.GameLocations
         private const string FLOOD_ITEMS_LAYER = "FloodItems";
         private const string WATER_SPLASH_LAYER = "WaterSplash";
 
-        internal static int waterLevel;
+        private int _waterLevel;
+        private int _fuelLevel;
+
         internal bool areLeaksEnabled;
         internal bool hasWeakHull;
 
@@ -32,10 +38,13 @@ namespace FishingTrawler.GameLocations
 
         internal TrawlerHull(string mapPath, string name) : base(mapPath, name)
         {
-            waterLevel = 0;
+            _waterLevel = 0;
             areLeaksEnabled = true;
             hasWeakHull = false;
+
             _hullHoleLocations = new List<Location>();
+            _coalLocations = new List<Location>();
+            _engineRefillLocations = new List<Location>();
 
             Layer buildingsLayer = map.GetLayer("Buildings");
             for (int x = 0; x < buildingsLayer.LayerWidth; x++)
@@ -48,63 +57,57 @@ namespace FishingTrawler.GameLocations
                         continue;
                     }
 
-                    if (tile.Properties.ContainsKey("CustomAction") && tile.Properties["CustomAction"] == "HullHole")
+                    if (tile.Properties.ContainsKey("CustomAction"))
                     {
-                        _hullHoleLocations.Add(new Location(x, y));
+                        if (tile.Properties["CustomAction"] == "HullHole")
+                        {
+                            _hullHoleLocations.Add(new Location(x, y));
+                        }
+                        else if (tile.Properties["CustomAction"] == "RefillEngine")
+                        {
+                            _coalLocations.Add(new Location(x, y));
+                        }
+                        else if (tile.Properties["CustomAction"] == "GetCoal")
+                        {
+                            _engineRefillLocations.Add(new Location(x, y));
+                        }
                     }
                 }
             }
         }
 
-        internal void Reset()
+        internal override void Reset()
         {
+            // Set the fuel level back to default
+            _fuelLevel = 100;
+
+            // Fix all leaks and set the flood level to 0
             foreach (Location hullHoleLocation in _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)))
             {
                 AttemptPlugLeak(hullHoleLocation.X, hullHoleLocation.Y, Game1.player, true);
             }
 
-            RecaculateWaterLevel(0);
+            RecalculateWaterLevel(0);
         }
 
         protected override void resetLocalState()
         {
             base.resetLocalState();
-            critters = new List<Critter>();
 
+            // Add water / brook sounds
             AmbientLocationSounds.addSound(new Vector2(7f, 0f), 0);
             AmbientLocationSounds.addSound(new Vector2(13f, 0f), 0);
-
-            if (string.IsNullOrEmpty(miniJukeboxTrack.Value))
-            {
-                Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
-            }
-        }
-
-        public override void checkForMusic(GameTime time)
-        {
-            base.checkForMusic(time);
-        }
-
-        public override void cleanupBeforePlayerExit()
-        {
-            //Game1.changeMusicTrack("none");
-            base.cleanupBeforePlayerExit();
-        }
-
-        public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
-        {
-            // Preventing player from placing items here
-            return true;
         }
 
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
+            // Handle playing splash sound and animation if the hull is flooded enough
             Vector2 playerStandingPosition = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
-
             if (lastTouchActionLocation.Equals(Vector2.Zero) && map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] > 0f)
             {
                 string touchActionProperty = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "CustomTouchAction", FLOOD_WATER_LAYER);
                 lastTouchActionLocation = new Vector2(Game1.player.getStandingX() / 64, Game1.player.getStandingY() / 64);
+
                 if (touchActionProperty != null)
                 {
                     if (touchActionProperty == "PlaySound")
@@ -112,7 +115,7 @@ namespace FishingTrawler.GameLocations
                         string soundName = doesTileHaveProperty((int)playerStandingPosition.X, (int)playerStandingPosition.Y, "PlaySound", FLOOD_WATER_LAYER);
                         if (string.IsNullOrEmpty(soundName))
                         {
-                            FishingTrawler.monitor.Log($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
+                            FishingTrawler.monitor.LogOnce($"Tile at {playerStandingPosition} is missing PlaySound property on FloodWater layer!", LogLevel.Trace);
                             return;
                         }
 
@@ -129,6 +132,22 @@ namespace FishingTrawler.GameLocations
 
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
+            /*
+            string actionProperty = doesTileHaveProperty(tileLocation.X, tileLocation.Y, "CustomAction", "Buildings");
+
+            // Check if the tile is a coal gathering spot
+            if (String.IsNullOrEmpty(actionProperty) is false && actionProperty == "GetCoal")
+            {
+                if (base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is false)
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                return true;
+            }
+            */
+
+            // Check to see if player is standing in front of stairs before using  
             if (String.IsNullOrEmpty(doesTileHaveProperty(tileLocation.X, tileLocation.Y, "Action", "Buildings")) is false)
             {
                 if (who.getTileX() != 9 || who.getTileY() != 6)
@@ -155,7 +174,18 @@ namespace FishingTrawler.GameLocations
                 return true;
             }
 
-            // Check to see if player is standing in front of stairs before clicking            
+            // Check if the tile is a coal gathering spot
+            if (String.IsNullOrEmpty(actionProperty) is false && actionProperty == "GetCoal")
+            {
+                if (base.IsWithinRangeOfTile(xTile, yTile, 1, 1, who) is false)
+                {
+                    Game1.mouseCursorTransparency = 0.5f;
+                }
+
+                return true;
+            }
+
+            // Check to see if player is standing in front of stairs before using            
             if (String.IsNullOrEmpty(doesTileHaveProperty(xTile, yTile, "Action", "Buildings")) is false)
             {
                 if (who.getTileX() != 9 || who.getTileY() != 6)
@@ -168,6 +198,32 @@ namespace FishingTrawler.GameLocations
 
             return base.isActionableTile(xTile, yTile, who);
         }
+
+        #region Fuel event methods
+        public void AdjustFuelLevel(int amount)
+        {
+            _fuelLevel += amount;
+
+            if (_fuelLevel < 0)
+            {
+                _fuelLevel = 0;
+            }
+            else if (_fuelLevel > 100)
+            {
+                _fuelLevel = 100;
+            }
+        }
+
+        public int GetFuelLevel()
+        {
+            return _fuelLevel;
+        }
+
+        public bool IsEngineFailing()
+        {
+            return _fuelLevel == 0;
+        }
+        #endregion
 
         #region Boat leak event methods
         private bool IsWithinRangeOfLeak(int tileX, int tileY, Farmer who)
@@ -193,7 +249,7 @@ namespace FishingTrawler.GameLocations
                 return bool.Parse(hole.Properties["IsLeaking"]);
             }
 
-            FishingTrawler.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
+            FishingTrawler.monitor.LogOnce("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
             return false;
         }
 
@@ -319,14 +375,13 @@ namespace FishingTrawler.GameLocations
             return _hullHoleLocations;
         }
 
-        public void RecaculateWaterLevel(int waterLevelOverride = -1)
+        public void RecalculateWaterLevel(int waterLevelOverride = -1)
         {
-            // Should be called from ModEntry.OnOneSecondUpdateTicking (at X second interval)
             // Foreach leak, add 1 to the water level
 
             if (waterLevelOverride > -1)
             {
-                waterLevel = waterLevelOverride;
+                _waterLevel = waterLevelOverride;
             }
             else
             {
@@ -335,21 +390,21 @@ namespace FishingTrawler.GameLocations
             }
 
             // Using PyTK for these layers and opacity
-            map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? waterLevel * 0.01f + 0.1f : 0f;
-            map.GetLayer(FLOOD_ITEMS_LAYER).Properties["@Opacity"] = waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
+            map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] = _waterLevel > MINIMUM_WATER_LEVEL_FOR_FLOOR ? _waterLevel * 0.01f + 0.1f : 0f;
+            map.GetLayer(FLOOD_ITEMS_LAYER).Properties["@Opacity"] = _waterLevel > MINIMUM_WATER_LEVEL_FOR_ITEMS ? 1f : 0f;
         }
 
         public void ChangeWaterLevel(int change)
         {
-            waterLevel += change;
+            _waterLevel += change;
 
-            if (waterLevel < 0)
+            if (_waterLevel < 0)
             {
-                waterLevel = 0;
+                _waterLevel = 0;
             }
-            else if (waterLevel > 100)
+            else if (_waterLevel > 100)
             {
-                waterLevel = 100;
+                _waterLevel = 100;
             }
         }
 
@@ -373,7 +428,7 @@ namespace FishingTrawler.GameLocations
 
         public int GetWaterLevel()
         {
-            return waterLevel;
+            return _waterLevel;
         }
 
         public bool IsFlooding()
@@ -381,7 +436,5 @@ namespace FishingTrawler.GameLocations
             return map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] > 0f;
         }
         #endregion
-
-
     }
 }

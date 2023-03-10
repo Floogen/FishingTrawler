@@ -13,7 +13,7 @@ namespace FishingTrawler.GameLocations
 {
     internal class TrawlerCabin : GameLocation
     {
-        private List<Location> _cabinPipeLocations;
+        private List<Location> _computerLocations;
         private const int CABIN_TILESHEET_INDEX = 2;
 
         public TrawlerCabin()
@@ -23,7 +23,7 @@ namespace FishingTrawler.GameLocations
 
         internal TrawlerCabin(string mapPath, string name) : base(mapPath, name)
         {
-            _cabinPipeLocations = new List<Location>();
+            _computerLocations = new List<Location>();
 
             Layer buildingsLayer = map.GetLayer("Buildings");
             for (int x = 0; x < buildingsLayer.LayerWidth; x++)
@@ -36,9 +36,9 @@ namespace FishingTrawler.GameLocations
                         continue;
                     }
 
-                    if (tile.Properties.ContainsKey("CustomAction") && tile.Properties["CustomAction"] == "RustyPipe")
+                    if (tile.Properties.ContainsKey("CustomAction") && tile.Properties["CustomAction"] == "Guidance")
                     {
-                        _cabinPipeLocations.Add(new Location(x, y));
+                        _computerLocations.Add(new Location(x, y));
                     }
                 }
             }
@@ -46,10 +46,7 @@ namespace FishingTrawler.GameLocations
 
         internal void Reset()
         {
-            foreach (Location pipeLocation in _cabinPipeLocations.Where(loc => IsPipeLeaking(loc.X, loc.Y)))
-            {
-                AttemptPlugLeak(pipeLocation.X, pipeLocation.Y, Game1.player, true);
-            }
+            // TODO: Reset the guidance system percentage?
         }
 
         protected override void resetLocalState()
@@ -112,15 +109,6 @@ namespace FishingTrawler.GameLocations
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
             string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
-            if (actionProperty != null && actionProperty == "RustyPipe")
-            {
-                if (!IsWithinRangeOfLeak(xTile, yTile, who))
-                {
-                    Game1.mouseCursorTransparency = 0.5f;
-                }
-
-                return true;
-            }
             if (actionProperty != null && actionProperty == "PathosCat")
             {
                 return Enumerable.Range(who.getTileX(), 1).Contains(xTile);
@@ -129,134 +117,7 @@ namespace FishingTrawler.GameLocations
             return base.isActionableTile(xTile, yTile, who);
         }
 
-        private bool IsWithinRangeOfLeak(int tileX, int tileY, Farmer who)
-        {
-            if (who.getTileY() != 4 || !Enumerable.Range(who.getTileX() - 1, 3).Contains(tileX))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool IsPipeLeaking(int tileX, int tileY)
-        {
-            Tile hole = map.GetLayer("Buildings").Tiles[tileX, tileY];
-            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", "Buildings") == "RustyPipe")
-            {
-                return bool.Parse(hole.Properties["IsLeaking"]);
-            }
-
-            FishingTrawler.monitor.Log("Called [IsHoleLeaking] on tile that doesn't have IsLeaking property on Buildings layer, returning false!", LogLevel.Trace);
-            return false;
-        }
-
-        public bool AttemptPlugLeak(int tileX, int tileY, Farmer who, bool forceRepair = false)
-        {
-            AnimatedTile firstTile = map.GetLayer("Buildings").Tiles[tileX, tileY] as AnimatedTile;
-            //ModEntry.monitor.Log($"({tileX}, {tileY}) | {isActionableTile(tileX, tileY, who)}", LogLevel.Debug);
-
-            if (firstTile is null)
-            {
-                return false;
-            }
-
-            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfLeak(tileX, tileY, who)))
-            {
-                return false;
-            }
-
-            if (!firstTile.Properties.ContainsKey("CustomAction") || !firstTile.Properties.ContainsKey("IsLeaking"))
-            {
-                return false;
-            }
-
-            if (firstTile.Properties["CustomAction"] == "RustyPipe" && bool.Parse(firstTile.Properties["IsLeaking"]) is true)
-            {
-                // Stop the leak
-                firstTile.Properties["IsLeaking"] = false;
-
-                // Patch up the net
-                setMapTile(tileX, tileY, 81, "Buildings", null, CABIN_TILESHEET_INDEX);
-                setMapTileIndex(tileX, tileY - 1, -1, "Buildings");
-
-                // Add the custom properties for tracking
-                map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
-
-                playSound("hammer");
-            }
-
-            return true;
-        }
-
-        private int[] GetPipeLeakingIndexes(int startingIndex)
-        {
-            List<int> indexes = new List<int>();
-            for (int offset = 0; offset < 3; offset++)
-            {
-                indexes.Add(startingIndex + offset);
-            }
-
-            return indexes.ToArray();
-        }
-
-        public bool AttemptCreatePipeLeak(int tileX = -1, int tileY = -1)
-        {
-            List<Location> validPipeLocations = _cabinPipeLocations.Where(loc => !IsPipeLeaking(loc.X, loc.Y)).ToList();
-
-            if (validPipeLocations.Count() == 0)
-            {
-                return false;
-            }
-
-            // Pick a random valid spot to rip
-            Location pipeLocation = validPipeLocations.ElementAt(Game1.random.Next(0, validPipeLocations.Count()));
-            if (tileX != -1 && tileY != -1)
-            {
-                if (!_cabinPipeLocations.Any(loc => !IsPipeLeaking(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY))
-                {
-                    return false;
-                }
-
-                pipeLocation = _cabinPipeLocations.FirstOrDefault(loc => !IsPipeLeaking(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY);
-            }
-
-            // Set the net as ripped
-            Tile firstTile = map.GetLayer("Buildings").Tiles[pipeLocation.X, pipeLocation.Y];
-            firstTile.Properties["IsLeaking"] = true;
-
-            setAnimatedMapTile(pipeLocation.X, pipeLocation.Y, GetPipeLeakingIndexes(152), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
-            setAnimatedMapTile(pipeLocation.X, pipeLocation.Y - 1, GetPipeLeakingIndexes(134), 90, "Buildings", null, CABIN_TILESHEET_INDEX);
-
-            // Copy over the old properties
-            map.GetLayer("Buildings").Tiles[pipeLocation.X, pipeLocation.Y].Properties.CopyFrom(firstTile.Properties);
-
-            playSound("flameSpell");
-
-            return true;
-        }
-
-        public bool AreAnyPipesLeaking()
-        {
-            return _cabinPipeLocations.Any(loc => IsPipeLeaking(loc.X, loc.Y));
-        }
-
-        public bool AreAllPipesLeaking()
-        {
-            return _cabinPipeLocations.Count(loc => IsPipeLeaking(loc.X, loc.Y)) == _cabinPipeLocations.Count();
-        }
-
-        public int GetLeakingPipesCount()
-        {
-            return _cabinPipeLocations.Count(loc => IsPipeLeaking(loc.X, loc.Y));
-        }
-
-        public Location GetRandomWorkingPipe()
-        {
-            List<Location> validPipeLocations = _cabinPipeLocations.Where(loc => !IsPipeLeaking(loc.X, loc.Y)).ToList();
-
-            // Pick a random valid spot to burst
-            return _cabinPipeLocations.Where(loc => !IsPipeLeaking(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validPipeLocations.Count()));
-        }
+        #region Guidance system event methods
+        #endregion
     }
 }
