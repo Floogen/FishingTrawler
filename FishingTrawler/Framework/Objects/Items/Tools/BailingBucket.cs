@@ -9,9 +9,9 @@ using StardewValley.Tools;
 using System.Collections.Generic;
 //using PyTK.CustomElementHandler;
 
-namespace FishingTrawler.Objects.Tools
+namespace FishingTrawler.Framework.Objects.Items.Tools
 {
-    internal class BailingBucket : MilkPail
+    internal class BailingBucket : GenericTool
     {
         private string _displayName = FishingTrawler.i18n.Get("item.bailing_bucket.name");
         private readonly NetEvent0 _finishEvent = new NetEvent0();
@@ -23,21 +23,6 @@ namespace FishingTrawler.Objects.Tools
         {
             modData.Add(ModDataKeys.BAILING_BUCKET_KEY, "true");
             description = FishingTrawler.i18n.Get("item.bailing_bucket.description_empty");
-        }
-
-        public object getReplacement()
-        {
-            return new MilkPail();
-        }
-
-        public Dictionary<string, string> getAdditionalSaveData()
-        {
-            return new Dictionary<string, string>();
-        }
-
-        public void rebuild(Dictionary<string, string> additionalSaveData, object replacement)
-        {
-            modData = (replacement as MilkPail).modData;
         }
 
         public override Item getOne()

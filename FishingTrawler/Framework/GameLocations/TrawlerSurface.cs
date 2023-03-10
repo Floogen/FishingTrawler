@@ -1,5 +1,5 @@
 ﻿using FishingTrawler.Framework.Managers;
-using FishingTrawler.Objects.Rewards;
+using FishingTrawler.Framework.Objects.Items.Rewards;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 //using PyTK.CustomElementHandler;
 
-namespace FishingTrawler.Objects.Rewards
+namespace FishingTrawler.Framework.Objects.Items.Rewards
 {
     public enum FlagType
     {

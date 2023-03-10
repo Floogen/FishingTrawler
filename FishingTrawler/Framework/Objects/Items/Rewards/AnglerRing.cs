@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 //using PyTK.CustomElementHandler;
 
-namespace FishingTrawler.Objects.Rewards
+namespace FishingTrawler.Framework.Objects.Items.Rewards
 {
     public class AnglerRing : Ring
     {

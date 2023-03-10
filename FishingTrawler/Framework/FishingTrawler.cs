@@ -1,13 +1,13 @@
 ﻿using FishingTrawler.Framework.External.GenericModConfigMenu;
 using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Objects.Items.Rewards;
+using FishingTrawler.Framework.Objects.Items.Tools;
 using FishingTrawler.Framework.Patches.SMAPI;
 using FishingTrawler.Framework.Patches.xTiles;
 using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
 using FishingTrawler.Objects;
-using FishingTrawler.Objects.Rewards;
-using FishingTrawler.Objects.Tools;
 using FishingTrawler.Patches.Locations;
 using FishingTrawler.UI;
 using HarmonyLib;
