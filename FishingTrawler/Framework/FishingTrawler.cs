@@ -319,12 +319,13 @@ namespace FishingTrawler
 
         private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || _isTripEnding.Value)
+            if (Context.IsWorldReady is false || Game1.game1.IsActive is false || IsPlayerOnTrawler() is false || _isTripEnding.Value)
             {
                 return;
             }
 
-            if (Game1.activeClickableMenu != null && !Context.IsMultiplayer)
+
+            if (Game1.activeClickableMenu is not null && Context.IsMultiplayer is false)
             {
                 // Allow pausing in singleplayer via menu
                 return;
