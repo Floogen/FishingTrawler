@@ -138,7 +138,6 @@ namespace FishingTrawler.Framework.Patches.Objects
 
         private static bool OnDayUpdatePrefix(Ring __instance, Farmer who, GameLocation location)
         {
-            _monitor.Log(__instance.modData.ContainsKey(ModDataKeys.ANGLER_RING_KEY).ToString(), LogLevel.Warn);
             if (__instance.modData.ContainsKey(ModDataKeys.ANGLER_RING_KEY))
             {
                 OnEquipPrefix(__instance, who, location);
