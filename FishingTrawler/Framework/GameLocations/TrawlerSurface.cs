@@ -308,13 +308,13 @@ namespace FishingTrawler.GameLocations
             if (flagType == FlagType.Unknown)
             {
                 // Clear the flag
-                setMapTileIndex(39, 21, -1, FLAG_LAYER_NAME);
-                setMapTileIndex(40, 21 - 1, -1, FLAG_LAYER_NAME);
+                setMapTileIndex(40, 22, -1, FLAG_LAYER_NAME);
+                setMapTileIndex(41, 22 - 1, -1, FLAG_LAYER_NAME);
                 return;
             }
 
-            setAnimatedMapTile(39, 21, GetFlagTileIndexes(2 * (int)flagType), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
-            setAnimatedMapTile(40, 21, GetFlagTileIndexes(2 * (int)flagType + 1), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
+            setAnimatedMapTile(40, 22, GetFlagTileIndexes(2 * (int)flagType), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
+            setAnimatedMapTile(41, 22, GetFlagTileIndexes(2 * (int)flagType + 1), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
         }
 
         public bool AttemptCreateNetRip(int tileX = -1, int tileY = -1)
