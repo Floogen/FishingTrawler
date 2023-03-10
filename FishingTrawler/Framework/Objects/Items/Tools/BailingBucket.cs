@@ -8,7 +8,6 @@ using StardewValley;
 using StardewValley.Tools;
 using System.Collections.Generic;
 using xTile.Dimensions;
-//using PyTK.CustomElementHandler;
 
 namespace FishingTrawler.Framework.Objects.Items.Tools
 {

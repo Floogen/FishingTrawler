@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using xTile.Dimensions;
 
 namespace FishingTrawler
 {
@@ -101,7 +100,8 @@ namespace FishingTrawler
                 // Apply xTile patches
                 new LayerPatch(monitor, modHelper).Apply(harmony);
 
-                // Apply Tool patches
+                // Apply Object patches
+                new RingPatch(monitor, modHelper).Apply(harmony);
                 new ToolPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
@@ -122,6 +122,7 @@ namespace FishingTrawler
             // Hook into GameLoops related events
             helper.Events.GameLoop.UpdateTicking += OnUpdateTicking;
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
+            helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
             helper.Events.GameLoop.DayEnding += OnDayEnding;
 
@@ -483,6 +484,25 @@ namespace FishingTrawler
             }
         }
 
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            // Reload Angler Ring buff, if Wear More Rings is not active
+            if (Helper.ModRegistry.IsLoaded("bcmpinc.WearMoreRings") is false)
+            {
+                var leftRing = Game1.player.leftRing.Value;
+                if (leftRing is not null && leftRing.modData.ContainsKey(ModDataKeys.ANGLER_RING_KEY))
+                {
+                    leftRing.onDayUpdate(Game1.player, Game1.currentLocation);
+                }
+
+                var rightRing = Game1.player.rightRing.Value;
+                if (rightRing is not null && rightRing.modData.ContainsKey(ModDataKeys.ANGLER_RING_KEY))
+                {
+                    rightRing.onDayUpdate(Game1.player, Game1.currentLocation);
+                }
+            }
+        }
+
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             todayDayOfWeek = SDate.Now().DayOfWeek.ToString();
@@ -811,7 +831,7 @@ namespace FishingTrawler
 
         private void DebugGetSpecialRewards(string command, string[] args)
         {
-            Game1.player.addItemByMenuIfNecessary(new AnglerRing());
+            Game1.player.addItemByMenuIfNecessary(AnglerRing.CreateInstance());
             Monitor.Log($"Giving all special rewards to {Game1.player.Name}.", LogLevel.Debug);
         }
 

@@ -369,7 +369,7 @@ namespace FishingTrawler.Objects
                 {
                     default:
                         FishingTrawler.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
-                        _rewardChest.addItem(new AnglerRing());
+                        _rewardChest.addItem(AnglerRing.CreateInstance());
                         break;
                 }
             }

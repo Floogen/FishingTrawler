@@ -48,7 +48,6 @@ namespace FishingTrawler.Framework.Managers
 
             // Set any static Texture assets
             AncientFlag.flagTexture = ancientFlagsTexture;
-            AnglerRing.ringTexture = anglerRingTexture;
         }
     }
 }
