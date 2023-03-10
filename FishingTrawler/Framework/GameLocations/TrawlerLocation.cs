@@ -28,9 +28,9 @@ namespace FishingTrawler.Framework.GameLocations
 
         internal bool IsWithinRangeOfTile(int tileX, int tileY, int xDistance, int yDistance, Farmer who)
         {
-            if (Enumerable.Range(who.getTileX() - xDistance, xDistance).Contains(tileX))
+            if (Enumerable.Range(who.getTileX() - xDistance, (xDistance * 2) + 1).Contains(tileX))
             {
-                if (Enumerable.Range(who.getTileY() - yDistance, yDistance).Contains(tileY))
+                if (Enumerable.Range(who.getTileY() - yDistance, (yDistance * 2) + 1).Contains(tileY))
                 {
                     return true;
                 }
