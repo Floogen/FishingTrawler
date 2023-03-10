@@ -53,7 +53,6 @@ namespace FishingTrawler
         internal static Chest rewardChest;
 
         // Trawler map / texture related
-        private readonly PerScreen<int> fishingTripTimer = new PerScreen<int>();
         private readonly PerScreen<TrawlerHull> _trawlerHull = new PerScreen<TrawlerHull>();
         private readonly PerScreen<TrawlerSurface> _trawlerSurface = new PerScreen<TrawlerSurface>();
         private readonly PerScreen<TrawlerCabin> _trawlerCabin = new PerScreen<TrawlerCabin>();
@@ -80,7 +79,7 @@ namespace FishingTrawler
             notificationManager = new NotificationManager(monitor);
 
             // Initialize the timer for fishing trip
-            fishingTripTimer.Value = 0;
+            eventManager.SetTripTimer(0);
 
             // Set up our notification system on the trawler
             _isTripEnding.Value = false;
@@ -118,7 +117,6 @@ namespace FishingTrawler
 
             // Hook into GameLoops related events
             helper.Events.GameLoop.UpdateTicking += OnUpdateTicking;
-            helper.Events.GameLoop.OneSecondUpdateTicking += OnOneSecondUpdateTicking;
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
             helper.Events.GameLoop.DayEnding += OnDayEnding;
@@ -196,7 +194,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, fishingTripTimer.Value, _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel());
+            TrawlerUI.DrawUI(e.SpriteBatch, eventManager.GetTripTimer(), _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -254,7 +252,7 @@ namespace FishingTrawler
                 _trawlerSurface.Value.SetFlagTexture(GetHoistedFlag());
 
                 // Start the timer (2.5 minute default)
-                fishingTripTimer.Value = 150000; //150000
+                eventManager.SetTripTimer(150000); //150000
 
                 // Apply flag benefits
                 switch (GetHoistedFlag())
@@ -283,7 +281,7 @@ namespace FishingTrawler
                         break;
                     case FlagType.SharksFin:
                         // Adds one extra minute to timer, allowing for more fish haul
-                        fishingTripTimer.Value += 60000;
+                        eventManager.IncrementTripTimer(60000);
                         break;
                     case FlagType.Worldly:
                         // Allows catching of non-ocean fish
@@ -336,12 +334,7 @@ namespace FishingTrawler
 
             if (IsMainDeckhand())
             {
-                if (e.IsMultipleOf(150))
-                {
-                    // Update water level (from leaks) every second
-                    _trawlerHull.Value.RecalculateWaterLevel();
-                    SyncTrawler(SyncType.WaterLevel, _trawlerHull.Value.GetWaterLevel(), GetFarmersOnTrawler());
-                }
+                eventManager.UpdateEvents(e, _trawlerCabin.Value, _trawlerSurface.Value, _trawlerHull.Value);
             }
 
             // Every quarter of a second play leaking sound, if there is a leak
@@ -353,12 +346,14 @@ namespace FishingTrawler
                 }
             }
 
-            if (e.IsMultipleOf(150))
+            // Start fading the message after 3 seconds
+            if (e.IsMultipleOf(180))
             {
                 notificationManager.StartFading();
             }
 
-            if (_trawlerHull.Value.GetWaterLevel() == 100)
+            // End the trip if the ship has flooded or the timer has run out
+            if (_trawlerHull.Value.HasFlooded())
             {
                 Monitor.Log($"Ending trip due to flooding for: {Game1.player.Name}", LogLevel.Trace);
                 _trawlerSurface.Value.fishCaughtQuantity /= 4;
@@ -374,43 +369,7 @@ namespace FishingTrawler
 
                 EndTrip();
             }
-        }
-
-        private void OnOneSecondUpdateTicking(object sender, OneSecondUpdateTickingEventArgs e)
-        {
-            if (!Context.IsWorldReady || !IsPlayerOnTrawler() || _isTripEnding.Value)
-            {
-                return;
-            }
-
-            if (Game1.activeClickableMenu != null && !Context.IsMultiplayer)
-            {
-                // Allow pausing in singleplayer via menu
-                return;
-            }
-
-            // Iterate the fishing trip timer
-            if (fishingTripTimer.Value > 0f)
-            {
-                fishingTripTimer.Value -= 1000;
-            }
-
-            // Update the track if needed
-            if (themeSongUpdated)
-            {
-                themeSongUpdated = false;
-
-                _trawlerCabin.Value.miniJukeboxTrack.Value = string.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-                _trawlerHull.Value.miniJukeboxTrack.Value = string.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-                _trawlerSurface.Value.miniJukeboxTrack.Value = string.IsNullOrEmpty(trawlerThemeSong) ? null : trawlerThemeSong;
-            }
-
-            if (IsMainDeckhand())
-            {
-                eventManager.UpdateEvents(e, _trawlerCabin.Value, _trawlerSurface.Value, _trawlerHull.Value);
-            }
-
-            if (fishingTripTimer.Value <= 0f)
+            else if (eventManager.GetTripTimer() <= 0f)
             {
                 // Set the status as successful
                 Game1.player.modData[ModDataKeys.MURPHY_WAS_TRIP_SUCCESSFUL_KEY] = "true";

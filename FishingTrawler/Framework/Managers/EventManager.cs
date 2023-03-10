@@ -1,8 +1,10 @@
-﻿using FishingTrawler.GameLocations;
+﻿using FishingTrawler.Framework.Utilities;
+using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using System;
 using System.Collections.Generic;
@@ -19,8 +21,12 @@ namespace FishingTrawler.Framework.Managers
 
         // Intervals
         private uint _fishUpdateInterval = 300;
+        private uint _floodUpdateInterval = 180;
         private uint _fuelUpdateInterval = 300;
         private uint _eventSecondInterval = 600;
+
+        // Split screen data
+        private readonly PerScreen<int> _fishingTripTimer = new PerScreen<int>();
 
         // Notificiation messages
         private KeyValuePair<string, int> MESSAGE_EVERYTHING_FAILING;
@@ -45,8 +51,14 @@ namespace FishingTrawler.Framework.Managers
             MESSAGE_LEAK_PROBLEM = new KeyValuePair<string, int>(FishingTrawler.i18n.Get("status_message.leak"), 5);
         }
 
-        internal void UpdateEvents(OneSecondUpdateTickingEventArgs e, TrawlerCabin trawlerCabin, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
+        internal void UpdateEvents(UpdateTickingEventArgs e, TrawlerCabin trawlerCabin, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
         {
+            // Every second, update the trip trimer
+            if (e.IsOneSecond)
+            {
+                IncrementTripTimer(-1000);
+            }
+
             // Every x seconds recalculate the amount of fish caught / lost
             if (e.IsMultipleOf(_fishUpdateInterval))
             {
@@ -56,6 +68,9 @@ namespace FishingTrawler.Framework.Managers
                  * Fuel > 50% | Each working net gives one extra fish
                  * Fuel <= 50% | Each working net give standard fish count (no bonus)
                  * Fuel == 0% | Each working net gives 0 fish
+                 * 
+                 * Coal can be stacked up to three times by clicking the coal box three times
+                 * Each coal gives 10% fuel, with a full stack giving a bonus 5%
                  */
 
                 /* 
@@ -67,7 +82,15 @@ namespace FishingTrawler.Framework.Managers
                 FishingTrawler.SyncTrawler(SyncType.FishCaught, trawlerSurface.fishCaughtQuantity, FishingTrawler.GetFarmersOnTrawler());
             }
 
-            // Every x seconds recalculate the fuel
+            // Every x seconds recalculate the flood level
+            if (e.IsMultipleOf(_floodUpdateInterval))
+            {
+                // Update water level (from leaks) every second
+                trawlerHull.RecalculateWaterLevel();
+                FishingTrawler.SyncTrawler(SyncType.WaterLevel, trawlerHull.GetWaterLevel(), FishingTrawler.GetFarmersOnTrawler());
+            }
+
+            // Every x seconds recalculate the fuel level
             if (e.IsMultipleOf(_fuelUpdateInterval))
             {
                 trawlerHull.AdjustFuelLevel(-10);
@@ -97,6 +120,31 @@ namespace FishingTrawler.Framework.Managers
 
                 _eventSecondInterval = (uint)Game1.random.Next(FishingTrawler.config.eventFrequencyLower, FishingTrawler.config.eventFrequencyUpper + 1) * 100;
             }
+
+            // Update the track if needed
+            if (FishingTrawler.themeSongUpdated)
+            {
+                FishingTrawler.themeSongUpdated = false;
+
+                trawlerCabin.miniJukeboxTrack.Value = string.IsNullOrEmpty(FishingTrawler.trawlerThemeSong) ? null : FishingTrawler.trawlerThemeSong;
+                trawlerHull.miniJukeboxTrack.Value = string.IsNullOrEmpty(FishingTrawler.trawlerThemeSong) ? null : FishingTrawler.trawlerThemeSong;
+                trawlerSurface.miniJukeboxTrack.Value = string.IsNullOrEmpty(FishingTrawler.trawlerThemeSong) ? null : FishingTrawler.trawlerThemeSong;
+            }
+        }
+
+        internal int GetTripTimer()
+        {
+            return _fishingTripTimer.Value;
+        }
+
+        internal void SetTripTimer(int milliseconds)
+        {
+            _fishingTripTimer.Value = milliseconds;
+        }
+
+        internal void IncrementTripTimer(int milliseconds)
+        {
+            _fishingTripTimer.Value += milliseconds;
         }
 
         private string CreateTrawlerEventsAndGetMessage(TrawlerCabin trawlerCabin, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
@@ -176,5 +224,6 @@ namespace FishingTrawler.Framework.Managers
             // Select highest priority item (priority == default_priority_level * frequency)
             return amountOfEvents == 0 ? FishingTrawler.i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
+
     }
 }

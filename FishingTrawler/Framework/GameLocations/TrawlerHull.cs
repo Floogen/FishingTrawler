@@ -435,6 +435,11 @@ namespace FishingTrawler.GameLocations
         {
             return map.GetLayer(FLOOD_WATER_LAYER).Properties["@Opacity"] > 0f;
         }
+
+        internal bool HasFlooded()
+        {
+            return _waterLevel >= 100;
+        }
         #endregion
     }
 }
