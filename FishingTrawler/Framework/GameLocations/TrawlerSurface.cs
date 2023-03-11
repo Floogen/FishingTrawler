@@ -179,40 +179,6 @@ namespace FishingTrawler.GameLocations
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
             base.UpdateWhenCurrentLocation(time);
-
-            if (!Game1.isSnowing && !Game1.isRaining)
-            {
-                if (!temporarySprites.Any(t => t.id == CLOUD_ID) || Game1.random.NextDouble() < 0.05 && temporarySprites.Where(t => t.id == CLOUD_ID).Count() < 10)
-                {
-                    string assetPath = FishingTrawler.assetManager.assetFolderPath;
-
-                    // Fill up with some clouds
-                    for (int x = 0; x < Game1.random.Next(1, 5); x++)
-                    {
-                        float randomScale = Game1.random.Next(3, 13);
-                        bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
-
-                        TemporaryAnimatedSprite cloud = new TemporaryAnimatedSprite(Path.Combine(assetPath, "Maps", "BellsAndWhistles.png"), PickRandomCloud(), 200f, 1, 9999, PickSpawnPosition(true), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, randomScale, 0f, 0f, 0f);
-                        cloud.motion = new Vector2(_slowOffset, 0f);
-                        cloud.drawAboveAlwaysFront = true;
-                        cloud.id = CLOUD_ID;
-
-                        temporarySprites.Add(cloud);
-                    }
-                }
-            }
-
-            if (!temporarySprites.Any(t => t.id == GROUND_ID) && Game1.random.NextDouble() < 0.10)
-            {
-                string assetPath = FishingTrawler.assetManager.assetFolderPath;
-                bool randomFlipped = Game1.random.Next(0, 2) == 0 ? true : false;
-
-                TemporaryAnimatedSprite decoration = new TemporaryAnimatedSprite(Path.Combine(assetPath, "Maps", "BellsAndWhistles.png"), PickRandomDecoration(), 200f, 1, 9999, PickSpawnPosition(false), flicker: false, flipped: randomFlipped, 1f, 0f, Color.White, 4f, 0f, 0f, 0f);
-                decoration.motion = new Vector2(_fastOffset, 0f);
-                decoration.id = GROUND_ID;
-
-                temporarySprites.Add(decoration);
-            }
         }
 
         public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
