@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FishingTrawler.Framework.Patches.Characters;
 
 namespace FishingTrawler
 {
@@ -89,7 +90,7 @@ namespace FishingTrawler
             {
                 var harmony = new Harmony(ModManifest.UniqueID);
 
-                // Apply location patches
+                // Apply Location patches
                 new BeachPatch(monitor, modHelper).Apply(harmony);
                 new IslandSouthEastPatch(monitor, modHelper).Apply(harmony);
                 new GameLocationPatch(monitor, modHelper).Apply(harmony);
@@ -105,6 +106,9 @@ namespace FishingTrawler
                 new RingPatch(monitor, modHelper).Apply(harmony);
                 new FurniturePatch(monitor, modHelper).Apply(harmony);
                 new ToolPatch(monitor, modHelper).Apply(harmony);
+
+                // Apply Character patches
+                new FarmerPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {
