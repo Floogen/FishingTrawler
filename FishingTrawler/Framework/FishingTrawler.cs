@@ -133,8 +133,7 @@ namespace FishingTrawler
             helper.Events.GameLoop.DayEnding += OnDayEnding;
 
             // Hook into Display related events
-            helper.Events.Display.RenderingHud += OnRenderingHud;
-            helper.Events.Display.RenderedHud += OnRenderedHud;
+            helper.Events.Display.RenderedWorld += OnRenderedWorld;
 
             // Hook into Player related events
             helper.Events.Player.Warped += OnWarped;
@@ -185,7 +184,7 @@ namespace FishingTrawler
             }
         }
 
-        private void OnRenderingHud(object sender, RenderingHudEventArgs e)
+        private void OnRenderedWorld(object sender, RenderedWorldEventArgs e)
         {
             if (!IsPlayerOnTrawler())
             {
@@ -195,14 +194,6 @@ namespace FishingTrawler
             if (!String.IsNullOrEmpty(notificationManager.GetActiveNotification()))
             {
                 notificationManager.DrawNotification(e.SpriteBatch, Game1.player.currentLocation);
-            }
-        }
-
-        private void OnRenderedHud(object sender, RenderedHudEventArgs e)
-        {
-            if (!IsPlayerOnTrawler())
-            {
-                return;
             }
 
             TrawlerUI.DrawUI(e.SpriteBatch, eventManager.GetTripTimer(), _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel(), _trawlerCabin.Value.IsComputerReady());
