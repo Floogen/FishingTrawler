@@ -206,8 +206,8 @@ namespace FishingTrawler.Objects
         {
             string playerTerm = GetDialogue("dialogue.player_title." + (who.IsMale ? "male" : "female"));
 
-            // Verify main player has empty spot for bucket
-            if (who.freeSpotsInInventory() == 0)
+            // Verify main player has empty spot for bucket and fuel stacks
+            if (who.freeSpotsInInventory() < 2)
             {
                 CurrentDialogue.Push(new Dialogue(GetDialogue("dialogue.full_inventory", playerTerm), this));
                 Game1.drawDialogue(this);
