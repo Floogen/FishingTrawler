@@ -244,7 +244,7 @@ namespace FishingTrawler
                 if (Game1.player.Items.Any(i => i is Tool tool && new BailingBucket(tool).IsValid) is false)
                 {
                     Game1.player.addItemToInventory(BailingBucket.CreateInstance());
-                    Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.given_bailing_bucket"), null));
+                    Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.given_bailing_bucket"), null) {  timeLeft = 1250f });
                 }
 
                 // Clear any previous reward data, set the head deckhand (which determines fishing level for reward calc)
