@@ -1,4 +1,5 @@
-﻿using FishingTrawler.Framework.Managers;
+﻿using FishingTrawler.Framework.GameLocations;
+using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Objects.Items.Rewards;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -15,7 +16,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace FishingTrawler.GameLocations
 {
-    internal class TrawlerSurface : GameLocation
+    internal class TrawlerSurface : TrawlerLocation
     {
         // Source rectangles for drawing fluff
         private Rectangle _smallCloudSource = new Rectangle(0, 64, 48, 48);
@@ -75,7 +76,7 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        internal void Reset()
+        internal override void Reset()
         {
             foreach (Location netRippedLocation in _netRipLocations.Where(loc => IsNetRipped(loc.X, loc.Y)))
             {
@@ -90,16 +91,7 @@ namespace FishingTrawler.GameLocations
 
         protected override void resetLocalState()
         {
-            critters = new List<Critter>();
-
-            List<TemporaryAnimatedSprite> preservedSprites = new List<TemporaryAnimatedSprite>();
-            foreach (TemporaryAnimatedSprite sprite in temporarySprites)
-            {
-                preservedSprites.Add(sprite);
-            }
-
             base.resetLocalState();
-            temporarySprites = preservedSprites;
 
             AmbientLocationSounds.addSound(new Vector2(44f, 23f), 2);
         }
@@ -115,11 +107,6 @@ namespace FishingTrawler.GameLocations
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }
-        }
-
-        public override void cleanupBeforePlayerExit()
-        {
-            base.cleanupBeforePlayerExit();
         }
 
         public override void tryToAddCritters(bool onlyIfOnScreen = false)
@@ -174,17 +161,6 @@ namespace FishingTrawler.GameLocations
             {
                 return new Vector2(Game1.random.Next(reservedLowerXPosition, reservedUpperXPosition), Game1.random.Next(reservedUpperYPosition, 40)) * 64f;
             }
-        }
-
-        public override void UpdateWhenCurrentLocation(GameTime time)
-        {
-            base.UpdateWhenCurrentLocation(time);
-        }
-
-        public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
-        {
-            // Preventing player from placing items here
-            return true;
         }
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
