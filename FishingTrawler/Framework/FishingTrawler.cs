@@ -429,14 +429,6 @@ namespace FishingTrawler
                         BroadcastTrawlerEvent(EventType.NetTear, new Vector2(Game1.player.getTileX(), Game1.player.getTileY() - y), true, GetFarmersOnTrawler());
                     }
                 }
-                else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_CABIN_LOCATION_NAME)
-                {
-                    // TODO: Add handling for guidance computer
-                    for (int y = 0; y < 3; y++)
-                    {
-
-                    }
-                }
             }
             else
             {
@@ -453,10 +445,6 @@ namespace FishingTrawler
 
                     BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y), true, GetFarmersOnTrawler());
                     BroadcastTrawlerEvent(EventType.NetTear, new Vector2((int)e.Cursor.Tile.X, (int)e.Cursor.Tile.Y + 1), true, GetFarmersOnTrawler());
-                }
-                else if (Game1.player.currentLocation.NameOrUniqueName == ModDataKeys.TRAWLER_CABIN_LOCATION_NAME)
-                {
-                    // TODO: Add handling for guidance computer
                 }
             }
         }
@@ -779,9 +767,6 @@ namespace FishingTrawler
                 case EventType.HullHole:
                     result = isRepairing ? _trawlerHull.Value.AttemptPlugLeak((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerHull.Value.AttemptCreateHullLeak((int)tile.X, (int)tile.Y);
                     break;
-                case EventType.EngineFailure:
-                    // TODO: Add handling for EngineFailure, if needed
-                    break;
                 case EventType.NetTear:
                     result = isRepairing ? _trawlerSurface.Value.AttemptFixNet((int)tile.X, (int)tile.Y, Game1.player, true) : _trawlerSurface.Value.AttemptCreateNetRip((int)tile.X, (int)tile.Y);
                     break;
@@ -802,7 +787,7 @@ namespace FishingTrawler
                     break;
                 case SyncType.FishCaught:
                     result = true;
-                    _trawlerSurface.Value.UpdateFishCaught(false, quantity);
+                    _trawlerSurface.Value.UpdateFishCaught(_trawlerHull.Value.GetFuelLevel(), quantity);
                     break;
                 default:
                     monitor.Log($"A trawler tried tried to sync, but its SyncType was not handled: {syncType}", LogLevel.Debug);

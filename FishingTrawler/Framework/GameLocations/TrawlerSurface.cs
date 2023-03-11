@@ -375,7 +375,7 @@ namespace FishingTrawler.GameLocations
             return false;
         }
 
-        public void UpdateFishCaught(bool isEngineFailing = false, int fishCaughtOverride = -1)
+        public void UpdateFishCaught(int fuelLevel = 0, int fishCaughtOverride = -1)
         {
             if (fishCaughtOverride > -1)
             {
@@ -383,8 +383,33 @@ namespace FishingTrawler.GameLocations
             }
             else
             {
-                // If the engine is failing, then offset is negative (meaning player can lose fish if both nets are broken too)
-                fishCaughtQuantity += (int)(_netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).Count() * FishingTrawler.config.fishPerNet * fishCaughtMultiplier + (isEngineFailing ? -1 : FishingTrawler.config.engineFishBonus));
+                foreach (var net in _netRipLocations)
+                {
+                    int fishCaughtInNet = (int)(FishingTrawler.config.fishPerNet * fishCaughtMultiplier);
+
+                    // Check if any fuel bonus or penalties need to be applied
+                    switch (fuelLevel)
+                    {
+                        case var _ when fuelLevel > 50:
+                            fishCaughtInNet += 1;
+                            break;
+                        case var _ when fuelLevel <= 50 && fuelLevel > 0:
+                            // No bonus fish per net
+                            break;
+                        case var _ when fuelLevel <= 0:
+                            fishCaughtInNet = 0;
+                            break;
+                    }
+
+                    // Check if ripped net penalty  needs to be applied
+                    if (IsNetRipped(net.X, net.Y))
+                    {
+                        fishCaughtInNet -= (int)(FishingTrawler.config.fishPerNet);
+                    }
+
+                    fishCaughtQuantity += fishCaughtInNet;
+                }
+
                 if (fishCaughtQuantity < 0)
                 {
                     fishCaughtQuantity = 0;

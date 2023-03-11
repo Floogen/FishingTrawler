@@ -78,7 +78,7 @@ namespace FishingTrawler.Framework.Managers
                  * Discovering | Computer is looking for a new trail to pursue
                  * Awaiting Input | Computer is waiting for user to interact with it. Once interacted, the fishing trip will be extended by X seconds.
                  */
-                trawlerSurface.UpdateFishCaught(trawlerHull.IsEngineFailing());
+                trawlerSurface.UpdateFishCaught(trawlerHull.GetFuelLevel());
                 FishingTrawler.SyncTrawler(SyncType.FishCaught, trawlerSurface.fishCaughtQuantity, FishingTrawler.GetFarmersOnTrawler());
             }
 

@@ -33,7 +33,7 @@
   "dialogue.after_trip_successful": "Well done {0}! We'll make a true seadog out of ye.$h#$b#Yer share of the haul is stored in crate to the left!$n#$e",
   "dialogue.after_trip_failure": "By Yoba's Blessing we made it back in one piece.$s#$b#Don't worry {0}, there is always next time.$n#$e",
   "dialogue.trip_finished": "Yer itchin' to go on another expedition?$n#$b#Sorry {0}, ye will have to wait til next week. These ol' bones need some rest.$h#$e",
-  "dialogue.full_inventory": "All hands on de-$n#$b#Oh! Sorry {0}, ye need some room in yer bag for the bailing bucket.$u#$b#Trust me, yer going to need it.$s#$e",
+  "dialogue.full_inventory": "All hands on de-$n#$b#Oh! Sorry {0}, ye need some room in yer bag for the bailing bucket and fuel.$u#$b#Trust me, yer going to need it.$s#$e",
   "dialogue.deckhand_busy": "Eh?$u#$b#Looks like one of yer pallies is busy lookin' at their bag or somethin', {0}.$n#$bGet 'em to be ready and speak to me again when yer ready to head out.",
   "dialogue.start_departure": "All hands on deck! Weigh anchor and let us set sail!",
   "dialogue.how_to_hoist_flag": "Yer lookin' to hoist up one of them ancient flags eh?$n#$b#Hand one over to me and I'll make sure it is flyin' proper when we take off.$h#$e",
