@@ -345,6 +345,7 @@ namespace FishingTrawler
                 return;
             }
 
+            // Fade the notification, if applicable
             notificationManager.FadeNotification(0.1f);
 
             if (IsMainDeckhand())
@@ -362,7 +363,7 @@ namespace FishingTrawler
             }
 
             // Start fading the message after 3 seconds
-            if (e.IsMultipleOf(180))
+            if (notificationManager.HasExpired(Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds) is true)
             {
                 notificationManager.StartFading();
             }

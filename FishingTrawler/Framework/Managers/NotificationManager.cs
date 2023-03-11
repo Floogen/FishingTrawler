@@ -21,15 +21,23 @@ namespace FishingTrawler.Framework.Managers
         private string _activeNotification;
         private float _notificationAlpha;
         private bool _isNotificationFading;
+        private double _remainingTicks;
 
         public NotificationManager(IMonitor monitor)
         {
             _monitor = monitor;
 
+            Reset();
+        }
+
+        private void Reset()
+        {
+
             // Set up notification related variables
             _activeNotification = string.Empty;
             _notificationAlpha = 1f;
             _isNotificationFading = false;
+            _remainingTicks = 1800f;
         }
 
         internal string GetActiveNotification()
@@ -41,26 +49,41 @@ namespace FishingTrawler.Framework.Managers
         {
             if (_activeNotification != message)
             {
+                Reset();
+
                 _activeNotification = message;
                 FishingTrawler.BroadcastNotification(message, FishingTrawler.GetFarmersOnTrawler());
             }
         }
 
+        internal bool HasExpired(double milliseconds)
+        {
+            if (String.IsNullOrEmpty(_activeNotification) is false)
+            {
+                _remainingTicks -= milliseconds;
+            }
+
+            return _remainingTicks <= 0;
+        }
+
+
         internal void FadeNotification(float fadeAmount)
         {
+            if (_isNotificationFading is false)
+            {
+                return;
+            }
             _notificationAlpha -= fadeAmount;
 
             if (_notificationAlpha < 0f)
             {
-                _activeNotification = string.Empty;
-                _isNotificationFading = false;
-                _notificationAlpha = 1f;
+                Reset();
             }
         }
 
         internal void StartFading()
         {
-            if (!String.IsNullOrEmpty(_activeNotification))
+            if (String.IsNullOrEmpty(_activeNotification) is false)
             {
                 _isNotificationFading = true;
             }
@@ -184,44 +207,6 @@ namespace FishingTrawler.Framework.Managers
                     SpriteText.fontPixelZoom = tempzoom;
                     continue;
                 }
-                /*
-                                 if (s[i] == '^')
-                                {
-                                    position.Y += (float)(ModEntry.modHelper.Reflection.GetField<FontFile>(typeof(SpriteText), "FontFile").GetValue().Common.LineHeight + 2) * SpriteText.fontPixelZoom;
-                                    position.X = x;
-                                    accumulatedHorizontalSpaceBetweenCharacters = 0;
-                                    continue;
-                                }
-                                if (i > 0 && ModEntry.modHelper.Reflection.GetMethod(typeof(SpriteText), "IsSpecialCharacter").Invoke<bool>(s[i - 1]))
-                                {
-                                    position.X += 24f;
-                                }
-                                if (ModEntry.modHelper.Reflection.GetField<Dictionary<char, FontChar>>(typeof(SpriteText), "_characterMap").GetValue().TryGetValue(s[i], out var fc))
-                                {
-                                    Rectangle sourcerect = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
-                                    Texture2D _texture = ModEntry.modHelper.Reflection.GetField<List<Texture2D>>(typeof(SpriteText), "fontPages").GetValue()[fc.Page];
-                                    if (SpriteText.positionOfNextSpace(s, i, (int)position.X, accumulatedHorizontalSpaceBetweenCharacters) >= x + width - 4)
-                                    {
-                                        position.Y += (float)(ModEntry.modHelper.Reflection.GetField<FontFile>(typeof(SpriteText), "FontFile").GetValue().Common.LineHeight + 2) * SpriteText.fontPixelZoom;
-                                        accumulatedHorizontalSpaceBetweenCharacters = 0;
-                                        position.X = x;
-                                    }
-                                    Vector2 position2 = new Vector2(position.X + (float)fc.XOffset * SpriteText.fontPixelZoom, position.Y + (float)fc.YOffset * SpriteText.fontPixelZoom);
-                                    if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko)
-                                    {
-                                        position2.Y -= 8f;
-                                    }
-                                    if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru)
-                                    {
-                                        Vector2 offset = new Vector2(-1f, 1f) * SpriteText.fontPixelZoom;
-                                        b.Draw(_texture, position2 + offset, sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                                        b.Draw(_texture, position2 + new Vector2(0f, offset.Y), sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                                        b.Draw(_texture, position2 + new Vector2(offset.X, 0f), sourcerect, SpriteText.getColorFromIndex(color) * alpha * SpriteText.shadowAlpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                                    }
-                                    b.Draw(_texture, position2, sourcerect, SpriteText.getColorFromIndex(color) * alpha, 0f, Vector2.Zero, SpriteText.fontPixelZoom, SpriteEffects.None, layerDepth);
-                                    position.X += (float)fc.XAdvance * SpriteText.fontPixelZoom;
-                                }
-                */
             }
         }
     }
