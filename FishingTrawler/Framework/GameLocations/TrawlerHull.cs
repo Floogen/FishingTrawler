@@ -171,8 +171,13 @@ namespace FishingTrawler.GameLocations
                     if (CoalClump.IsValid(who.CurrentItem))
                     {
                         int fuelSize = CoalClump.GetSize(who.CurrentItem);
-                        AdjustFuelLevel((10 * fuelSize) + (fuelSize == 3 ? 5 : 0));
 
+                        if (GetFuelLevel() == 100)
+                        {
+                            Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.engine_full"), 3) { timeLeft = 1000f });
+                            return true;
+                        }
+                        AdjustFuelLevel((10 * fuelSize) + (fuelSize == 3 ? 5 : 0));
                         who.removeItemFromInventory(who.CurrentItem);
                     }
                     else
