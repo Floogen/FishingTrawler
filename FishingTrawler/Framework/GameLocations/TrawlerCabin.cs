@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FishingTrawler.Framework.GameLocations;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -11,10 +12,15 @@ using xTile.Tiles;
 
 namespace FishingTrawler.GameLocations
 {
-    internal class TrawlerCabin : GameLocation
+    internal class TrawlerCabin : TrawlerLocation
     {
         private List<Location> _computerLocations;
-        private const int CABIN_TILESHEET_INDEX = 2;
+
+        private const float BASE_COMPUTER_MILLISECONDS = 60000f;
+        private const float CYCLE_COMPUTER_MILLISECONDS = 30000f;
+
+        private int _completedComputerCycles;
+        private double _computerCooldownMilliseconds;
 
         public TrawlerCabin()
         {
@@ -44,9 +50,10 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        internal void Reset()
+        internal override void Reset()
         {
-            // TODO: Reset the guidance system percentage?
+            _completedComputerCycles = 0;
+            _computerCooldownMilliseconds = BASE_COMPUTER_MILLISECONDS;
         }
 
         protected override void resetLocalState()
@@ -64,6 +71,11 @@ namespace FishingTrawler.GameLocations
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
             base.UpdateWhenCurrentLocation(time);
+
+            if (IsComputerReady() is false)
+            {
+                _computerCooldownMilliseconds -= time.ElapsedGameTime.TotalMilliseconds;
+            }
         }
 
         public override void cleanupBeforePlayerExit()
@@ -80,25 +92,27 @@ namespace FishingTrawler.GameLocations
             base.cleanupBeforePlayerExit();
         }
 
-        public override void checkForMusic(GameTime time)
-        {
-            base.checkForMusic(time);
-        }
-
-        public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
-        {
-            // Preventing player from placing items here
-            return true;
-        }
-
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
-            Tile tile = map.GetLayer("Buildings").PickTile(new Location(tileLocation.X * 64, tileLocation.Y * 64), viewport.Size);
-            if (tile != null && tile.Properties.ContainsKey("CustomAction"))
+            string actionProperty = doesTileHaveProperty(tileLocation.X, tileLocation.Y, "CustomAction", "Buildings");
+
+            if (actionProperty is not null)
             {
-                if (tile.Properties["CustomAction"] == "PathosCat")
+                if (actionProperty == "PathosCat")
                 {
                     Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.pathos_cat"));
+                    return true;
+                }
+                else if (actionProperty == "Guidance" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
+                {
+                    if (IsComputerReady() is false)
+                    {
+                        Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.computer.not_ready"));
+                    }
+                    else
+                    {
+                        AcceptPlottedCourse();
+                    }
                     return true;
                 }
             }
@@ -109,15 +123,47 @@ namespace FishingTrawler.GameLocations
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
             string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", "Buildings");
-            if (actionProperty != null && actionProperty == "PathosCat")
+
+            if (actionProperty is not null)
             {
-                return Enumerable.Range(who.getTileX(), 1).Contains(xTile);
+                if (actionProperty == "PathosCat")
+                {
+                    if (base.IsWithinRangeOfTile(xTile, yTile, 1, 1, who) is false)
+                    {
+                        Game1.mouseCursorTransparency = 0.5f;
+                    }
+                    return true;
+                }
+                else if (actionProperty == "Guidance")
+                {
+                    if (base.IsWithinRangeOfTile(xTile, yTile, 1, 1, who) is false)
+                    {
+                        Game1.mouseCursorTransparency = 0.5f;
+                    }
+                    return true;
+                }
             }
 
             return base.isActionableTile(xTile, yTile, who);
         }
 
         #region Guidance system event methods
+        public void AcceptPlottedCourse()
+        {
+            if (IsComputerReady() is false)
+            {
+                return;
+            }
+            FishingTrawler.eventManager.IncrementTripTimer(30000);
+
+            _completedComputerCycles += 1;
+            _computerCooldownMilliseconds = (_completedComputerCycles * CYCLE_COMPUTER_MILLISECONDS) + BASE_COMPUTER_MILLISECONDS;
+        }
+
+        public bool IsComputerReady()
+        {
+            return _computerCooldownMilliseconds <= 0;
+        }
         #endregion
     }
 }

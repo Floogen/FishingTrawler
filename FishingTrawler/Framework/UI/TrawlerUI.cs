@@ -11,9 +11,9 @@ namespace FishingTrawler.UI
 {
     internal static class TrawlerUI
     {
-        internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, bool isHullLeaking, int rippedNetsCount, int fuelLevel)
         private static float _scale = 2.5f;
 
+        internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, bool isHullLeaking, int rippedNetsCount, int fuelLevel, bool isComputerReady)
         {
             _scale = 2.5f;
             int languageOffset = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en ? 8 : LocalizedContentManager.CurrentLanguageLatin ? 16 : 8;
@@ -27,6 +27,7 @@ namespace FishingTrawler.UI
             b.DrawString(Game1.smallFont, $"{FishingTrawler.i18n.Get("ui.flooding.name")}: {floodLevel}%", new Vector2(32f, 24f), floodLevel > 75 ? Color.Red : isHullLeaking ? Color.Yellow : Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             b.DrawString(Game1.smallFont, string.Concat(FishingTrawler.i18n.Get("ui.nets.name"), ": ", rippedNetsCount < 1 ? FishingTrawler.i18n.Get("ui.generic.working") : rippedNetsCount > 1 ? FishingTrawler.i18n.Get("ui.nets.ripped") : FishingTrawler.i18n.Get("ui.nets.ripping")), new Vector2(32f, 60f), rippedNetsCount < 1 ? Color.White : rippedNetsCount > 1 ? Color.Red : Color.Yellow, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             b.DrawString(Game1.smallFont, $"{FishingTrawler.i18n.Get("ui.engine.name")}: {fuelLevel}%", new Vector2(32f, 96f), fuelLevel < 30 ? Color.Red : fuelLevel < 50 ? Color.Yellow : Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            b.DrawString(Game1.smallFont, $"{FishingTrawler.i18n.Get("ui.gps.name")}: {(isComputerReady ? FishingTrawler.i18n.Get("ui.gps.ready") : FishingTrawler.i18n.Get("ui.gps.plotting"))}", new Vector2(32f, 132f), isComputerReady is true ? Color.Yellow : Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
 
             b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(28f, 176f), new Rectangle(0, 0, 16, 16), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1f);
             b.DrawString(Game1.smallFont, $"{amountOfFish}", new Vector2(64f, 169f + languageOffset), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);

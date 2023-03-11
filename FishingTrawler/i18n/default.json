@@ -136,6 +136,7 @@
   "game_message.pathos_cat": "A cat with an interesting black and white pattern.",
   "game_message.coal_clump.max_stack": "You can't hold any more fuel!",
   "game_message.coal_clump.must_be_holding": "You must be holding fuel to refill the engine!",
+  "game_message.computer.not_ready": "The guidance system has not finished plotting a new course!",
 
   // UI related
   "ui.flooding.name": "Flooding",
@@ -146,8 +147,8 @@
   "ui.nets.ripping": "Ripping",
   "ui.nets.ripped": "Ripped",
   "ui.engine.failing": "Failing",
-  "ui.engine.ready": "Ready",
-  "ui.engine.plotting": "Plotting",
+  "ui.gps.ready": "Ready",
+  "ui.gps.plotting": "Plotting",
 
   // Etc
   "etc.murphy_name": "Murphy"

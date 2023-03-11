@@ -205,7 +205,7 @@ namespace FishingTrawler
                 return;
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, eventManager.GetTripTimer(), _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel());
+            TrawlerUI.DrawUI(e.SpriteBatch, eventManager.GetTripTimer(), _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel(), _trawlerCabin.Value.IsComputerReady());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -265,8 +265,11 @@ namespace FishingTrawler
                 // Start the timer (2.5 minute default)
                 eventManager.SetTripTimer(150000); //150000
 
-                // Set the fuel level
-                _trawlerHull.Value.AdjustFuelLevel(100);
+                // Setup the cabin
+                _trawlerCabin.Value.Reset();
+
+                // Setup the hull
+                _trawlerHull.Value.Reset();
 
                 // Apply flag benefits
                 switch (GetHoistedFlag())
