@@ -35,7 +35,6 @@ namespace FishingTrawler.GameLocations
         private float _slowOffset = -5f;
         private float _fastOffset = -7f;
 
-        private float _nextSmoke = 0f;
         private const string FLAG_LAYER_NAME = "Flags";
         private const string ROPE_LAYER_NAME = "Front";
         private const int CLOUD_ID = 1010101;
@@ -180,21 +179,6 @@ namespace FishingTrawler.GameLocations
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
             base.UpdateWhenCurrentLocation(time);
-
-            if (_nextSmoke > 0f)
-            {
-                _nextSmoke -= (float)time.ElapsedGameTime.TotalSeconds;
-            }
-            else
-            {
-                Vector2 smokePosition = new Vector2(43.5f, 19.5f) * 64f;
-
-                TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 1600, 64, 128), 200f, 9, 1, smokePosition, flicker: false, flipped: false, 1f, 0.015f, Color.Gray, 1f, 0.025f, 0f, 0f);
-                sprite.acceleration = new Vector2(-0.30f, -0.15f);
-                temporarySprites.Add(sprite);
-
-                _nextSmoke = 0.2f;
-            }
 
             if (!Game1.isSnowing && !Game1.isRaining)
             {
