@@ -68,9 +68,9 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        public override void UpdateWhenCurrentLocation(GameTime time)
+        public override void updateEvenIfFarmerIsntHere(GameTime time, bool ignoreWasUpdatedFlush = false)
         {
-            base.UpdateWhenCurrentLocation(time);
+            base.updateEvenIfFarmerIsntHere(time, ignoreWasUpdatedFlush);
 
             if (IsComputerReady() is false)
             {
