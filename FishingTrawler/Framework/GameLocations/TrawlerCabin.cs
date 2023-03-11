@@ -16,6 +16,7 @@ namespace FishingTrawler.GameLocations
     {
         private List<Location> _computerLocations;
 
+        private const int TRAWLER_TILESHEET_INDEX = 2;
         private const float BASE_COMPUTER_MILLISECONDS = 60000f;
         private const float CYCLE_COMPUTER_MILLISECONDS = 30000f;
 
@@ -75,6 +76,11 @@ namespace FishingTrawler.GameLocations
             if (IsComputerReady() is false)
             {
                 _computerCooldownMilliseconds -= time.ElapsedGameTime.TotalMilliseconds;
+                setMapTileIndex(3, 2, -1, "Front", TRAWLER_TILESHEET_INDEX);
+            }
+            else
+            {
+                setAnimatedMapTile(3, 2, new int[] { 13, 14, 15, 16, 17 }, 90, "Front", null, TRAWLER_TILESHEET_INDEX);
             }
         }
 
