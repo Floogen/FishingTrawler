@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using xTile.Dimensions;
 using xTile.Layers;
 using xTile.Tiles;
@@ -236,17 +237,24 @@ namespace FishingTrawler.GameLocations
         public void AnimateEngine()
         {
             // Add engine shake
-            if (GetFuelLevel() > 0 && base.temporarySprites.Any(s => s.initialPosition == new Vector2(1.45f, 5.45f)) is false)
+            if (GetFuelLevel() > 0)
             {
-                base.temporarySprites.Add(new TemporaryAnimatedSprite(Path.Combine(FishingTrawler.assetManager.assetFolderPath, "Maps", "TrawlerHull.png"), new Microsoft.Xna.Framework.Rectangle(32, 192, 16, 16), 7000 - Game1.gameTimeInterval, 1, 1, new Vector2(1.45f, 5.45f) * 64f, flicker: false, flipped: false, 0.5188f, 0f, Color.White, 4f, 0f, 0f, 0f)
+                if (base.temporarySprites.Any(s => s.initialPosition == new Vector2(1.45f, 5.45f)) is false)
                 {
-                    shakeIntensity = 1f
-                });
-                AmbientLocationSounds.addSound(new Vector2(1.5f, 5.5f), AmbientLocationSounds.sound_engine);
+                    base.temporarySprites.Add(new TemporaryAnimatedSprite(Path.Combine(FishingTrawler.assetManager.assetFolderPath, "Maps", "TrawlerHull.png"), new Microsoft.Xna.Framework.Rectangle(32, 192, 16, 16), 7000 - Game1.gameTimeInterval, 1, 1, new Vector2(1.45f, 5.45f) * 64f, flicker: false, flipped: false, 0.5188f, 0f, Color.White, 4f, 0f, 0f, 0f)
+                    {
+                        shakeIntensity = 1f
+                    });
+
+                    AmbientLocationSounds.addSound(new Vector2(1.5f, 5.5f), AmbientLocationSounds.sound_engine);
+                }
+                setMapTileIndex(2, 5, -1, "AlwaysFront", TRAWLER_TILESHEET_INDEX);
             }
             else
             {
                 AmbientLocationSounds.removeSound(new Vector2(1.5f, 5.5f));
+
+                setAnimatedMapTile(2, 5, new int[] { 24, 25, 26, 27, 28 }, 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
             }
         }
 
