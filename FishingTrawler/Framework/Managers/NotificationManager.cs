@@ -21,7 +21,7 @@ namespace FishingTrawler.Framework.Managers
         private string _activeNotification;
         private float _notificationAlpha;
         private bool _isNotificationFading;
-        private double _remainingTicks;
+        private double _remainingMilliseconds;
 
         public NotificationManager(IMonitor monitor)
         {
@@ -37,7 +37,7 @@ namespace FishingTrawler.Framework.Managers
             _activeNotification = string.Empty;
             _notificationAlpha = 1f;
             _isNotificationFading = false;
-            _remainingTicks = 1800f;
+            _remainingMilliseconds = 3000f;
         }
 
         internal string GetActiveNotification()
@@ -60,10 +60,10 @@ namespace FishingTrawler.Framework.Managers
         {
             if (String.IsNullOrEmpty(_activeNotification) is false)
             {
-                _remainingTicks -= milliseconds;
+                _remainingMilliseconds -= milliseconds;
             }
 
-            return _remainingTicks <= 0;
+            return _remainingMilliseconds <= 0;
         }
 
 
