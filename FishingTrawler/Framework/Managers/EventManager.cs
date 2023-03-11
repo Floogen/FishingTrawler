@@ -95,6 +95,7 @@ namespace FishingTrawler.Framework.Managers
             {
                 trawlerHull.AdjustFuelLevel(-10);
             }
+            trawlerHull.AnimateEngine();
 
             // Every random interval check for new event (leak, net tearing, etc.) on Trawler
             if (e.IsMultipleOf(_eventSecondInterval))
