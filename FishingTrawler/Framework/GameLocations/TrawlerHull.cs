@@ -177,7 +177,7 @@ namespace FishingTrawler.GameLocations
                     }
                     else
                     {
-                        Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.must_be_holding"), 3));
+                        Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.must_be_holding"), 3) { timeLeft = 1000f });
                     }
                 }
 

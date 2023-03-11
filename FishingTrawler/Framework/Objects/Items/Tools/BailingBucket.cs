@@ -63,7 +63,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             {
                 if (ContainsWater)
                 {
-                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3));
+                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.empty_into_sea"), 3) { timeLeft = 1250f });
                 }
                 else if (trawlerHull.IsFlooding())
                 {
@@ -76,7 +76,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                 }
                 else
                 {
-                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3));
+                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.no_water_to_bail"), 3) { timeLeft = 1250f });
                 }
             }
             else if (location is TrawlerSurface trawlerSurface && ContainsWater)
@@ -90,12 +90,12 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                 }
                 else
                 {
-                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.stand_closer_to_edge"), 3));
+                    Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.stand_closer_to_edge"), 3) { timeLeft = 1250f });
                 }
             }
             else
             {
-                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.bail_from_hull"), 3));
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.bailing_bucket.bail_from_hull"), 3) { timeLeft = 1250f });
             }
             SaveData();
 

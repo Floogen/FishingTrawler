@@ -49,7 +49,7 @@ namespace FishingTrawler.Framework.Objects.Items.Resources
             int currentSize = GetSize(item);
             if (currentSize + increment > MAX_SIZE)
             {
-                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.max_stack"), 3));
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.max_stack"), 3) { timeLeft = 1000f });
                 return;
             }
 
