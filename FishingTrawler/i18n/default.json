@@ -135,7 +135,7 @@
   "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea...",
   "game_message.pathos_cat": "A cat with an interesting black and white pattern.",
   "game_message.coal_clump.max_stack": "You can't hold any more fuel!",
-  "game_message.coal_clump.must_be_holding": "You must be holding the fuel to refill the engine!",
+  "game_message.coal_clump.must_be_holding": "You must be holding fuel to refill the engine!",
 
   // UI related
   "ui.flooding.name": "Flooding",
