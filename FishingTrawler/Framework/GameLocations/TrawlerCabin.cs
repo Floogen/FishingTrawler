@@ -17,6 +17,7 @@ namespace FishingTrawler.GameLocations
         private List<Location> _computerLocations;
 
         private const int TRAWLER_TILESHEET_INDEX = 2;
+        private const string COFFEE_MACHINE_SOURCE = "murphy_cofee_machine";
         private const float BASE_COMPUTER_MILLISECONDS = 60000f;
         private const float CYCLE_COMPUTER_MILLISECONDS = 30000f;
 
@@ -67,6 +68,9 @@ namespace FishingTrawler.GameLocations
             {
                 Game1.changeMusicTrack("fieldofficeTentMusic"); // Suggested tracks: Snail's Radio, Jumio Kart (Gem), Pirate Theme
             }
+
+            // Set coffee machine animation
+            setAnimatedMapTile(0, 4, new int[] { 31, 32, 33, 32 }, 90, "Front", null, TRAWLER_TILESHEET_INDEX);
         }
 
         public override void updateEvenIfFarmerIsntHere(GameTime time, bool ignoreWasUpdatedFlush = false)
@@ -113,12 +117,31 @@ namespace FishingTrawler.GameLocations
                 {
                     if (IsComputerReady() is false)
                     {
-                        Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.computer.not_ready"));
+                        Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.computer.not_ready"), 3) { timeLeft = 1000f });
                     }
                     else
                     {
                         AcceptPlottedCourse();
                     }
+                    return true;
+                }
+                else if (actionProperty == "Coffee" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
+                {
+                    var coffeeBuff = Game1.buffsDisplay.otherBuffs.FirstOrDefault(b => b.source == COFFEE_MACHINE_SOURCE);
+                    if (coffeeBuff is not null)
+                    {
+                        coffeeBuff.millisecondsDuration = GetCoffeeBuff().millisecondsDuration;
+                    }
+                    else
+                    {
+                        Game1.buffsDisplay.addOtherBuff(GetCoffeeBuff());
+                    }
+
+                    if (base.IsMessageAlreadyDisplayed(FishingTrawler.i18n.Get("game_message.coffee_machine.drink")) is false)
+                    {
+                        Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coffee_machine.drink"), null) { timeLeft = 1000f });
+                    }
+
                     return true;
                 }
             }
@@ -169,6 +192,19 @@ namespace FishingTrawler.GameLocations
         public bool IsComputerReady()
         {
             return _computerCooldownMilliseconds <= 0;
+        }
+        #endregion
+
+        #region Coffee Machine related
+        public Buff GetCoffeeBuff()
+        {
+            int speedBuff = 9;
+            var buff = new Buff(null, 60000, COFFEE_MACHINE_SOURCE, speedBuff) { displaySource = FishingTrawler.i18n.Get("etc.coffee_machine") };
+
+            // Set the speed buff to +2
+            buff.buffAttributes[speedBuff] = 2;
+
+            return buff;
         }
         #endregion
     }

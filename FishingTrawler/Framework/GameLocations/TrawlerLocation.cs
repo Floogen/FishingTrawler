@@ -39,6 +39,11 @@ namespace FishingTrawler.Framework.GameLocations
             return false;
         }
 
+        internal bool IsMessageAlreadyDisplayed(string message)
+        {
+            return Game1.hudMessages.Any(m => m.message == Game1.parseText(message, Game1.dialogueFont, 384));
+        }
+
         protected override void resetLocalState()
         {
             base.resetLocalState();
