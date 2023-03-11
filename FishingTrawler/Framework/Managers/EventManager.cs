@@ -217,7 +217,7 @@ namespace FishingTrawler.Framework.Managers
             }
 
             // Add a generic message if there are lots of issues
-            if (executedEvents > 1)
+            if (trawlerSurface.GetRippedNetsCount() + trawlerHull.GetLeakingHolesCount() + (trawlerHull.IsEngineFailing() ? 1 : 0) > 1)
             {
                 possibleMessages.Add(MESSAGE_MULTI_PROBLEMS);
             }

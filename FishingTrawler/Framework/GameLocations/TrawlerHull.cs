@@ -287,7 +287,7 @@ namespace FishingTrawler.GameLocations
 
         public bool IsEngineFailing()
         {
-            return _fuelLevel == 0;
+            return _fuelLevel <= 50;
         }
         #endregion
 
@@ -481,7 +481,12 @@ namespace FishingTrawler.GameLocations
 
         public bool AreAllHolesLeaking()
         {
-            return _hullHoleLocations.Count(loc => IsHoleLeaking(loc.X, loc.Y)) == _hullHoleLocations.Count();
+            return _hullHoleLocations.Count(loc => IsHoleLeaking(loc.X, loc.Y)) == GetLeakingHolesCount();
+        }
+
+        public int GetLeakingHolesCount()
+        {
+            return _hullHoleLocations.Count(loc => IsHoleLeaking(loc.X, loc.Y));
         }
 
         public Location GetRandomPatchedHullHole()
