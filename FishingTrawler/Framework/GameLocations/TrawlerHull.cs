@@ -6,6 +6,7 @@ using StardewValley;
 using StardewValley.BellsAndWhistles;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using xTile.Dimensions;
 using xTile.Layers;
@@ -98,6 +99,27 @@ namespace FishingTrawler.GameLocations
             // Add water / brook sounds
             AmbientLocationSounds.addSound(new Vector2(7f, 0f), 0);
             AmbientLocationSounds.addSound(new Vector2(13f, 0f), 0);
+
+            // Add engine shake and sound
+            AmbientLocationSounds.addSound(new Vector2(1.5f, 5.5f), 2);
+            base.temporarySprites.Add(new TemporaryAnimatedSprite(Path.Combine(FishingTrawler.assetManager.assetFolderPath, "Maps", "TrawlerHull.png"), new Microsoft.Xna.Framework.Rectangle(32, 192, 16, 16), 7000 - Game1.gameTimeInterval, 1, 1, new Vector2(1.45f, 5.45f) * 64f, flicker: false, flipped: false, 0.5188f, 0f, Color.White, 4f, 0f, 0f, 0f)
+            {
+                shakeIntensity = 1f
+            });
+        }
+
+        public override void performTenMinuteUpdate(int timeOfDay)
+        {
+            base.performTenMinuteUpdate(timeOfDay);
+
+            // Add engine shake
+            if (GetFuelLevel() > 0)
+            {
+                base.temporarySprites.Add(new TemporaryAnimatedSprite(Path.Combine(FishingTrawler.assetManager.assetFolderPath, "Maps", "TrawlerHull.png"), new Microsoft.Xna.Framework.Rectangle(32, 192, 16, 16), 7000 - Game1.gameTimeInterval, 1, 1, new Vector2(1.45f, 5.45f) * 64f, flicker: false, flipped: false, 0.5188f, 0f, Color.White, 4f, 0f, 0f, 0f)
+                {
+                    shakeIntensity = 1f
+                });
+            }
         }
 
         public override void UpdateWhenCurrentLocation(GameTime time)

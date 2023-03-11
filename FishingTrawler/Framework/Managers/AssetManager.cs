@@ -22,12 +22,17 @@ namespace FishingTrawler.Framework.Managers
         internal string murphyTexturePath;
         internal string murphyDialoguePath;
 
+        // Character textures
+        internal Texture2D murphyPortraitTexture;
+
+        // Object textures
         internal Texture2D ancientFlagsTexture;
         internal Texture2D anglerRingTexture;
-        internal Texture2D murphyPortraitTexture;
         internal Texture2D boatTexture;
         internal Texture2D bucketTexture;
         internal Texture2D coalClumpTexture;
+
+        // Etc.
         internal Texture2D uiTexture;
 
         public AssetManager(IMonitor monitor, IModHelper modHelper)
@@ -41,11 +46,13 @@ namespace FishingTrawler.Framework.Managers
 
             // Load in textures
             murphyPortraitTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Characters", "MurphyPortrait.png"));
+
             boatTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Trawler.png"));
             ancientFlagsTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "Flags.png"));
             anglerRingTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "AnglerRing.png"));
             bucketTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
             coalClumpTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "CoalClump.png"));
+
             uiTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
         }
     }
