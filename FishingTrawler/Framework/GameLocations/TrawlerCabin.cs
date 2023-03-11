@@ -171,6 +171,14 @@ namespace FishingTrawler.GameLocations
                     }
                     return true;
                 }
+                else if (actionProperty == "Coffee")
+                {
+                    if (base.IsWithinRangeOfTile(xTile, yTile, 1, 1, who) is false)
+                    {
+                        Game1.mouseCursorTransparency = 0.5f;
+                    }
+                    return true;
+                }
             }
 
             return base.isActionableTile(xTile, yTile, who);
