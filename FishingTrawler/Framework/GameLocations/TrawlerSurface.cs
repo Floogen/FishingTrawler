@@ -168,7 +168,7 @@ namespace FishingTrawler.GameLocations
             string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", ROPE_LAYER_NAME);
             if (actionProperty != null && actionProperty == "RippedNet")
             {
-                if (!IsWithinRangeOfNet(xTile, yTile, who))
+                if (!base.IsWithinRangeOfTile(xTile, yTile, 2, 4, who))
                 {
                     Game1.mouseCursorTransparency = 0.5f;
                 }
@@ -177,22 +177,6 @@ namespace FishingTrawler.GameLocations
             }
 
             return base.isActionableTile(xTile, yTile, who);
-        }
-
-        private bool IsWithinRangeOfNet(int tileX, int tileY, Farmer who)
-        {
-            int playerX = (int)(who.Position.X / 64f);
-            int playerY = (int)(who.Position.Y / 64f);
-
-            if (Enumerable.Range(tileX - 1, 2).Contains(playerX))
-            {
-                if (Enumerable.Range(tileY, 4).Contains(playerY))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private int[] GetNetRippedTileIndexes(int startingIndex)
@@ -289,7 +273,7 @@ namespace FishingTrawler.GameLocations
                 return false;
             }
 
-            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && IsWithinRangeOfNet(tileX, tileY, who)))
+            if (!forceRepair && !(isActionableTile(tileX, tileY, who) && base.IsWithinRangeOfTile(tileX, tileY, 2, 4, who)))
             {
                 return false;
             }
@@ -400,6 +384,11 @@ namespace FishingTrawler.GameLocations
 
             // Pick a random valid spot to leak
             return _netRipLocations.Where(loc => !IsNetRipped(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validNetLocations.Count()));
+        }
+
+        public int GetWorkingNetCount()
+        {
+            return _netRipLocations.Where(loc => IsNetRipped(loc.X, loc.Y) is false).Count();
         }
     }
 }

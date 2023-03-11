@@ -489,9 +489,18 @@ namespace FishingTrawler.GameLocations
             return _hullHoleLocations.Count(loc => IsHoleLeaking(loc.X, loc.Y));
         }
 
-        public Location GetRandomPatchedHullHole()
+        public int GetPatchedHolesCount()
+        {
+            return _hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y) is false).Count();
+        }
+
+        public Location? GetRandomPatchedHullHole()
         {
             List<Location> validHoleLocations = _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ToList();
+            if (validHoleLocations.Count() == 0)
+            {
+                return null;
+            }
 
             // Pick a random valid spot to leak
             return _hullHoleLocations.Where(loc => !IsHoleLeaking(loc.X, loc.Y)).ElementAt(Game1.random.Next(0, validHoleLocations.Count()));

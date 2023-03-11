@@ -150,64 +150,70 @@ namespace FishingTrawler.Framework.Managers
 
         private string CreateTrawlerEventsAndGetMessage(TrawlerCabin trawlerCabin, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
         {
-            int amountOfEvents = 0;
-            for (int x = 0; x < 4; x++)
-            {
-                // Chance of skipping an event increases with each pass of this loop
-                if (Game1.random.NextDouble() < 0.1 + x * 0.1f)
-                {
-                    // Skip event
-                    continue;
-                }
-
-                amountOfEvents++;
-            }
-
             int executedEvents = 0;
             List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
-            for (int x = 0; x < amountOfEvents; x++)
+
+            // Attempt hull leaks
+            for (int x = 0; x < trawlerHull.GetPatchedHolesCount(); x++)
             {
-                if (!trawlerSurface.AreAllNetsRipped() && Game1.random.NextDouble() < 0.35)
+                // Break loop of leaks are disabled
+                if (trawlerHull.areLeaksEnabled is false)
                 {
-                    Location? tile = trawlerSurface.GetRandomWorkingNet();
-                    if (tile is null)
-                    {
-                        continue;
-                    }
-
-                    trawlerSurface.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);
-                    FishingTrawler.BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.Value.X, tile.Value.Y), false, FishingTrawler.GetFarmersOnTrawler());
-
-                    possibleMessages.Add(trawlerSurface.AreAllNetsRipped() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
-
-                    executedEvents++;
-                    continue;
+                    break;
                 }
 
-                // Default hull breaking event
-                if (!trawlerHull.AreAllHolesLeaking() && trawlerHull.areLeaksEnabled)
+                // Chance of stopping hull breaks increases with each pass of this loop
+                if (Game1.random.NextDouble() < 0.2f + x * 0.1f)
                 {
-                    if (trawlerHull.hasWeakHull)
-                    {
-                        foreach (Location tile in trawlerHull.GetAllLeakableLocations())
-                        {
-                            trawlerHull.AttemptCreateHullLeak(tile.X, tile.Y);
-                            FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, FishingTrawler.GetFarmersOnTrawler());
-                        }
-                    }
-                    else
-                    {
-                        Location tile = trawlerHull.GetRandomPatchedHullHole();
+                    // Stop attempting for hull breaks
+                    break;
+                }
 
+                // If hull is weak, create all possible leaks
+                if (trawlerHull.hasWeakHull)
+                {
+                    foreach (Location tile in trawlerHull.GetAllLeakableLocations())
+                    {
                         trawlerHull.AttemptCreateHullLeak(tile.X, tile.Y);
                         FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, FishingTrawler.GetFarmersOnTrawler());
                     }
-
-                    possibleMessages.Add(trawlerHull.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
-
-                    executedEvents++;
-                    continue;
+                    break;
                 }
+                else
+                {
+                    Location? tile = trawlerHull.GetRandomPatchedHullHole();
+                    if (tile is not null)
+                    {
+                        trawlerHull.AttemptCreateHullLeak(tile.Value.X, tile.Value.Y);
+                        FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.Value.X, tile.Value.Y), false, FishingTrawler.GetFarmersOnTrawler());
+                    }
+                }
+
+                possibleMessages.Add(trawlerHull.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
+
+                executedEvents++;
+            }
+
+            // Attempt net tears
+            for (int x = 0; x < trawlerSurface.GetWorkingNetCount(); x++)
+            {
+                // Chance of stopping hull breaks increases with each pass of this loop
+                if (Game1.random.NextDouble() < 0.25f + x * 0.25f)
+                {
+                    // Stop attempting for hull breaks
+                    break;
+                }
+
+                Location? tile = trawlerSurface.GetRandomWorkingNet();
+                if (tile is not null)
+                {
+                    trawlerSurface.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);
+                    FishingTrawler.BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.Value.X, tile.Value.Y), false, FishingTrawler.GetFarmersOnTrawler());
+                }
+
+                possibleMessages.Add(trawlerSurface.AreAllNetsRipped() ? MESSAGE_LOSING_FISH : MESSAGE_NET_PROBLEM);
+
+                executedEvents++;
             }
 
             // Check if all possible events are activated
@@ -223,7 +229,7 @@ namespace FishingTrawler.Framework.Managers
             }
 
             // Select highest priority item (priority == default_priority_level * frequency)
-            return amountOfEvents == 0 ? FishingTrawler.i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
+            return executedEvents == 0 ? FishingTrawler.i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
     }
