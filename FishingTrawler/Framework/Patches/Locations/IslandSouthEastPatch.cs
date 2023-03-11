@@ -209,19 +209,6 @@ namespace FishingTrawler.Patches.Locations
                     trawler._nextSlosh = 0.5f;
                 }
             }
-            if (trawler._boatAnimating)
-            {
-                if (trawler._nextSmoke > 0f)
-                {
-                    trawler._nextSmoke -= (float)time.ElapsedGameTime.TotalSeconds;
-                    return;
-                }
-                Vector2 position = new Vector2(158f, -32f) * 4f + trawler.GetTrawlerPosition();
-                TemporaryAnimatedSprite sprite = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 1600, 64, 128), 200f, 9, 1, position, flicker: false, flipped: false, 1f, 0.025f, Color.Gray, 1f, 0.025f, 0f, 0f);
-                sprite.acceleration = new Vector2(-0.25f, -0.15f);
-                __instance.temporarySprites.Add(sprite);
-                trawler._nextSmoke = 0.2f;
-            }
         }
 
         private static void SwapRewardChestTiles(GameLocation location, int startingOffset)

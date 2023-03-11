@@ -19,7 +19,6 @@ namespace FishingTrawler.Objects
         internal int nonBlockingPause;
         internal float _nextBubble;
         internal float _nextSlosh;
-        internal float _nextSmoke;
         internal bool _boatAnimating;
         internal bool _closeGate;
         internal readonly GameLocation location;
@@ -56,7 +55,6 @@ namespace FishingTrawler.Objects
 
         internal void Reset()
         {
-            _nextSmoke = 0f;
             _nextBubble = 0f;
             _boatAnimating = false;
             _boatPosition = GetStartingPosition();
@@ -84,7 +82,7 @@ namespace FishingTrawler.Objects
             if (Context.IsMultiplayer)
             {
                 // Force close menu
-                if (Game1.player.hasMenuOpen)
+                if (Game1.player.hasMenuOpen.Value)
                 {
                     Game1.activeClickableMenu = null;
                 }
@@ -100,7 +98,7 @@ namespace FishingTrawler.Objects
                     farmerActor.currentLocation = location;
                     farmerActor.completelyStopAnimatingOrDoingAction();
                     farmerActor.UsingTool = false;
-                    farmerActor.items.Clear();
+                    farmerActor.Items.Clear();
                     farmerActor.hidden.Value = false;
                     Event @event = new Event(eventString, FishingTrawler.BOAT_DEPART_EVENT_ID, farmerActor);
                     @event.showWorldCharacters = false;
