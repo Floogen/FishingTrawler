@@ -32,14 +32,14 @@ namespace FishingTrawler.Framework.Patches.Characters
 
         internal override void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(_object, nameof(Farmer.IsCarrying), null), postfix: new HarmonyMethod(GetType(), nameof(IsCarringPostfix)));
+            harmony.Patch(AccessTools.Method(_object, "get_ActiveObject", null), postfix: new HarmonyMethod(GetType(), nameof(IsCarringPostfix)));
         }
 
-        private static void IsCarringPostfix(Farmer __instance, ref bool __result)
+        private static void IsCarringPostfix(Farmer __instance, ref Object __result)
         {
-            if (CoalClump.IsValid(__instance.ActiveObject))
+            if (CoalClump.IsValid(__result))
             {
-                __result = false;
+                __result = null;
             }
         }
     }
