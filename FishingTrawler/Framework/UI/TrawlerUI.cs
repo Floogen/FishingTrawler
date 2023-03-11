@@ -20,9 +20,9 @@ namespace FishingTrawler.UI
 
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
-            b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(16f, 16f) + new Vector2(-3f, -3f) * _scale, new Rectangle(0, 16, 7, 93), Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f - 0.001f);
-            b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(16f, 16f) + new Vector2(-1f, -3f) * _scale, new Rectangle(2, 16, 74, 93), Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f - 0.001f);
-            b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(16f, 16f) + new Vector2(65f, -3f) * _scale, new Rectangle(68, 16, 8, 103), Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f - 0.001f);
+            b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(20f, 16f) + new Vector2(-3f, -3f) * _scale, new Rectangle(0, 16, 7, 93), Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f - 0.001f);
+            b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(20f, 16f) + new Vector2(-1f, -3f) * _scale, new Rectangle(2, 16, 74, 93), Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f - 0.001f);
+            b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(20f, 16f) + new Vector2(65f, -3f) * _scale, new Rectangle(68, 16, 8, 103), Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f - 0.001f);
 
             b.DrawString(Game1.smallFont, $"{FishingTrawler.i18n.Get("ui.flooding.name")}: {floodLevel}%", new Vector2(32f, 24f), floodLevel > 75 ? Color.Red : isHullLeaking ? Color.Yellow : Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             b.DrawString(Game1.smallFont, string.Concat(FishingTrawler.i18n.Get("ui.nets.name"), ": ", rippedNetsCount < 1 ? FishingTrawler.i18n.Get("ui.generic.working") : rippedNetsCount > 1 ? FishingTrawler.i18n.Get("ui.nets.ripped") : FishingTrawler.i18n.Get("ui.nets.ripping")), new Vector2(32f, 60f), rippedNetsCount < 1 ? Color.White : rippedNetsCount > 1 ? Color.Red : Color.Yellow, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
