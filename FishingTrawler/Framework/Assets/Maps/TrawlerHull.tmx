@@ -12,6 +12,15 @@
  </tileset>
  <tileset firstgid="2213" name="z_trawlerTiles" tilewidth="16" tileheight="16" tilecount="576" columns="24">
   <image source="TrawlerTiles.png" width="384" height="384"/>
+  <tile id="24">
+   <animation>
+    <frame tileid="24" duration="90"/>
+    <frame tileid="25" duration="90"/>
+    <frame tileid="26" duration="90"/>
+    <frame tileid="27" duration="90"/>
+    <frame tileid="28" duration="90"/>
+   </animation>
+  </tile>
   <tile id="247">
    <animation>
     <frame tileid="247" duration="1000"/>
@@ -251,6 +260,36 @@
  </tileset>
  <tileset firstgid="2789" name="z_trawlerHull" tilewidth="16" tileheight="16" tilecount="192" columns="12">
   <image source="TrawlerHull.png" width="192" height="256"/>
+  <tile id="176">
+   <animation>
+    <frame tileid="176" duration="1000"/>
+    <frame tileid="164" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="180">
+   <animation>
+    <frame tileid="180" duration="1000"/>
+    <frame tileid="182" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="181">
+   <animation>
+    <frame tileid="181" duration="1000"/>
+    <frame tileid="183" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="185">
+   <animation>
+    <frame tileid="185" duration="1000"/>
+    <frame tileid="187" duration="1000"/>
+   </animation>
+  </tile>
+  <tile id="186">
+   <animation>
+    <frame tileid="186" duration="1000"/>
+    <frame tileid="188" duration="1000"/>
+   </animation>
+  </tile>
  </tileset>
  <layer id="1" name="Back" width="16" height="11">
   <data encoding="csv">
@@ -327,8 +366,8 @@
 0,2634,2659,2659,2659,2659,2659,2659,2659,2659,2659,2659,2659,0,2147486282,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,2463,2464,0,0,0,0,2461,2462,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,2460,0,0,0,
+0,2969,2970,0,0,0,0,2974,2975,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,2965,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
@@ -355,7 +394,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,2920,0,
-0,2933,2934,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,2933,2934,0,0,0,0,2938,2939,0,0,0,0,0,0,0,
 0,2945,2946,0,0,0,0,2950,2951,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -370,7 +409,7 @@
 101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 101,0,0,0,0,0,0,0,0,0,0,0,2906,0,0,0,
 101,0,0,0,0,0,0,0,0,0,0,0,2918,0,0,0,
-101,0,0,0,0,0,0,2938,2939,0,0,0,0,0,0,0,
+101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
