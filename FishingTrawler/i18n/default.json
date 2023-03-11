@@ -141,10 +141,13 @@
   "ui.flooding.name": "Flooding",
   "ui.nets.name": "Nets",
   "ui.engine.name": "Engine",
+  "ui.gps.name": "GPS",
   "ui.generic.working": "Working",
   "ui.nets.ripping": "Ripping",
   "ui.nets.ripped": "Ripped",
   "ui.engine.failing": "Failing",
+  "ui.engine.ready": "Ready",
+  "ui.engine.plotting": "Plotting",
 
   // Etc
   "etc.murphy_name": "Murphy"
