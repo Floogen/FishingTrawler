@@ -164,14 +164,14 @@ namespace FishingTrawler.GameLocations
                     {
                         CoalClump.IncrementSize(currentCoalItem, 1);
                     }
-                    who.CurrentToolIndex = who.getIndexOfInventoryItem(currentCoalItem);
                 }
                 else if (actionProperty == "RefillEngine" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
                 {
-                    // Attempt to get the player's coal stack
-                    if (CoalClump.IsValid(who.CurrentItem))
+                    // Attempt to get the player's fuel stack
+                    var fuelStack = who.Items.FirstOrDefault(CoalClump.IsValid);
+                    if (fuelStack is not null)
                     {
-                        int fuelSize = CoalClump.GetSize(who.CurrentItem);
+                        int fuelSize = CoalClump.GetSize(fuelStack);
 
                         if (GetFuelLevel() == 100)
                         {
@@ -179,7 +179,7 @@ namespace FishingTrawler.GameLocations
                             return true;
                         }
                         AdjustFuelLevel((10 * fuelSize) + (fuelSize == 3 ? 5 : 0));
-                        who.removeItemFromInventory(who.CurrentItem);
+                        who.removeItemFromInventory(fuelStack);
                     }
                     else
                     {

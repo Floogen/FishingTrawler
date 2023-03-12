@@ -135,7 +135,7 @@
   "game_message.walk_the_plank": "Walking the plank doesn't seem like such a great idea...",
   "game_message.pathos_cat": "A cat with an interesting black and white pattern.",
   "game_message.coal_clump.max_stack": "You can't hold any more fuel!",
-  "game_message.coal_clump.must_be_holding": "You must be holding fuel to refill the engine.",
+  "game_message.coal_clump.must_be_holding": "You need fuel to refill the engine.",
   "game_message.coal_clump.engine_full": "The engine is already full of fuel!",
   "game_message.computer.not_ready": "The guidance system has not finished plotting a new course.",
   "game_message.coffee_machine.drink": "The coffee gives you a much needed boost.",
