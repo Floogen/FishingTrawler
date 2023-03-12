@@ -214,10 +214,10 @@ namespace FishingTrawler.Framework.Managers
                         continue;
                     }
 
-                    // Chance of stopping hull breaks increases with each pass of this loop
-                    if (Game1.random.NextDouble() < 0.25f + x * 0.25f)
+                    // Chance of stopping net breaks increases with each pass of this loop
+                    if (Game1.random.NextDouble() < 0.5f + x * 0.25f)
                     {
-                        // Stop attempting for hull breaks
+                        // Stop attempting for net breaks
                         break;
                     }
 
