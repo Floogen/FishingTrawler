@@ -559,13 +559,13 @@ namespace FishingTrawler
             // Create the TrawlerReward class
             _trawlerRewards.Value = new TrawlerRewards(rewardChest);
 
-            // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
-            Game1.locations.Add(surfaceLocation);
-
             // Add the hull location
             TrawlerHull hullLocation = new TrawlerHull(Path.Combine(assetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), ModDataKeys.TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(hullLocation);
+
+            // Add the surface location
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME, hullLocation) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
+            Game1.locations.Add(surfaceLocation);
 
             // Add the cabin location
             TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(assetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false, locationContext = locationContext };

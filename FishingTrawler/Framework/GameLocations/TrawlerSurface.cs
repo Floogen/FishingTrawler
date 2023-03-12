@@ -1,6 +1,8 @@
 ﻿using FishingTrawler.Framework.GameLocations;
 using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Objects.Items.Rewards;
+using FishingTrawler.Objects;
+using FishingTrawler.UI;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewModdingAPI;
@@ -28,14 +30,18 @@ namespace FishingTrawler.GameLocations
         private Rectangle _rockPillarSource = new Rectangle(0, 0, 40, 53);
         private Rectangle _rockWithTreeSource = new Rectangle(48, 16, 96, 96);
 
-        // Mini-game stat related
+        // Minigame stat related
         internal int fishCaughtQuantity;
         internal int fishCaughtMultiplier;
+
+        // Helpers
+        private TrawlerHull _trawlerHull;
         private List<Location> _netRipLocations;
 
         // Speed related offsets
         private float _slowOffset = -5f;
         private float _fastOffset = -7f;
+        private float _nextBubble = 0.1f;
 
         private const string FLAG_LAYER_NAME = "Flags";
         private const string ROPE_LAYER_NAME = "Front";
@@ -49,8 +55,10 @@ namespace FishingTrawler.GameLocations
 
         }
 
-        internal TrawlerSurface(string mapPath, string name) : base(mapPath, name)
+        internal TrawlerSurface(string mapPath, string name, TrawlerHull trawlerHull) : base(mapPath, name)
         {
+            _trawlerHull = trawlerHull;
+
             ignoreDebrisWeather.Value = true;
             critters = new List<Critter>();
 
@@ -113,6 +121,36 @@ namespace FishingTrawler.GameLocations
         public override void tryToAddCritters(bool onlyIfOnScreen = false)
         {
             // Overidden to hide birds, but also hides vanilla clouds (which works in our favor)
+        }
+
+        public override void UpdateWhenCurrentLocation(GameTime time)
+        {
+            base.UpdateWhenCurrentLocation(time);
+
+            if (_trawlerHull.GetFuelLevel() > 0)
+            {
+                Rectangle back_rectangle = new Rectangle(33 * 64, 23 * 64, 16, 6 * 64);
+                if (_nextBubble > 0f)
+                {
+                    _nextBubble -= (float)time.ElapsedGameTime.TotalSeconds;
+                }
+                else
+                {
+                    Vector2 position2 = Utility.getRandomPositionInThisRectangle(back_rectangle, Game1.random);
+                    TemporaryAnimatedSprite sprite2 = new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(0, 0, 64, 64), 50f, 9, 1, position2, flicker: false, flipped: false, 0f, 0.025f, Color.White, 1f, 0f, 0f, 0f);
+                    sprite2.acceleration = new Vector2(-0.25f, 0f);
+                    if (Context.IsSplitScreen)
+                    {
+                        FishingTrawler.multiplayer.broadcastSprites(this, sprite2);
+                    }
+                    else
+                    {
+                        this.temporarySprites.Add(sprite2);
+
+                    }
+                    _nextBubble = _trawlerHull.GetFuelLevel() > 50 ? 0.01f : 0.05f;
+                }
+            }
         }
 
         internal Rectangle PickRandomCloud()
