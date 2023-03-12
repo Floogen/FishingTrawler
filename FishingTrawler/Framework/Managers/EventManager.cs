@@ -62,7 +62,6 @@ namespace FishingTrawler.Framework.Managers
             // Every x seconds recalculate the amount of fish caught / lost
             if (e.IsMultipleOf(_fishUpdateInterval))
             {
-                // TODO: Change UpdateFishCaught method to account for bonus fish at 50% > fuel, standard fish at 50% <= and no fish at 0%
                 /* 
                  * Engine States:
                  * Fuel > 50% | Each working net gives one extra fish
@@ -163,50 +162,65 @@ namespace FishingTrawler.Framework.Managers
                 }
 
                 // Chance of stopping hull breaks increases with each pass of this loop
-                if (Game1.random.NextDouble() < 0.2f + x * 0.1f)
+                if (Game1.random.NextDouble() >= 0.2f + x * 0.1f)
+                {
+                    // If hull is weak, create all possible leaks
+                    if (trawlerHull.hasWeakHull)
+                    {
+                        foreach (Location tile in trawlerHull.GetAllLeakableLocations())
+                        {
+                            trawlerHull.AttemptCreateHullLeak(tile.X, tile.Y);
+                            FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, FishingTrawler.GetFarmersOnTrawler());
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Location? tile = trawlerHull.GetRandomPatchedHullHole();
+                        if (tile is not null)
+                        {
+                            // Skip tiles that were recently repaired
+                            if (trawlerSurface.WasTileRepairedRecently(tile.Value.X, tile.Value.Y) is true)
+                            {
+                                continue;
+                            }
+
+                            trawlerHull.AttemptCreateHullLeak(tile.Value.X, tile.Value.Y);
+                            FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.Value.X, tile.Value.Y), false, FishingTrawler.GetFarmersOnTrawler());
+                        }
+                    }
+
+                    possibleMessages.Add(trawlerHull.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
+
+                    executedEvents++;
+                }
+                else
                 {
                     // Stop attempting for hull breaks
                     break;
                 }
-
-                // If hull is weak, create all possible leaks
-                if (trawlerHull.hasWeakHull)
-                {
-                    foreach (Location tile in trawlerHull.GetAllLeakableLocations())
-                    {
-                        trawlerHull.AttemptCreateHullLeak(tile.X, tile.Y);
-                        FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.X, tile.Y), false, FishingTrawler.GetFarmersOnTrawler());
-                    }
-                    break;
-                }
-                else
-                {
-                    Location? tile = trawlerHull.GetRandomPatchedHullHole();
-                    if (tile is not null)
-                    {
-                        trawlerHull.AttemptCreateHullLeak(tile.Value.X, tile.Value.Y);
-                        FishingTrawler.BroadcastTrawlerEvent(EventType.HullHole, new Vector2(tile.Value.X, tile.Value.Y), false, FishingTrawler.GetFarmersOnTrawler());
-                    }
-                }
-
-                possibleMessages.Add(trawlerHull.AreAllHolesLeaking() ? MESSAGE_MAX_LEAKS : MESSAGE_LEAK_PROBLEM);
-
-                executedEvents++;
             }
+            trawlerHull.ClearAllRepairedTiles();
 
             // Attempt net tears
             for (int x = 0; x < trawlerSurface.GetWorkingNetCount(); x++)
             {
-                // Chance of stopping hull breaks increases with each pass of this loop
-                if (Game1.random.NextDouble() < 0.25f + x * 0.25f)
-                {
-                    // Stop attempting for hull breaks
-                    break;
-                }
-
                 Location? tile = trawlerSurface.GetRandomWorkingNet();
                 if (tile is not null)
                 {
+                    // Skip tiles that were recently repaired
+                    if (trawlerSurface.WasTileRepairedRecently(tile.Value.X, tile.Value.Y) is true)
+                    {
+                        continue;
+                    }
+
+                    // Chance of stopping hull breaks increases with each pass of this loop
+                    if (Game1.random.NextDouble() < 0.25f + x * 0.25f)
+                    {
+                        // Stop attempting for hull breaks
+                        break;
+                    }
+
                     trawlerSurface.AttemptCreateNetRip(tile.Value.X, tile.Value.Y);
                     FishingTrawler.BroadcastTrawlerEvent(EventType.NetTear, new Vector2(tile.Value.X, tile.Value.Y), false, FishingTrawler.GetFarmersOnTrawler());
                 }
@@ -215,6 +229,7 @@ namespace FishingTrawler.Framework.Managers
 
                 executedEvents++;
             }
+            trawlerSurface.ClearAllRepairedTiles();
 
             // Check if all possible events are activated
             if (trawlerSurface.AreAllNetsRipped() && trawlerHull.IsEngineFailing() && trawlerHull.AreAllHolesLeaking())

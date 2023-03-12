@@ -2,6 +2,7 @@
 using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Objects.Items.Rewards;
 using Microsoft.Xna.Framework;
+using Netcode;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -242,12 +243,12 @@ namespace FishingTrawler.GameLocations
             Location netLocation = validNetLocations.ElementAt(Game1.random.Next(0, validNetLocations.Count()));
             if (tileX != -1 && tileY != -1)
             {
-                if (!_netRipLocations.Any(loc => !IsNetRipped(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY))
+                if (!_netRipLocations.Any(loc => IsNetRipped(loc.X, loc.Y) is false && loc.X == tileX && loc.Y == tileY))
                 {
                     return false;
                 }
 
-                netLocation = _netRipLocations.FirstOrDefault(loc => !IsNetRipped(loc.X, loc.Y) && loc.X == tileX && loc.Y == tileY);
+                netLocation = _netRipLocations.FirstOrDefault(loc => IsNetRipped(loc.X, loc.Y) is false && loc.X == tileX && loc.Y == tileY);
             }
 
             // Set the net as ripped
@@ -287,6 +288,7 @@ namespace FishingTrawler.GameLocations
             {
                 // Stop the rip
                 firstTile.Properties["IsRipped"] = false;
+                base.AddRepairedTile(tileX, tileY);
 
                 // Patch up the net
                 setMapTile(tileX, tileY, 99, ROPE_LAYER_NAME, null, TRAWLER_TILESHEET_INDEX);

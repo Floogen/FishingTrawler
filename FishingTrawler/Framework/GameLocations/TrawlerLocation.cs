@@ -14,6 +14,8 @@ namespace FishingTrawler.Framework.GameLocations
 {
     internal abstract class TrawlerLocation : GameLocation
     {
+        private List<Location> _recentlyRepairedLocations;
+
         public TrawlerLocation()
         {
 
@@ -21,7 +23,7 @@ namespace FishingTrawler.Framework.GameLocations
 
         internal TrawlerLocation(string mapPath, string name) : base(mapPath, name)
         {
-
+            _recentlyRepairedLocations = new List<Location>();
         }
 
         internal abstract void Reset();
@@ -42,6 +44,21 @@ namespace FishingTrawler.Framework.GameLocations
         internal bool IsMessageAlreadyDisplayed(string message)
         {
             return Game1.hudMessages.Any(m => m.message == Game1.parseText(message, Game1.dialogueFont, 384));
+        }
+
+        internal bool WasTileRepairedRecently(int x, int y)
+        {
+            return _recentlyRepairedLocations.Any(l => l.X == x && l.Y == y);
+        }
+
+        internal void AddRepairedTile(int x, int y)
+        {
+            _recentlyRepairedLocations.Add(new Location(x, y));
+        }
+
+        internal void ClearAllRepairedTiles()
+        {
+            _recentlyRepairedLocations.Clear();
         }
 
         protected override void resetLocalState()

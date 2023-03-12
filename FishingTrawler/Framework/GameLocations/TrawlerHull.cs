@@ -1,6 +1,7 @@
 ﻿using FishingTrawler.Framework.GameLocations;
 using FishingTrawler.Framework.Objects.Items.Resources;
 using Microsoft.Xna.Framework;
+using Netcode;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -343,6 +344,7 @@ namespace FishingTrawler.GameLocations
             {
                 // Stop the leaking
                 firstTile.Properties["IsLeaking"] = false;
+                base.AddRepairedTile(tileX, tileY);
 
                 // Update the tiles
                 bool isFirstTile = true;
