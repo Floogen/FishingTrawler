@@ -104,7 +104,7 @@ namespace FishingTrawler.Framework.Managers
                 string message;
                 if (Game1.random.NextDouble() < 0.05)
                 {
-                    message = FishingTrawler.i18n.Get("status_message.sea_favors_us");
+                    message = Game1.random.NextDouble() < 0.5 ? FishingTrawler.i18n.Get("status_message.sea_favors_us") : Game1.random.NextDouble() < 0.5 ? FishingTrawler.i18n.Get("status_message.default") : FishingTrawler.i18n.Get("status_message.yoba_be_praised");
                 }
                 else
                 {
@@ -112,11 +112,10 @@ namespace FishingTrawler.Framework.Managers
                 }
 
                 // Check for empty string 
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(message) is false)
                 {
-                    message = FishingTrawler.i18n.Get("status_message.default");
+                    FishingTrawler.notificationManager.SetNotification(message);
                 }
-                FishingTrawler.notificationManager.SetNotification(message);
 
                 _hullEventInterval = (uint)Game1.random.Next(FishingTrawler.config.hullEventFrequencyLower, FishingTrawler.config.hullEventFrequencyUpper + 1) * 100;
             }
@@ -126,7 +125,7 @@ namespace FishingTrawler.Framework.Managers
                 string message;
                 if (Game1.random.NextDouble() < 0.05)
                 {
-                    message = FishingTrawler.i18n.Get("status_message.sea_favors_us");
+                    message = Game1.random.NextDouble() < 0.5 ? FishingTrawler.i18n.Get("status_message.sea_favors_us") : Game1.random.NextDouble() < 0.5 ? FishingTrawler.i18n.Get("status_message.default") : FishingTrawler.i18n.Get("status_message.yoba_be_praised");
                 }
                 else
                 {
@@ -134,11 +133,10 @@ namespace FishingTrawler.Framework.Managers
                 }
 
                 // Check for empty string 
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(message) is false)
                 {
-                    message = FishingTrawler.i18n.Get("status_message.default");
+                    FishingTrawler.notificationManager.SetNotification(message);
                 }
-                FishingTrawler.notificationManager.SetNotification(message);
 
                 _netEventInterval = (uint)Game1.random.Next(FishingTrawler.config.netEventFrequencyLower, FishingTrawler.config.netEventFrequencyUpper + 1) * 100;
             }
@@ -185,7 +183,7 @@ namespace FishingTrawler.Framework.Managers
                 possibleMessages.Add(MESSAGE_MULTI_PROBLEMS);
             }
             // Select highest priority item (priority == default_priority_level * frequency)
-            return executedEvents == 0 ? FishingTrawler.i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
+            return executedEvents == 0 ? null : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
         private List<KeyValuePair<string, int>> CreateHullEvents(TrawlerHull trawlerHull)
