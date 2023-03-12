@@ -45,9 +45,9 @@ namespace FishingTrawler.Framework.Managers
             return _activeNotification;
         }
 
-        internal void SetNotification(string message)
+        internal void SetNotification(string message, bool forceRefresh = false)
         {
-            if (_activeNotification != message)
+            if (String.IsNullOrEmpty(_activeNotification) is true || forceRefresh is true)
             {
                 Reset();
 

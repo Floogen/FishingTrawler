@@ -244,7 +244,7 @@ namespace FishingTrawler
                 if (Game1.player.Items.Any(i => i is Tool tool && new BailingBucket(tool).IsValid) is false)
                 {
                     Game1.player.addItemToInventory(BailingBucket.CreateInstance());
-                    Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.given_bailing_bucket"), null) {  timeLeft = 1250f });
+                    Game1.addHUDMessage(new HUDMessage(i18n.Get("game_message.given_bailing_bucket"), null) { timeLeft = 1250f });
                 }
 
                 // Clear any previous reward data, set the head deckhand (which determines fishing level for reward calc)
@@ -454,12 +454,14 @@ namespace FishingTrawler
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.required_fishing_level.name"), i18n.Get("config.option.required_fishing_level.description"), () => config.minimumFishingLevel, (val) => config.minimumFishingLevel = val, 0, 10);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.net_output.name"), i18n.Get("config.option.net_output.description"), () => config.fishPerNet, (val) => config.fishPerNet = val, 0f, 1f, 0.5f);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.engine_boost.name"), i18n.Get("config.option.engine_boost.description"), () => config.engineFishBonus, (val) => config.engineFishBonus = val, 0, 2);
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.event_frequency_lower.description"), () => config.eventFrequencyLower, (val) => config.eventFrequencyLower = val, 1, 15);
-                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.event_frequency_upper.description"), () => config.eventFrequencyUpper, (val) => config.eventFrequencyUpper = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.hull.event_frequency_lower.description"), () => config.hullEventFrequencyLower, (val) => config.hullEventFrequencyLower = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.hull.event_frequency_upper.description"), () => config.hullEventFrequencyUpper, (val) => config.hullEventFrequencyUpper = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.net.event_frequency_lower.description"), () => config.netEventFrequencyLower, (val) => config.netEventFrequencyLower = val, 1, 15);
+                configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_upper.name"), i18n.Get("config.option.net.event_frequency_upper.description"), () => config.netEventFrequencyUpper, (val) => config.netEventFrequencyUpper = val, 1, 15);
                 configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day.name"), i18n.Get("config.option.murphy_appearance_day.description"), () => config.dayOfWeekChoice, (val) => config.dayOfWeekChoice = val, ModConfig.murphyDayToAppear);
                 configAPI.RegisterChoiceOption(ModManifest, i18n.Get("config.option.murphy_appearance_day_island.name"), i18n.Get("config.option.murphy_appearance_day_island.description"), () => config.dayOfWeekChoiceIsland, (val) => config.dayOfWeekChoiceIsland = val, ModConfig.murphyDayToAppear);
 
-                Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Event Freq Lower]: {config.eventFrequencyLower} | [Event Freq Upper]: {config.eventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
+                Monitor.Log($"{Game1.player.Name} has following config options -> [Min Fish Level]: {config.minimumFishingLevel} | [Fishing Net Output]: {config.fishPerNet} | [Engine Boost]: {config.engineFishBonus} | [Hull Event Freq Lower]: {config.hullEventFrequencyLower} | [Hull Event Freq Upper]: {config.hullEventFrequencyUpper} | [Net Event Freq Lower]: {config.netEventFrequencyLower} | [Net Event Freq Upper]: {config.netEventFrequencyUpper} | [Day for Murphy]: {config.dayOfWeekChoice}", LogLevel.Trace);
             }
 
             if (Helper.ModRegistry.IsLoaded("Pathoschild.ContentPatcher") && apiManager.HookIntoContentPatcher(Helper))

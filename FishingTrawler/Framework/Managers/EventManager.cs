@@ -23,7 +23,8 @@ namespace FishingTrawler.Framework.Managers
         private uint _fishUpdateInterval = 300;
         private uint _floodUpdateInterval = 180;
         private uint _fuelUpdateInterval = 300;
-        private uint _eventSecondInterval = 600;
+        private uint _hullEventInterval = 600;
+        private uint _netEventInterval = 600;
 
         // Split screen data
         private readonly PerScreen<int> _fishingTripTimer = new PerScreen<int>();
@@ -97,18 +98,17 @@ namespace FishingTrawler.Framework.Managers
             trawlerHull.AnimateEngine();
 
             // Every random interval check for new event (leak, net tearing, etc.) on Trawler
-            if (e.IsMultipleOf(_eventSecondInterval))
+            if (e.IsMultipleOf(_hullEventInterval))
             {
-                string message = string.Empty;
-
                 // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
+                string message;
                 if (Game1.random.NextDouble() < 0.05)
                 {
                     message = FishingTrawler.i18n.Get("status_message.sea_favors_us");
                 }
                 else
                 {
-                    message = CreateTrawlerEventsAndGetMessage(trawlerCabin, trawlerSurface, trawlerHull);
+                    message = GetMostImportantMessage(CreateHullEvents(trawlerHull), trawlerSurface, trawlerHull);
                 }
 
                 // Check for empty string 
@@ -118,7 +118,29 @@ namespace FishingTrawler.Framework.Managers
                 }
                 FishingTrawler.notificationManager.SetNotification(message);
 
-                _eventSecondInterval = (uint)Game1.random.Next(FishingTrawler.config.eventFrequencyLower, FishingTrawler.config.eventFrequencyUpper + 1) * 100;
+                _hullEventInterval = (uint)Game1.random.Next(FishingTrawler.config.hullEventFrequencyLower, FishingTrawler.config.hullEventFrequencyUpper + 1) * 100;
+            }
+            if (e.IsMultipleOf(_netEventInterval))
+            {
+                // Check if the player gets lucky and skips getting an event, otherwise create the event(s)
+                string message;
+                if (Game1.random.NextDouble() < 0.05)
+                {
+                    message = FishingTrawler.i18n.Get("status_message.sea_favors_us");
+                }
+                else
+                {
+                    message = GetMostImportantMessage(CreateHullEvents(trawlerSurface), trawlerSurface, trawlerHull);
+                }
+
+                // Check for empty string 
+                if (string.IsNullOrEmpty(message))
+                {
+                    message = FishingTrawler.i18n.Get("status_message.default");
+                }
+                FishingTrawler.notificationManager.SetNotification(message);
+
+                _netEventInterval = (uint)Game1.random.Next(FishingTrawler.config.netEventFrequencyLower, FishingTrawler.config.netEventFrequencyUpper + 1) * 100;
             }
 
             // Update the track if needed
@@ -147,7 +169,26 @@ namespace FishingTrawler.Framework.Managers
             _fishingTripTimer.Value += milliseconds;
         }
 
-        private string CreateTrawlerEventsAndGetMessage(TrawlerCabin trawlerCabin, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
+        private string GetMostImportantMessage(List<KeyValuePair<string, int>> possibleMessages, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
+        {
+            int executedEvents = possibleMessages.Count;
+
+            // Check if all possible events are activated
+            if (trawlerSurface.AreAllNetsRipped() && trawlerHull.IsEngineFailing() && trawlerHull.AreAllHolesLeaking())
+            {
+                possibleMessages.Add(MESSAGE_EVERYTHING_FAILING);
+            }
+
+            // Add a generic message if there are lots of issues
+            if (trawlerSurface.GetRippedNetsCount() + trawlerHull.GetLeakingHolesCount() + (trawlerHull.IsEngineFailing() ? 1 : 0) > 1)
+            {
+                possibleMessages.Add(MESSAGE_MULTI_PROBLEMS);
+            }
+            // Select highest priority item (priority == default_priority_level * frequency)
+            return executedEvents == 0 ? FishingTrawler.i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
+        }
+
+        private List<KeyValuePair<string, int>> CreateHullEvents(TrawlerHull trawlerHull)
         {
             int executedEvents = 0;
             List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
@@ -180,7 +221,7 @@ namespace FishingTrawler.Framework.Managers
                         if (tile is not null)
                         {
                             // Skip tiles that were recently repaired
-                            if (trawlerSurface.WasTileRepairedRecently(tile.Value.X, tile.Value.Y) is true)
+                            if (trawlerHull.WasTileRepairedRecently(tile.Value.X, tile.Value.Y) is true)
                             {
                                 continue;
                             }
@@ -202,6 +243,15 @@ namespace FishingTrawler.Framework.Managers
             }
             trawlerHull.ClearAllRepairedTiles();
 
+            return possibleMessages;
+        }
+
+
+        private List<KeyValuePair<string, int>> CreateHullEvents(TrawlerSurface trawlerSurface)
+        {
+            int executedEvents = 0;
+            List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
+
             // Attempt net tears
             for (int x = 0; x < trawlerSurface.GetWorkingNetCount(); x++)
             {
@@ -215,7 +265,7 @@ namespace FishingTrawler.Framework.Managers
                     }
 
                     // Chance of stopping net breaks increases with each pass of this loop
-                    if (Game1.random.NextDouble() < 0.5f + x * 0.25f)
+                    if (Game1.random.NextDouble() < 0.1f + x * 0.25f)
                     {
                         // Stop attempting for net breaks
                         break;
@@ -231,20 +281,7 @@ namespace FishingTrawler.Framework.Managers
             }
             trawlerSurface.ClearAllRepairedTiles();
 
-            // Check if all possible events are activated
-            if (trawlerSurface.AreAllNetsRipped() && trawlerHull.IsEngineFailing() && trawlerHull.AreAllHolesLeaking())
-            {
-                possibleMessages.Add(MESSAGE_EVERYTHING_FAILING);
-            }
-
-            // Add a generic message if there are lots of issues
-            if (trawlerSurface.GetRippedNetsCount() + trawlerHull.GetLeakingHolesCount() + (trawlerHull.IsEngineFailing() ? 1 : 0) > 1)
-            {
-                possibleMessages.Add(MESSAGE_MULTI_PROBLEMS);
-            }
-
-            // Select highest priority item (priority == default_priority_level * frequency)
-            return executedEvents == 0 ? FishingTrawler.i18n.Get("status_message.yoba_be_praised") : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
+            return possibleMessages;
         }
 
     }
