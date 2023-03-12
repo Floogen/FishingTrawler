@@ -193,7 +193,7 @@ namespace FishingTrawler.GameLocations
             // Check to see if player is standing in front of stairs before using  
             if (String.IsNullOrEmpty(doesTileHaveProperty(tileLocation.X, tileLocation.Y, "Action", "Buildings")) is false)
             {
-                if (who.getTileX() != 9 || who.getTileY() != 6)
+                if (who.getTileX() != 9 || (who.getTileY() != 6 && who.getTileY() != 5))
                 {
                     return false;
                 }
@@ -231,7 +231,7 @@ namespace FishingTrawler.GameLocations
             // Check to see if player is standing in front of stairs before using            
             if (String.IsNullOrEmpty(doesTileHaveProperty(xTile, yTile, "Action", "Buildings")) is false)
             {
-                if (who.getTileX() != 9 || who.getTileY() != 6)
+                if (who.getTileX() != 9 || (who.getTileY() != 6 && who.getTileY() != 5))
                 {
                     Game1.mouseCursorTransparency = 0.5f;
                 }

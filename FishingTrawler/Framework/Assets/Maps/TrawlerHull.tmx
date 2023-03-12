@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="16" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="54">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="16" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="55">
  <properties>
   <property name="AmbientLight" value="170 190 90"/>
   <property name="Light" value="3 4 2 11 4 2"/>
@@ -487,6 +487,11 @@
   <object id="53" name="TileData" x="16" y="96" width="16" height="16">
    <properties>
     <property name="CustomAction" value="RefillEngine"/>
+   </properties>
+  </object>
+  <object id="54" name="TileData" x="128" y="112" width="16" height="16">
+   <properties>
+    <property name="CustomAction" value="GetCoal"/>
    </properties>
   </object>
  </objectgroup>
