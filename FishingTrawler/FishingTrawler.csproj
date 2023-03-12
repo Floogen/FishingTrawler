@@ -78,7 +78,7 @@
 		<PostBuildEvent>
 			powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '$(Version)' | sc -LiteralPath \"$f\" })"
 
-			powershell Remove-Item -Path '$(SolutionDir)releases\latest"' -Recurse -Force
+			powershell Remove-Item -Path '$(SolutionDir)releases\latest\*' -Recurse -Force
 			xcopy /s /y /i "$(SolutionDir)bin\Debug\net5.0" "$(SolutionDir)releases\latest\$(SolutionName)"
 
 			:: Start of Fishing Trawler specific copy logic block
