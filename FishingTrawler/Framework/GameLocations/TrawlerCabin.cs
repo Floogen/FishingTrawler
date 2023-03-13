@@ -7,6 +7,8 @@ using StardewValley.BellsAndWhistles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 using xTile.Dimensions;
 using xTile.Layers;
 using xTile.Tiles;
@@ -22,8 +24,8 @@ namespace FishingTrawler.GameLocations
         private const int BASE_COMPUTER_MILLISECONDS = 60000;
         private const int CYCLE_COMPUTER_MILLISECONDS = 30000;
 
-        private int _completedComputerCycles;
-        private int _computerCooldownMilliseconds;
+        private static int _completedComputerCycles = 0;
+        private static int _computerCooldownMilliseconds = BASE_COMPUTER_MILLISECONDS;
 
         public TrawlerCabin()
         {
@@ -74,9 +76,9 @@ namespace FishingTrawler.GameLocations
             setAnimatedMapTile(0, 4, new int[] { 31, 32, 33, 32 }, 90, "Front", null, TRAWLER_TILESHEET_INDEX);
         }
 
-        public override void updateEvenIfFarmerIsntHere(GameTime time, bool ignoreWasUpdatedFlush = false)
+        public override void UpdateWhenCurrentLocation(GameTime time)
         {
-            base.updateEvenIfFarmerIsntHere(time, ignoreWasUpdatedFlush);
+            base.UpdateWhenCurrentLocation(time);
 
             if (IsComputerReady() is false)
             {
@@ -208,7 +210,7 @@ namespace FishingTrawler.GameLocations
 
         public void ReduceCooldown(int milliseconds)
         {
-            SetCooldown(_computerCooldownMilliseconds - milliseconds);
+            SetCooldown(_computerCooldownMilliseconds - Math.Abs(milliseconds));
         }
 
         public bool IsComputerReady()
