@@ -9,11 +9,11 @@ namespace FishingTrawler.Framework.Objects.Items.Resources
     public class CoalClump
     {
         private const int MAX_SIZE = 3;
-        private const int COAL_OBJECT_BASE_ID = 382;
+        private const int JUNK_OBJECT_BASE_ID = 001;
 
         public static Object CreateInstance(int size = 1)
         {
-            var coal = new Object(COAL_OBJECT_BASE_ID, 1);
+            var coal = new Object(JUNK_OBJECT_BASE_ID, 1);
             coal.modData[ModDataKeys.COAL_CLUMP_KEY] = size.ToString();
 
             return coal;
