@@ -782,6 +782,14 @@ namespace FishingTrawler
                     result = true;
                     _trawlerSurface.Value.UpdateFishCaught(_trawlerHull.Value.GetFuelLevel(), quantity);
                     break;
+                case SyncType.Fuel:
+                    result = true;
+                    _trawlerHull.Value.SetFuelLevel(quantity);
+                    break;
+                case SyncType.RestartGPS:
+                    result = true;
+                    _trawlerCabin.Value.RestartComputer();
+                    break;
                 default:
                     monitor.Log($"A trawler tried tried to sync, but its SyncType was not handled: {syncType}", LogLevel.Debug);
                     break;

@@ -94,6 +94,7 @@ namespace FishingTrawler.Framework.Managers
             if (e.IsMultipleOf(_fuelUpdateInterval))
             {
                 trawlerHull.AdjustFuelLevel(-10);
+                FishingTrawler.SyncTrawler(SyncType.Fuel, trawlerHull.GetFuelLevel(), FishingTrawler.GetFarmersOnTrawler());
             }
             trawlerHull.AnimateEngine();
 

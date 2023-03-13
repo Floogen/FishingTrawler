@@ -1,4 +1,5 @@
 ﻿using FishingTrawler.Framework.GameLocations;
+using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
@@ -191,15 +192,22 @@ namespace FishingTrawler.GameLocations
             {
                 return;
             }
-            FishingTrawler.eventManager.IncrementTripTimer(30000);
+            RestartComputer();
 
-            _completedComputerCycles += 1;
-            _computerCooldownMilliseconds = (_completedComputerCycles * CYCLE_COMPUTER_MILLISECONDS) + BASE_COMPUTER_MILLISECONDS;
+            FishingTrawler.SyncTrawler(SyncType.RestartGPS, -1, FishingTrawler.GetFarmersOnTrawler());
         }
 
         public bool IsComputerReady()
         {
             return _computerCooldownMilliseconds <= 0;
+        }
+
+        public void RestartComputer()
+        {
+            FishingTrawler.eventManager.IncrementTripTimer(30000);
+
+            _completedComputerCycles += 1;
+            _computerCooldownMilliseconds = (_completedComputerCycles * CYCLE_COMPUTER_MILLISECONDS) + BASE_COMPUTER_MILLISECONDS;
         }
         #endregion
 

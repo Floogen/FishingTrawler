@@ -1,5 +1,6 @@
 ﻿using FishingTrawler.Framework.GameLocations;
 using FishingTrawler.Framework.Objects.Items.Resources;
+using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewModdingAPI;
@@ -180,6 +181,8 @@ namespace FishingTrawler.GameLocations
                         }
                         AdjustFuelLevel((10 * fuelSize) + (fuelSize == 3 ? 5 : 0));
                         who.removeItemFromInventory(fuelStack);
+
+                        FishingTrawler.SyncTrawler(SyncType.Fuel, GetFuelLevel(), FishingTrawler.GetFarmersOnTrawler());
                     }
                     else
                     {
@@ -267,9 +270,9 @@ namespace FishingTrawler.GameLocations
             }
         }
 
-        public void AdjustFuelLevel(int amount)
+        public void SetFuelLevel(int amount)
         {
-            _fuelLevel += amount;
+            _fuelLevel = amount;
 
             if (_fuelLevel < 0)
             {
@@ -279,6 +282,11 @@ namespace FishingTrawler.GameLocations
             {
                 _fuelLevel = 100;
             }
+        }
+
+        public void AdjustFuelLevel(int amount)
+        {
+            SetFuelLevel(_fuelLevel + amount);
         }
 
         public int GetFuelLevel()

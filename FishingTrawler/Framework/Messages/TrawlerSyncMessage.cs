@@ -4,7 +4,9 @@
     {
         Unknown,
         WaterLevel,
-        FishCaught
+        FishCaught,
+        Fuel,
+        RestartGPS
     }
 
     internal class TrawlerSyncMessage
