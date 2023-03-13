@@ -58,6 +58,7 @@ namespace FishingTrawler.Framework.Managers
             if (e.IsOneSecond)
             {
                 IncrementTripTimer(-1000);
+                FishingTrawler.SyncTrawler(SyncType.TripTimer, _fishingTripTimer.Value, FishingTrawler.GetFarmersOnTrawler());
             }
 
             // Every x seconds recalculate the amount of fish caught / lost
@@ -165,7 +166,7 @@ namespace FishingTrawler.Framework.Managers
 
         internal void IncrementTripTimer(int milliseconds)
         {
-            _fishingTripTimer.Value += milliseconds;
+            SetTripTimer(_fishingTripTimer.Value + milliseconds);
         }
 
         private string GetMostImportantMessage(List<KeyValuePair<string, int>> possibleMessages, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)

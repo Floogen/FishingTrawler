@@ -790,6 +790,10 @@ namespace FishingTrawler
                     result = true;
                     _trawlerCabin.Value.RestartComputer();
                     break;
+                case SyncType.TripTimer:
+                    result = true;
+                    eventManager.SetTripTimer(quantity);
+                    break;
                 default:
                     monitor.Log($"A trawler tried tried to sync, but its SyncType was not handled: {syncType}", LogLevel.Debug);
                     break;
