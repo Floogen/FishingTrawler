@@ -33,9 +33,9 @@ namespace FishingTrawler.GameLocations
         // Minigame stat related
         internal int fishCaughtQuantity;
         internal int fishCaughtMultiplier;
+        internal int hullFuelLevel = 100;
 
         // Helpers
-        private TrawlerHull _trawlerHull;
         private List<Location> _netRipLocations;
 
         // Speed related offsets
@@ -55,10 +55,8 @@ namespace FishingTrawler.GameLocations
 
         }
 
-        internal TrawlerSurface(string mapPath, string name, TrawlerHull trawlerHull) : base(mapPath, name)
+        internal TrawlerSurface(string mapPath, string name) : base(mapPath, name)
         {
-            _trawlerHull = trawlerHull;
-
             ignoreDebrisWeather.Value = true;
             critters = new List<Critter>();
 
@@ -127,7 +125,7 @@ namespace FishingTrawler.GameLocations
         {
             base.UpdateWhenCurrentLocation(time);
 
-            if (_trawlerHull.GetFuelLevel() > 0)
+            if (hullFuelLevel > 0)
             {
                 Rectangle back_rectangle = new Rectangle(33 * 64, 23 * 64, 16, 6 * 64);
                 if (_nextBubble > 0f)
@@ -148,7 +146,7 @@ namespace FishingTrawler.GameLocations
                         this.temporarySprites.Add(sprite2);
 
                     }
-                    _nextBubble = _trawlerHull.GetFuelLevel() > 50 ? 0.01f : 0.05f;
+                    _nextBubble = hullFuelLevel > 50 ? 0.01f : 0.05f;
                 }
             }
         }

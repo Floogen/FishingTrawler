@@ -1,5 +1,6 @@
 ﻿using FishingTrawler.Framework.GameLocations;
 using FishingTrawler.Framework.Objects.Items.Resources;
+using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
 using Netcode;

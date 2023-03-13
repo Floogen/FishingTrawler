@@ -332,7 +332,6 @@ namespace FishingTrawler
                 return;
             }
 
-
             if ((Game1.activeClickableMenu is not null || Game1.game1.IsActive is false) && Context.IsMultiplayer is false)
             {
                 // Allow pausing in singleplayer via menu
@@ -355,6 +354,9 @@ namespace FishingTrawler
                     Game1.playSoundPitched("wateringCan", Game1.random.Next(1, 5) * 100);
                 }
             }
+
+            // Update TrawlerSurface with TrawlerHull's fuel level
+            _trawlerSurface.Value.hullFuelLevel = _trawlerHull.Value.GetFuelLevel();
 
             // Start fading the message after 3 seconds
             if (notificationManager.HasExpired(Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds) is true)
@@ -564,7 +566,7 @@ namespace FishingTrawler
             Game1.locations.Add(hullLocation);
 
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME, hullLocation) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(surfaceLocation);
 
             // Add the cabin location
