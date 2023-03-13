@@ -54,11 +54,16 @@ namespace FishingTrawler.Framework.Managers
 
         internal void UpdateEvents(UpdateTickingEventArgs e, TrawlerCabin trawlerCabin, TrawlerSurface trawlerSurface, TrawlerHull trawlerHull)
         {
-            // Every second, update the trip trimer
+            // Every second, update the required timers
             if (e.IsOneSecond)
             {
+                // Decrease trip timer
                 IncrementTripTimer(-1000);
                 FishingTrawler.SyncTrawler(SyncType.TripTimer, _fishingTripTimer.Value, FishingTrawler.GetFarmersOnTrawler());
+
+                // Decrease computer cooldown
+                trawlerCabin.ReduceCooldown(-1000);
+                FishingTrawler.SyncTrawler(SyncType.GPSCooldown, trawlerCabin.GetCooldown(), FishingTrawler.GetFarmersOnTrawler());
             }
 
             // Every x seconds recalculate the amount of fish caught / lost

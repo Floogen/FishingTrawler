@@ -19,11 +19,11 @@ namespace FishingTrawler.GameLocations
 
         private const int TRAWLER_TILESHEET_INDEX = 2;
         private const string COFFEE_MACHINE_SOURCE = "murphy_cofee_machine";
-        private const float BASE_COMPUTER_MILLISECONDS = 60000f;
-        private const float CYCLE_COMPUTER_MILLISECONDS = 30000f;
+        private const int BASE_COMPUTER_MILLISECONDS = 60000;
+        private const int CYCLE_COMPUTER_MILLISECONDS = 30000;
 
         private int _completedComputerCycles;
-        private double _computerCooldownMilliseconds;
+        private int _computerCooldownMilliseconds;
 
         public TrawlerCabin()
         {
@@ -80,7 +80,6 @@ namespace FishingTrawler.GameLocations
 
             if (IsComputerReady() is false)
             {
-                _computerCooldownMilliseconds -= time.ElapsedGameTime.TotalMilliseconds;
                 setMapTileIndex(3, 2, -1, "Front", TRAWLER_TILESHEET_INDEX);
             }
             else
@@ -195,6 +194,21 @@ namespace FishingTrawler.GameLocations
             RestartComputer();
 
             FishingTrawler.SyncTrawler(SyncType.RestartGPS, -1, FishingTrawler.GetFarmersOnTrawler());
+        }
+
+        public int GetCooldown()
+        {
+            return _computerCooldownMilliseconds;
+        }
+
+        public void SetCooldown(int milliseconds)
+        {
+            _computerCooldownMilliseconds = milliseconds;
+        }
+
+        public void ReduceCooldown(int milliseconds)
+        {
+            SetCooldown(_computerCooldownMilliseconds - milliseconds);
         }
 
         public bool IsComputerReady()

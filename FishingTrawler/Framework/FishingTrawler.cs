@@ -794,6 +794,10 @@ namespace FishingTrawler
                     result = true;
                     eventManager.SetTripTimer(quantity);
                     break;
+                case SyncType.GPSCooldown:
+                    result = true;
+                    _trawlerCabin.Value.SetCooldown(quantity);
+                    break;
                 default:
                     monitor.Log($"A trawler tried tried to sync, but its SyncType was not handled: {syncType}", LogLevel.Debug);
                     break;

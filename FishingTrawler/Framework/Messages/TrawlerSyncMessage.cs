@@ -7,7 +7,8 @@
         FishCaught,
         Fuel,
         RestartGPS,
-        TripTimer
+        TripTimer,
+        GPSCooldown
     }
 
     internal class TrawlerSyncMessage
