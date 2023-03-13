@@ -786,7 +786,7 @@ namespace FishingTrawler
                     break;
                 case SyncType.Fuel:
                     result = true;
-                    _trawlerHull.Value.SetFuelLevel(quantity);
+                    _trawlerHull.Value.AdjustFuelLevel(quantity);
                     break;
                 case SyncType.RestartGPS:
                     result = true;

@@ -100,9 +100,8 @@ namespace FishingTrawler.Framework.Managers
             if (e.IsMultipleOf(_fuelUpdateInterval))
             {
                 trawlerHull.AdjustFuelLevel(-10);
-                FishingTrawler.SyncTrawler(SyncType.Fuel, trawlerHull.GetFuelLevel(), FishingTrawler.GetFarmersOnTrawler());
+                FishingTrawler.SyncTrawler(SyncType.Fuel, -10, FishingTrawler.GetFarmersOnTrawler());
             }
-            trawlerHull.AnimateEngine();
 
             // Every random interval check for new event (leak, net tearing, etc.) on Trawler
             if (e.IsMultipleOf(_hullEventInterval))
