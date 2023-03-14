@@ -24,6 +24,7 @@ namespace FishingTrawler.GameLocations
         private const int BASE_COMPUTER_MILLISECONDS = 60000;
         private const int CYCLE_COMPUTER_MILLISECONDS = 30000;
 
+        private static bool _hasLeftStartingArea;
         private static int _completedComputerCycles = 0;
         private static int _computerCooldownMilliseconds = BASE_COMPUTER_MILLISECONDS;
 
@@ -100,6 +101,7 @@ namespace FishingTrawler.GameLocations
             {
                 FishingTrawler.SetTrawlerTheme(null);
             }
+            _hasLeftStartingArea = true;
 
             base.cleanupBeforePlayerExit();
         }
@@ -184,6 +186,11 @@ namespace FishingTrawler.GameLocations
             }
 
             return base.isActionableTile(xTile, yTile, who);
+        }
+
+        public bool HasLeftCabin()
+        {
+            return _hasLeftStartingArea;
         }
 
         #region Guidance system event methods

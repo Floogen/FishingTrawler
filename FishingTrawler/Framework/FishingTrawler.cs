@@ -341,7 +341,7 @@ namespace FishingTrawler
             // Fade the notification, if applicable
             notificationManager.FadeNotification(0.1f);
 
-            if (IsMainDeckhand())
+            if (IsMainDeckhand() && _trawlerCabin.Value.HasLeftCabin())
             {
                 eventManager.UpdateEvents(e, _trawlerCabin.Value, _trawlerSurface.Value, _trawlerHull.Value);
             }
