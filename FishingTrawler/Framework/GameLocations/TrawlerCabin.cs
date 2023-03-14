@@ -60,6 +60,7 @@ namespace FishingTrawler.GameLocations
         {
             _completedComputerCycles = 0;
             _computerCooldownMilliseconds = BASE_COMPUTER_MILLISECONDS;
+            _hasLeftStartingArea = false;
         }
 
         protected override void resetLocalState()
