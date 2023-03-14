@@ -367,7 +367,7 @@ namespace FishingTrawler.GameLocations
                             break;
                     }
 
-                    // Check if ripped net penalty  needs to be applied
+                    // Check if ripped net penalty needs to be applied
                     if (IsNetRipped(net.X, net.Y))
                     {
                         fishCaughtInNet = -(int)(FishingTrawler.config.fishPerNet);
