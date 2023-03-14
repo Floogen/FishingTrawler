@@ -33,7 +33,9 @@ namespace FishingTrawler.GameLocations
         // Minigame stat related
         internal int fishCaughtQuantity;
         internal int fishCaughtMultiplier;
-        internal int hullFuelLevel = 100;
+
+        // Animation related
+        internal static int hullFuelLevel = 100;
 
         // Helpers
         private List<Location> _netRipLocations;

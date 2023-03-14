@@ -356,7 +356,7 @@ namespace FishingTrawler
             }
 
             // Update TrawlerSurface with TrawlerHull's fuel level
-            _trawlerSurface.Value.hullFuelLevel = _trawlerHull.Value.GetFuelLevel();
+            TrawlerSurface.hullFuelLevel = _trawlerHull.Value.GetFuelLevel();
 
             // Start fading the message after 3 seconds
             if (notificationManager.HasExpired(Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds) is true)
