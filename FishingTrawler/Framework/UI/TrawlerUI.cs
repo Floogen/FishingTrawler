@@ -13,7 +13,7 @@ namespace FishingTrawler.UI
     {
         private static float _scale = 2.5f;
 
-        internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, bool isHullLeaking, int rippedNetsCount, int fuelLevel, bool isComputerReady)
+        internal static void DrawUI(SpriteBatch b, int fishingTripTimer, int amountOfFish, int floodLevel, bool isHullLeaking, int rippedNetsCount, int fuelLevel, bool isComputerReady, bool hasLeftCabin)
         {
             _scale = 2.5f;
             int languageOffset = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en ? 8 : LocalizedContentManager.CurrentLanguageLatin ? 16 : 8;
@@ -32,7 +32,13 @@ namespace FishingTrawler.UI
             b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(28f, 176f), new Rectangle(0, 0, 16, 16), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1f);
             b.DrawString(Game1.smallFont, $"{amountOfFish}", new Vector2(64f, 169f + languageOffset), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             b.Draw(FishingTrawler.assetManager.uiTexture, new Vector2(96f, 169f), new Rectangle(16, 0, 16, 16), Color.White, 0f, Vector2.Zero, 3f, SpriteEffects.None, 1f);
-            b.DrawString(Game1.smallFont, Utility.getMinutesSecondsStringFromMilliseconds(fishingTripTimer), new Vector2(140f, 169f + languageOffset), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+
+            Color timeColor = Color.White;
+            if (hasLeftCabin is false && Game1.currentGameTime.TotalGameTime.TotalMilliseconds % 2000.0 > 1000.0)
+            {
+                timeColor *= 0.5f;
+            }
+            b.DrawString(Game1.smallFont, Utility.getMinutesSecondsStringFromMilliseconds(fishingTripTimer), new Vector2(140f, 169f + languageOffset), timeColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
         }

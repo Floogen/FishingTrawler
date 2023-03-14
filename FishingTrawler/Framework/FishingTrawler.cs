@@ -196,7 +196,7 @@ namespace FishingTrawler
                 notificationManager.DrawNotification(e.SpriteBatch, Game1.player.currentLocation);
             }
 
-            TrawlerUI.DrawUI(e.SpriteBatch, eventManager.GetTripTimer(), _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel(), _trawlerCabin.Value.IsComputerReady());
+            TrawlerUI.DrawUI(e.SpriteBatch, eventManager.GetTripTimer(), _trawlerSurface.Value.fishCaughtQuantity, _trawlerHull.Value.GetWaterLevel(), _trawlerHull.Value.HasLeak(), _trawlerSurface.Value.GetRippedNetsCount(), _trawlerHull.Value.GetFuelLevel(), _trawlerCabin.Value.IsComputerReady(), _trawlerCabin.Value.HasLeftCabin());
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
