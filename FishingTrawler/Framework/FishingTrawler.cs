@@ -323,6 +323,14 @@ namespace FishingTrawler
                     data[ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND] = string.Format(FishingTrawler.i18n.Get("letter.island_murphy"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]);
                 });
             }
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/ChairTiles"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+                    data["TrawlerCabin/12/5"] = "1/1/down/default/-1/-1/false";
+                });
+            }
         }
 
         private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
