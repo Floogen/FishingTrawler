@@ -203,7 +203,7 @@ namespace FishingTrawler.GameLocations
                             return true;
                         }
 
-                        int restoreAmount = (10 * fuelSize) + (fuelSize == 3 ? 5 : 0);
+                        int restoreAmount = (5 * fuelSize) + (fuelSize == 3 ? 5 : 0);
                         AdjustFuelLevel(restoreAmount);
                         FishingTrawler.SyncTrawler(SyncType.Fuel, restoreAmount, FishingTrawler.GetFarmersOnTrawler());
 
