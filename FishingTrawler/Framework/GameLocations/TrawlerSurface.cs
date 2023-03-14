@@ -83,6 +83,24 @@ namespace FishingTrawler.GameLocations
                     }
                 }
             }
+
+            // Set water tiles for Dynamic Reflections
+            var backLayer = this.map.GetLayer("Back");
+            this.waterTiles = new bool[backLayer.LayerWidth, backLayer.LayerHeight];
+            for (int x = 0; x < backLayer.LayerWidth; x++)
+            {
+                for (int y = 0; y < backLayer.LayerHeight; y++)
+                {
+                    Tile tile = backLayer.PickTile(new Location(x * 64, y * 64), Game1.viewport.Size);
+
+                    if (tile is null || tile.TileIndex != 543)
+                    {
+                        continue;
+                    }
+
+                    tile.TileIndexProperties["Water"] = "T";
+                }
+            }
         }
 
         internal override void Reset()
@@ -95,7 +113,7 @@ namespace FishingTrawler.GameLocations
             UpdateFishCaught(fishCaughtOverride: 0);
 
             // Clear out the TemporaryAnimatedSprite we preserved
-            base.resetLocalState();
+            resetLocalState();
         }
 
         protected override void resetLocalState()

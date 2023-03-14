@@ -65,6 +65,10 @@ namespace FishingTrawler.Framework.Patches.xTiles
             }
             else if (Game1.currentLocation is TrawlerSurface trawlerSurface)
             {
+                if (__instance.Id.Equals("Back", StringComparison.OrdinalIgnoreCase) is true)
+                {
+                    trawlerSurface.Map.GetLayer("WaterFlow").Draw(displayDevice, mapViewport, displayOffset, wrapAround, pixelZoom);
+                }
                 if (__instance.Id.Equals("AlwaysFront", StringComparison.OrdinalIgnoreCase) is true)
                 {
                     trawlerSurface.Map.GetLayer("Flags").Draw(displayDevice, mapViewport, displayOffset, wrapAround, pixelZoom);
