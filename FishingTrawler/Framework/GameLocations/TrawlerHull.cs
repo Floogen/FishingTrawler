@@ -49,7 +49,7 @@ namespace FishingTrawler.GameLocations
             _waterLevel = 0;
             areLeaksEnabled = true;
             hasWeakHull = false;
-            fuelConsumptionIncrement = -5;
+            fuelConsumptionIncrement = -10;
 
             _hullHoleLocations = new List<Location>();
             _coalLocations = new List<Location>();
@@ -464,8 +464,8 @@ namespace FishingTrawler.GameLocations
             }
             else
             {
-                // For each leak, add 2 to the water level
-                ChangeWaterLevel(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count() * 2);
+                // For each leak, add 1.5 (rounded down) to the water level
+                ChangeWaterLevel((int)(_hullHoleLocations.Where(loc => IsHoleLeaking(loc.X, loc.Y)).Count() * 1.5));
             }
 
             // Using PyTK for these layers and opacity
