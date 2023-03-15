@@ -29,7 +29,6 @@ namespace FishingTrawler.Framework.Managers
         // Increment values
         private int _timerIncrement = -1000;
         private int _computerCooldownIncrement = -1000;
-        private int _fuelIncrement = -5;
 
         // Split screen data
         private readonly PerScreen<int> _fishingTripTimer = new PerScreen<int>();
@@ -104,8 +103,8 @@ namespace FishingTrawler.Framework.Managers
             // Every x seconds recalculate the fuel level
             if (e.IsMultipleOf(_fuelUpdateInterval))
             {
-                trawlerHull.AdjustFuelLevel(_fuelIncrement);
-                FishingTrawler.SyncTrawler(SyncType.Fuel, _fuelIncrement, FishingTrawler.GetFarmersOnTrawler());
+                trawlerHull.AdjustFuelLevel(trawlerHull.fuelConsumptionIncrement);
+                FishingTrawler.SyncTrawler(SyncType.Fuel, trawlerHull.fuelConsumptionIncrement, FishingTrawler.GetFarmersOnTrawler());
             }
 
             // Every random interval check for new event (leak, net tearing, etc.) on Trawler

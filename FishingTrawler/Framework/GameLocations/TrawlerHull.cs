@@ -37,6 +37,7 @@ namespace FishingTrawler.GameLocations
 
         internal bool areLeaksEnabled;
         internal bool hasWeakHull;
+        internal int fuelConsumptionIncrement;
 
         public TrawlerHull()
         {
@@ -48,6 +49,7 @@ namespace FishingTrawler.GameLocations
             _waterLevel = 0;
             areLeaksEnabled = true;
             hasWeakHull = false;
+            fuelConsumptionIncrement = -5;
 
             _hullHoleLocations = new List<Location>();
             _coalLocations = new List<Location>();
