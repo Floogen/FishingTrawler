@@ -21,7 +21,9 @@ namespace FishingTrawler.Framework.Objects.Items.Rewards
         SharksFin,
         Worldly,
         SlimeKing,
-        KingCrab
+        KingCrab,
+        EternalFlame,
+        SwiftWinds
     }
 
     public class AncientFlag
@@ -68,6 +70,10 @@ namespace FishingTrawler.Framework.Objects.Items.Rewards
                     return FishingTrawler.i18n.Get("item.ancient_flag.slime_king.name");
                 case FlagType.KingCrab:
                     return FishingTrawler.i18n.Get("item.ancient_flag.king_crab.name");
+                case FlagType.EternalFlame:
+                    return FishingTrawler.i18n.Get("item.ancient_flag.eternal_flame.name");
+                case FlagType.SwiftWinds:
+                    return FishingTrawler.i18n.Get("item.ancient_flag.swift_winds.name");
                 default:
                     return FishingTrawler.i18n.Get("item.ancient_flag.unknown.name");
             }
@@ -95,6 +101,10 @@ namespace FishingTrawler.Framework.Objects.Items.Rewards
                     return FishingTrawler.i18n.Get("item.ancient_flag.slime_king.description");
                 case FlagType.KingCrab:
                     return FishingTrawler.i18n.Get("item.ancient_flag.king_crab.description");
+                case FlagType.EternalFlame:
+                    return FishingTrawler.i18n.Get("item.ancient_flag.eternal_flame.description");
+                case FlagType.SwiftWinds:
+                    return FishingTrawler.i18n.Get("item.ancient_flag.swift_winds.description");
                 default:
                     return FishingTrawler.i18n.Get("item.ancient_flag.unknown.description");
             }

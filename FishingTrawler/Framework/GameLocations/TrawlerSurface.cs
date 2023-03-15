@@ -264,7 +264,7 @@ namespace FishingTrawler.GameLocations
             List<int> indexes = new List<int>();
             for (int offset = 0; offset < 8; offset++)
             {
-                indexes.Add(startingIndex + 20 * offset);
+                indexes.Add(startingIndex + (Enum.GetNames(typeof(FlagType)).Length * 2) * offset);
             }
 
             return indexes.ToArray();

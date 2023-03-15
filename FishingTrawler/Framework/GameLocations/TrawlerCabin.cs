@@ -28,6 +28,8 @@ namespace FishingTrawler.GameLocations
         private static int _completedComputerCycles = 0;
         private static int _computerCooldownMilliseconds = BASE_COMPUTER_MILLISECONDS;
 
+        internal bool hasSwiftWinds;
+
         public TrawlerCabin()
         {
 
@@ -35,6 +37,8 @@ namespace FishingTrawler.GameLocations
 
         internal TrawlerCabin(string mapPath, string name) : base(mapPath, name)
         {
+            hasSwiftWinds = false;
+
             _computerLocations = new List<Location>();
 
             Layer buildingsLayer = map.GetLayer("Buildings");
@@ -239,10 +243,10 @@ namespace FishingTrawler.GameLocations
         public Buff GetCoffeeBuff()
         {
             int speedBuff = 9;
-            var buff = new Buff(null, 60000, COFFEE_MACHINE_SOURCE, speedBuff) { displaySource = FishingTrawler.i18n.Get("etc.coffee_machine") };
+            var buff = new Buff(null, hasSwiftWinds is true ? 60000 * 3 : 60000, COFFEE_MACHINE_SOURCE, speedBuff) { displaySource = FishingTrawler.i18n.Get("etc.coffee_machine") };
 
-            // Set the speed buff to +2
-            buff.buffAttributes[speedBuff] = 2;
+            // Set the speed buff to +2 (+3 if using Swift Winds flag)
+            buff.buffAttributes[speedBuff] = hasSwiftWinds is true ? 3 : 2;
 
             return buff;
         }

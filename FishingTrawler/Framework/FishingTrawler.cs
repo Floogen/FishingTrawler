@@ -303,6 +303,15 @@ namespace FishingTrawler
                         // Causes the trawler to only catch crab pot based creatures, higher chance of crab
                         _trawlerRewards.Value.hasKingCrab = true;
                         break;
+                    case FlagType.EternalFlame:
+                        // Doubles net output, but doubles fuel consumption
+                        _trawlerSurface.Value.fishCaughtMultiplier = 2;
+                        _trawlerHull.Value.fuelConsumptionIncrement = -Math.Abs(_trawlerHull.Value.fuelConsumptionIncrement * 2);
+                        break;
+                    case FlagType.SwiftWinds:
+                        // Increase Murphy's coffee buff to 3 minutes and increase the power by 1
+                        _trawlerCabin.Value.hasSwiftWinds = true;
+                        break;
                     default:
                         // Do nothing
                         break;
