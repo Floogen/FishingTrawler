@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="11" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="5">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="11" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="5">
  <properties>
   <property name="LocationContext" value="Island"/>
   <property name="Outdoors" value="T"/>
@@ -779,10 +779,10 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="2081" name="untitled tile sheet2" tilewidth="16" tileheight="16" tilecount="1975" columns="25">
+ <tileset firstgid="2081" name="untitled tile sheet2" tilewidth="16" tileheight="16" tilecount="0" columns="25">
   <image source="summer_outdoorsTileSheet" width="400" height="1264"/>
  </tileset>
- <tileset firstgid="4056" name="untitled tile sheet3" tilewidth="16" tileheight="16" tilecount="256" columns="32">
+ <tileset firstgid="2081" name="untitled tile sheet3" tilewidth="16" tileheight="16" tilecount="256" columns="32">
   <image source="island_tilesheet_2" width="512" height="128"/>
   <tile id="35">
    <properties>
@@ -825,7 +825,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="4312" name="untitled tile sheet" tilewidth="16" tileheight="16" tilecount="2080" columns="32">
+ <tileset firstgid="2337" name="untitled tile sheet" tilewidth="16" tileheight="16" tilecount="2080" columns="32">
   <image source="island_tilesheet_1" width="512" height="1040"/>
   <tile id="7">
    <properties>
@@ -1849,7 +1849,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="6392" name="z_beachPatch" tilewidth="16" tileheight="16" tilecount="40" columns="5">
+ <tileset firstgid="4417" name="z_beachPatch" tilewidth="16" tileheight="16" tilecount="40" columns="5">
   <image source="BeachPatch.png" width="80" height="128"/>
   <tile id="14">
    <properties>
@@ -1867,7 +1867,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="6432" name="untitled tile sheet" tilewidth="16" tileheight="16" tilecount="527" columns="17">
+ <tileset firstgid="4457" name="untitled tile sheet" tilewidth="16" tileheight="16" tilecount="527" columns="17">
   <image source="spring_beach" width="272" height="496"/>
   <tile id="7">
    <properties>
@@ -2886,7 +2886,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="6959" name="untitled tile sheet" tilewidth="16" tileheight="16" tilecount="2080" columns="32">
+ <tileset firstgid="4984" name="untitled tile sheet" tilewidth="16" tileheight="16" tilecount="2080" columns="32">
   <image source="island_tilesheet_1" width="512" height="1040"/>
   <tile id="7">
    <properties>
@@ -3661,42 +3661,42 @@
  </tileset>
  <layer id="1" name="Back" width="11" height="16">
   <data encoding="csv">
-40,40,40,40,40,40,40,40,40,7156,7156,
-198,198,198,198,198,6424,6425,6426,198,198,198,
-198,198,198,198,198,6920,6920,6904,198,198,198,
-198,198,198,198,198,6920,6902,6920,198,198,198,
-198,198,198,198,198,6904,6921,6920,198,198,198,
-198,198,198,198,198,6902,6919,6904,198,198,198,
-230,166,166,230,166,6920,6904,6920,166,230,166,
-200,200,200,200,200,6904,6919,6919,200,200,200,
-200,200,200,200,200,6920,6920,6902,200,200,200,
-200,200,200,200,200,6902,6903,6921,200,200,200,
-232,6902,6919,6904,6920,6920,6904,6920,6920,6904,232,
-136,6920,6903,6920,6920,6904,6919,6920,6904,6919,136,
-136,6937,6937,6940,6937,6937,6410,6937,6937,6923,136,
-136,6421,136,136,136,6421,136,136,6421,136,2147483784,
+40,40,40,40,40,40,40,40,40,5181,5181,
+198,198,198,198,198,4449,4450,4451,198,198,198,
+198,198,198,198,198,4945,4945,4929,198,198,198,
+198,198,198,198,198,4945,4927,4945,198,198,198,
+198,198,198,198,198,4929,4946,4945,198,198,198,
+198,198,198,198,198,4927,4944,4929,198,198,198,
+230,166,166,230,166,4945,4929,4945,166,230,166,
+200,200,200,200,200,4929,4944,4944,200,200,200,
+200,200,200,200,200,4945,4945,4927,200,200,200,
+200,200,200,200,200,4927,4928,4946,200,200,200,
+232,4927,4944,4929,4945,4945,4929,4945,4945,4929,232,
+136,4945,4928,4945,4945,4929,4944,4945,4929,4944,136,
+136,4962,4962,4965,4962,4962,4961,4962,4962,4948,136,
+136,4446,136,136,136,4446,136,136,4446,136,2147483784,
 136,136,136,136,136,136,136,136,136,136,136,
 136,136,136,136,136,136,136,136,136,136,136
 </data>
  </layer>
  <layer id="2" name="Buildings" width="11" height="16">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,7380,7220,
+0,0,0,0,0,0,0,0,0,5405,5245,
 294,262,294,262,294,0,0,0,294,454,17,
-17,17,17,17,6867,0,0,0,6871,17,17,
-0,0,0,0,6918,0,0,0,6922,0,0,
-0,0,0,0,6918,0,0,0,6922,0,0,
-0,0,0,0,6918,0,0,0,6905,0,0,
-0,0,0,0,6901,0,0,0,6922,0,0,
-0,0,0,0,6918,0,0,0,6922,0,0,
-0,0,0,0,6918,0,0,0,6905,0,0,
-0,6402,6403,6404,6901,0,0,0,6417,0,0,
-6850,6407,6408,6409,4101,0,0,6428,6422,6423,6871,
-6918,0,0,0,0,0,0,0,0,0,6922,
-6935,6749,0,0,0,0,0,0,0,6749,6939,
-6952,6953,6954,6954,6954,6953,6406,6954,6953,6954,2147490600,
-0,0,0,0,0,6413,6411,6413,0,0,0,
-0,0,0,0,0,0,6416,0,0,0,0
+17,17,17,17,4892,0,0,0,4896,17,17,
+0,0,0,0,4943,0,0,0,4947,0,0,
+0,0,0,0,4943,0,0,0,4947,0,0,
+0,0,0,0,4943,0,0,0,4930,0,0,
+0,0,0,0,4926,0,0,0,4947,0,0,
+0,0,0,0,4943,0,0,0,4947,0,0,
+0,0,0,0,4943,0,0,0,4930,0,0,
+0,4427,4428,4429,4926,0,0,0,4442,0,0,
+4875,4432,4433,4434,2126,0,0,4453,4447,4448,4896,
+4943,0,0,0,0,0,0,0,0,0,4947,
+4960,4774,0,0,0,0,0,0,0,4774,4964,
+4977,4978,4979,4979,4979,4978,4431,4979,4978,4979,2147488625,
+0,0,0,0,0,4438,4436,4438,0,0,0,
+0,0,0,0,0,0,4441,0,0,0,0
 </data>
  </layer>
  <layer id="3" name="Front" width="11" height="16">
@@ -3708,9 +3708,9 @@
 0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,5601,5602,5603,
-0,0,0,0,0,0,0,0,5633,5634,5635,
-0,0,0,0,0,0,0,6427,0,6418,0,
+0,0,0,0,0,0,0,0,3626,3627,3628,
+0,0,0,0,0,0,0,0,3658,3659,3660,
+0,0,0,0,0,0,0,4452,0,4443,0,
 0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,

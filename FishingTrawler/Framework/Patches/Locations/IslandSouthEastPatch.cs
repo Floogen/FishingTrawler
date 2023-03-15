@@ -102,16 +102,16 @@ namespace FishingTrawler.Patches.Locations
             Texture2D boatTexture = FishingTrawler.assetManager.boatTexture;
             if (boatTexture != null)
             {
-                b.Draw(boatTexture, Game1.GlobalToLocal(FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+                b.Draw(boatTexture, Game1.GlobalToLocal(FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 288, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
                 if (FishingTrawler.trawlerObject._closeGate)
                 {
                     b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(113f, 24f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(321, 40, 14, 8), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1.1f);
-                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(112f, 96f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(304, 112, 16, 64), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1.11f);
+                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(112f, 96f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(320, 112, 16, 48), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1.11f);
                 }
                 else
                 {
                     b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(110f, 14f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(302, 29, 5, 19), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1.1f);
-                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(112f, 96f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(320, 112, 16, 48), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1.11f);
+                    b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(112f, 96f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(304, 112, 16, 64), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1.11f);
                 }
             }
 

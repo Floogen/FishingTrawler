@@ -71,13 +71,22 @@ namespace FishingTrawler.Objects
             }
 
             // Reset the plank tile for departure
-            if (Game1.currentLocation is Beach)
+            if (location is Beach)
             {
-                int index = Game1.currentLocation.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
+                int index = location.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
                 if (index != -1)
                 {
-                    Game1.currentLocation.setMapTileIndex(87, 40, -1, "Back");
-                    Game1.currentLocation.setMapTileIndex(87, 40, 14, "Back", index);
+                    location.setMapTileIndex(87, 40, -1, "Back");
+                    location.setMapTileIndex(87, 40, 14, "Back", index);
+                }
+            }
+            else if (location is IslandSouthEast)
+            {
+                int index = location.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
+                if (index != -1)
+                {
+                    location.setMapTileIndex(10, 41, -1, "Back");
+                    location.setMapTileIndex(10, 41, 14, "Back", index);
                 }
             }
 
@@ -87,7 +96,7 @@ namespace FishingTrawler.Objects
             string eventString = "/-1000 -1000/farmer 0 0 0/playMusic none/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Buildings 87 41 19/changeMapTile Buildings 87 42 24/changeMapTile Buildings 87 43 4/fade/viewport 83 38/locationSpecificCommand non_blocking_pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/changeMapTile Buildings 87 41 14/changeMapTile Buildings 87 42 19/changeMapTile Buildings 87 43 24/locationSpecificCommand warp_to_cabin/end warpOut";
             if (location is IslandSouthEast)
             {
-                eventString = "/-1000 -1000/farmer 0 0 0/playMusic none/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Back 10 41 14/changeMapTile Buildings 10 42 19/changeMapTile Buildings 10 43 24/changeMapTile Buildings 10 44 4/fade/viewport 22 39/locationSpecificCommand non_blocking_pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/changeMapTile Back 10 41 18/changeMapTile Buildings 10 42 14/changeMapTile Buildings 10 43 19/changeMapTile Buildings 10 44 24/locationSpecificCommand warp_to_cabin/end warpOut";
+                eventString = "/-1000 -1000/farmer 0 0 0/playMusic none/fade/viewport -5000 -5000/warp farmer -100 -100/locationSpecificCommand despawn_murphy/locationSpecificCommand close_gate/changeMapTile Buildings 10 42 19/changeMapTile Buildings 10 43 24/changeMapTile Buildings 10 44 4/fade/viewport 22 39/locationSpecificCommand non_blocking_pause 1000/playSound furnace/locationSpecificCommand animate_boat_start/locationSpecificCommand non_blocking_pause 1000/locationSpecificCommand boat_depart/fade/viewport -5000 -5000/changeMapTile Buildings 10 42 14/changeMapTile Buildings 10 43 19/changeMapTile Buildings 10 44 24/locationSpecificCommand warp_to_cabin/end warpOut";
             }
 
             if (Context.IsMultiplayer)
@@ -183,6 +192,15 @@ namespace FishingTrawler.Objects
             {
                 Game1.currentLocation.setMapTileIndex(87, 40, -1, "Back");
                 Game1.currentLocation.setMapTileIndex(87, 40, 504, "Back", 1);
+            }
+            else if (Game1.currentLocation is IslandSouthEast)
+            {
+                int index = location.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
+                if (index != -1)
+                {
+                    Game1.currentLocation.setMapTileIndex(10, 41, -1, "Back");
+                    Game1.currentLocation.setMapTileIndex(10, 41, 18, "Back", index);
+                }
             }
 
             Reset();

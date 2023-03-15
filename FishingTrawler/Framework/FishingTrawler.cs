@@ -120,7 +120,7 @@ namespace FishingTrawler
             helper.ConsoleCommands.Add("ft_get_flags", "Gives all the variations of the ancient flag.\n\nUsage: ft_get_flags", DebugGetAllFlags);
             helper.ConsoleCommands.Add("ft_get_specials", "Gives all the special rewards.\n\nUsage: ft_get_specials", DebugGetSpecialRewards);
             helper.ConsoleCommands.Add("ft_skip_requirements", "Skips all requirements to meet Murphy and enables the minigame.\n\nUsage: ft_skip_requirements", DebugSkipRequirements);
-            helper.ConsoleCommands.Add("ft_warp", "Warps to the entrance of the minigame.\n\nUsage: ft_warp", delegate { Monitor.Log($"Warping {Game1.player.Name} to Fishing Trawler minigame entrance!", LogLevel.Debug); Game1.warpFarmer("Beach", 86, 37, 2); });
+            helper.ConsoleCommands.Add("ft_warp", "Warps to the entrance of the minigame.\n\nUsage: ft_warp", delegate { Monitor.Log($"Warping {Game1.player.Name} to Fishing Trawler minigame entrance!", LogLevel.Debug); if (ShouldMurphyAppear(Game1.getLocationFromName("IslandSouthEast"))) Game1.warpFarmer("IslandSouthEast", 10, 27, 2); else Game1.warpFarmer("Beach", 86, 37, 2); });
 
             // Hook into Content related events
             helper.Events.Content.AssetRequested += OnAssetRequested;
