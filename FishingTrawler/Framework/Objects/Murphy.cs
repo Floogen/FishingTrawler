@@ -175,7 +175,7 @@ namespace FishingTrawler.Objects
 
         private string GetMinigameExplanation(object title = null)
         {
-            return string.Concat(GetDialogue("dialogue.minigame_explanation_hull", title), GetDialogue("dialogue.minigame_explanation_bailing", title), GetDialogue("dialogue.minigame_explanation_nets", title), GetDialogue("dialogue.minigame_explanation_engine", title), GetDialogue("dialogue.minigame_explanation_finish", title));
+            return string.Concat(GetDialogue("dialogue.minigame_explanation_hull", title), GetDialogue("dialogue.minigame_explanation_bailing", title), GetDialogue("dialogue.minigame_explanation_nets", title), GetDialogue("dialogue.minigame_explanation_fuel", title), GetDialogue("dialogue.minigame_explanation_computer", title), GetDialogue("dialogue.minigame_explanation_finish", title));
         }
 
         private void AskQuestionAfterGreeting()
