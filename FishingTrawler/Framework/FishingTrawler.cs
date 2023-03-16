@@ -109,6 +109,9 @@ namespace FishingTrawler
 
                 // Apply Character patches
                 new FarmerPatch(monitor, modHelper).Apply(harmony);
+
+                // Apply Bells and Whistles patch
+                new ScreenFadePatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {
@@ -471,6 +474,7 @@ namespace FishingTrawler
                 var configAPI = apiManager.GetGMCMInterface();
                 configAPI.RegisterModConfig(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.required_fishing_level.name"), i18n.Get("config.option.required_fishing_level.description"), () => config.minimumFishingLevel, (val) => config.minimumFishingLevel = val, 0, 10);
+                configAPI.RegisterSimpleOption(ModManifest, i18n.Get("config.option.disable_screen_fade.name"), i18n.Get("config.option.disable_screen_fade.description"), () => config.disableScreenFade, (val) => config.disableScreenFade = val);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.net_output.name"), i18n.Get("config.option.net_output.description"), () => config.fishPerNet, (val) => config.fishPerNet = val, 0f, 1f, 0.5f);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.engine_boost.name"), i18n.Get("config.option.engine_boost.description"), () => config.engineFishBonus, (val) => config.engineFishBonus = val, 0, 2);
                 configAPI.RegisterClampedOption(ModManifest, i18n.Get("config.option.event_frequency_lower.name"), i18n.Get("config.option.hull.event_frequency_lower.description"), () => config.hullEventFrequencyLower, (val) => config.hullEventFrequencyLower = val, 1, 15);

@@ -2,6 +2,8 @@
   // Config settings
   "config.option.required_fishing_level.name": "Minimum Fishing Level Required",
   "config.option.required_fishing_level.description": "Sets the minimum fishing requirement for Murphy to appear.",
+  "config.option.disable_screen_fade.name": "Disable Screen Fade",
+  "config.option.disable_screen_fade.description": "Disables screen fade when moving between locations on the Fishing Trawler.",
   "config.option.net_output.name": "Fishing Net Output",
   "config.option.net_output.description": "Determines the amount of fish that each net gives on the trawler. Default is 1 (so 2 in total, as there are two nets).",
   "config.option.engine_boost.name": "Engine Boost",

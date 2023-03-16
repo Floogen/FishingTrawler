@@ -3,6 +3,7 @@
     public class ModConfig
     {
         public int minimumFishingLevel = 3;
+        public bool disableScreenFade = false;
         public float fishPerNet = 1f;
         public int engineFishBonus = 2;
         public int hullEventFrequencyLower = 1;
