@@ -7,10 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FishingTrawler.Framework.Patches.Objects
 {
@@ -42,6 +38,11 @@ namespace FishingTrawler.Framework.Patches.Objects
                 __result = _helper.Translation.Get("item.bailing_bucket.name");
                 return;
             }
+            else if (LostFishingCharm.IsValid(__instance))
+            {
+                __result = _helper.Translation.Get("item.lost_fishing_charm.name");
+                return;
+            }
         }
 
         private static void GetDescriptionPostfix(Tool __instance, ref string __result)
@@ -51,6 +52,11 @@ namespace FishingTrawler.Framework.Patches.Objects
                 __result = bucket.ContainsWater ? _helper.Translation.Get("item.bailing_bucket.description_full") : _helper.Translation.Get("item.bailing_bucket.description_empty");
                 return;
             }
+            else if (LostFishingCharm.IsValid(__instance))
+            {
+                __result = _helper.Translation.Get("item.lost_fishing_charm.description");
+                return;
+            }
         }
 
         private static void CanBeTrashedPostfix(Tool __instance, ref bool __result)
@@ -58,6 +64,11 @@ namespace FishingTrawler.Framework.Patches.Objects
             if (__instance.modData.ContainsKey(ModDataKeys.BAILING_BUCKET_KEY))
             {
                 __result = FishingTrawler.IsPlayerOnTrawler() is false;
+                return;
+            }
+            else if (LostFishingCharm.IsValid(__instance))
+            {
+                __result = true;
                 return;
             }
         }
@@ -71,6 +82,12 @@ namespace FishingTrawler.Framework.Patches.Objects
 
                 return false;
             }
+            else if (LostFishingCharm.IsValid(__instance))
+            {
+                spriteBatch.Draw(FishingTrawler.assetManager.lostFishingCharmTexture, location + new Vector2(32f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, scaleSize * 4f, SpriteEffects.None, layerDepth);
+
+                return false;
+            }
 
             return true;
         }
@@ -81,6 +98,11 @@ namespace FishingTrawler.Framework.Patches.Objects
             {
                 __result = true;
                 return bucket.Use(location, x, y, who);
+            }
+            else if (LostFishingCharm.IsValid(__instance))
+            {
+                __result = true;
+                return LostFishingCharm.Use(location, x, y, who);
             }
 
             return true;
@@ -105,6 +127,10 @@ namespace FishingTrawler.Framework.Patches.Objects
         private static bool DoFunctionPrefix(Tool __instance, ref Farmer ___lastUser, GameLocation location, int x, int y, int power, Farmer who)
         {
             if (__instance.modData.ContainsKey(ModDataKeys.BAILING_BUCKET_KEY) && who == Game1.player && new BailingBucket(__instance) is BailingBucket bucket && bucket.IsValid)
+            {
+                return false;
+            }
+            else if (LostFishingCharm.IsValid(__instance))
             {
                 return false;
             }

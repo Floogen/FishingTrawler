@@ -58,15 +58,20 @@
 
 	<ItemGroup>
 		<None Remove="Framework\Assets\Objects\CoalClump.png" />
+		<None Remove="Framework\Assets\Objects\LostFishingCharm.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<UpToDateCheckInput Remove="Framework\Assets\Objects\CoalClump.png" />
+		<UpToDateCheckInput Remove="Framework\Assets\Objects\LostFishingCharm.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="Framework\Assets\Objects\CoalClump.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Framework\Assets\Objects\LostFishingCharm.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

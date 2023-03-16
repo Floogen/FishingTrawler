@@ -1,4 +1,5 @@
 ﻿using FishingTrawler.Framework.Objects.Items.Rewards;
+using FishingTrawler.Framework.Objects.Items.Tools;
 using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Objects;
 using StardewModdingAPI;
@@ -365,11 +366,15 @@ namespace FishingTrawler.Objects
             if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
             {
                 FishingTrawler.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
-                switch (Game1.random.Next(0, 1))
+                switch (Game1.random.Next(0, 2))
                 {
-                    default:
+                    case 0:
                         FishingTrawler.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
                         _rewardChest.addItem(AnglerRing.CreateInstance());
+                        break;
+                    case 1:
+                        FishingTrawler.monitor.Log($"Player was rewarded with Murphy's Fishing Charm!", LogLevel.Trace);
+                        _rewardChest.addItem(LostFishingCharm.CreateInstance());
                         break;
                 }
             }

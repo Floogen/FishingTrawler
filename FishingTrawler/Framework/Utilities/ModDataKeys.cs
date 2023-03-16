@@ -22,9 +22,12 @@
         internal const string BAILING_BUCKET_CONTAINS_WATER = "PeacefulEnd.FishingTrawler_BailingBucket.ContainsWater";
         internal const string BAILING_BUCKET_SCALE = "PeacefulEnd.FishingTrawler_BailingBucket.Scale";
 
-
+        // Rewards related
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
         internal const string ANGLER_RING_KEY = "PeacefulEnd.FishingTrawler_AnglerRing";
+        internal const string LOST_FISHING_CHARM_KEY = "PeacefulEnd.FishingTrawler_LostFishingCharm";
+
+        // Resource related
         internal const string COAL_CLUMP_KEY = "PeacefulEnd.FishingTrawler_CoalClump";
 
         // Mail related

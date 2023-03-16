@@ -861,7 +861,8 @@ namespace FishingTrawler
 
         private void DebugGetSpecialRewards(string command, string[] args)
         {
-            Game1.player.addItemByMenuIfNecessary(AnglerRing.CreateInstance());
+            Game1.player.addItemToInventory(AnglerRing.CreateInstance());
+            Game1.player.addItemToInventory(LostFishingCharm.CreateInstance());
             Monitor.Log($"Giving all special rewards to {Game1.player.Name}.", LogLevel.Debug);
         }
 
