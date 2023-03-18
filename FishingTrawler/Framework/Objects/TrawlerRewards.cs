@@ -340,6 +340,31 @@ namespace FishingTrawler.Objects
             }
         }
 
+        internal void AddSpecialReward()
+        {
+            var randomRewardOption = Game1.random.Next(0, 2);
+            if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_ANGLER_RING) is false)
+            {
+                randomRewardOption = 0;
+            }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_LOST_FISHING_CHARM) is false)
+            {
+                randomRewardOption = 1;
+            }
+
+            switch (randomRewardOption)
+            {
+                case 0:
+                    FishingTrawler.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
+                    _rewardChest.addItem(AnglerRing.CreateInstance());
+                    break;
+                case 1:
+                    FishingTrawler.monitor.Log($"Player was rewarded with Murphy's Fishing Charm!", LogLevel.Trace);
+                    _rewardChest.addItem(LostFishingCharm.CreateInstance());
+                    break;
+            }
+        }
+
         internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
         {
             FishingTrawler.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
@@ -361,22 +386,12 @@ namespace FishingTrawler.Objects
                 _rewardChest.addItem(AncientFlag.CreateInstance(FlagType.Unknown));
             }
 
-            // See if this run generates an special reward
+            // If this run generates an special reward
             FishingTrawler.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
             if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
             {
-                FishingTrawler.monitor.Log($"Player got lucky and has a chance of getting special reward!", LogLevel.Trace);
-                switch (Game1.random.Next(0, 2))
-                {
-                    case 0:
-                        FishingTrawler.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
-                        _rewardChest.addItem(AnglerRing.CreateInstance());
-                        break;
-                    case 1:
-                        FishingTrawler.monitor.Log($"Player was rewarded with Murphy's Fishing Charm!", LogLevel.Trace);
-                        _rewardChest.addItem(LostFishingCharm.CreateInstance());
-                        break;
-                }
+                FishingTrawler.monitor.Log($"Player got lucky and has a gotten a special reward!", LogLevel.Trace);
+                AddSpecialReward();
             }
 
             float bonusXP = 0f;
