@@ -37,7 +37,7 @@ namespace FishingTrawler.Framework.Patches.Characters
 
         private static void IsCarringPostfix(Farmer __instance, ref Object __result)
         {
-            if (CoalClump.IsValid(__result))
+            if (CoalClump.IsValid(__result) || SeaborneTackle.IsValid(__result))
             {
                 __result = null;
             }
