@@ -340,29 +340,85 @@ namespace FishingTrawler.Objects
             }
         }
 
-        internal void AddSpecialReward()
+        internal bool HasGottenAllSpecialRewards()
         {
-            var randomRewardOption = Game1.random.Next(0, 2);
             if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_ANGLER_RING) is false)
             {
-                randomRewardOption = 0;
+                return false;
             }
             else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_LOST_FISHING_CHARM) is false)
             {
-                randomRewardOption = 1;
+                return false;
+            }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_GUIDING_NARWHAL) is false)
+            {
+                return false;
+            }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_RUSTY_CAGE) is false)
+            {
+                return false;
+            }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_ALLURING_JELLYFISH) is false)
+            {
+                return false;
+            }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_WEIGHTED_TREASURE) is false)
+            {
+                return false;
+            }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_STARRY_BOBBER) is false)
+            {
+                return false;
             }
 
-            switch (randomRewardOption)
+            return true;
+        }
+
+        internal Dictionary<string, Item> GetEligibleSpecialRewards()
+        {
+            Dictionary<string, Item> rewards = new Dictionary<string, Item>();
+
+            bool hasGottenAllRewards = HasGottenAllSpecialRewards();
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_ANGLER_RING) is false)
             {
-                case 0:
-                    FishingTrawler.monitor.Log($"Player was rewarded an Angler Ring!", LogLevel.Trace);
-                    _rewardChest.addItem(AnglerRing.CreateInstance());
-                    break;
-                case 1:
-                    FishingTrawler.monitor.Log($"Player was rewarded with Murphy's Fishing Charm!", LogLevel.Trace);
-                    _rewardChest.addItem(LostFishingCharm.CreateInstance());
-                    break;
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_ANGLER_RING, AnglerRing.CreateInstance());
             }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_LOST_FISHING_CHARM) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_LOST_FISHING_CHARM, LostFishingCharm.CreateInstance());
+            }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_GUIDING_NARWHAL) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_GUIDING_NARWHAL, SeaborneTackle.CreateInstance(TackleType.GuidingNarwhal));
+            }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_RUSTY_CAGE) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_RUSTY_CAGE, SeaborneTackle.CreateInstance(TackleType.RustyCage));
+            }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_ALLURING_JELLYFISH) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_ALLURING_JELLYFISH, SeaborneTackle.CreateInstance(TackleType.AlluringJellyfish));
+            }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_WEIGHTED_TREASURE) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_WEIGHTED_TREASURE, SeaborneTackle.CreateInstance(TackleType.WeightedTreasure));
+            }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_STARRY_BOBBER) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_STARRY_BOBBER, SeaborneTackle.CreateInstance(TackleType.StarryBobber));
+            }
+
+            return rewards;
+        }
+
+        internal void AddSpecialReward()
+        {
+            var rewards = GetEligibleSpecialRewards();
+            var selectedReward = rewards.ElementAt(Game1.random.Next(rewards.Count));
+
+            FishingTrawler.monitor.Log($"Player was rewarded with {selectedReward.Value.DisplayName}!", LogLevel.Trace);
+            _rewardChest.addItem(selectedReward.Value);
+            _farmer.modData[selectedReward.Key] = true.ToString();
         }
 
         internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
