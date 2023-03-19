@@ -97,6 +97,18 @@
   "item.coal_clump.name.large": "Fuel Stack (large)",
   "item.coal_clump.description.large": "A large stack of fuel to greatly refill the boat's engine.",
 
+  // Seaborne Tackle names and descriptions
+  "item.seaborne_tackle.guiding_narwhal.name": "Guiding Narwhal",
+  "item.seaborne_tackle.guiding_narwhal.description": "The shiny horn guides fish to its hook.\n\nIncreases the bite-rate when fishing.\n\nNever breaks.",
+  "item.seaborne_tackle.rusty_cage.name": "Rusty Cage",
+  "item.seaborne_tackle.rusty_cage.description": "Though rusty, the cage still traps fish efficiently.\n\nCauses fish to escape slower when you aren't reeling them in.\n\nNever breaks.",
+  "item.seaborne_tackle.alluring_jellyfish.name": "Alluring Jellyfish",
+  "item.seaborne_tackle.alluring_jellyfish.description": "The bouncing tendrils of the jellyfish help distract the fish.\n\nSlightly increases the size of your \"fishing bar\".\n\nNever breaks.",
+  "item.seaborne_tackle.weighted_treasure.name": "Weighted Treasure",
+  "item.seaborne_tackle.weighted_treasure.description": "A weighted tackle in the shape of a familiar bag.\n\nFish don't escape while collecting treasures and slightly increases the chance to find treasures.\n\nNever breaks.",
+  "item.seaborne_tackle.starry_bobber.name": "Starry Bobber",
+  "item.seaborne_tackle.starry_bobber.description": "The shiny, stardrop-like tackle helps attract the attention of high quality fish.\n\nBoosts the quality of fish that you catch.\n\nNever breaks.",
+
   // Ancient flag reward names and descriptions
   "item.ancient_flag.parely.name": "Parley Flag",
   "item.ancient_flag.jolly_roger.name": "Jolly Roger",

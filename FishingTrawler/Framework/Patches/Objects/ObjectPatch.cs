@@ -56,6 +56,11 @@ namespace FishingTrawler.Framework.Patches.Objects
                         return;
                 }
             }
+            else if (SeaborneTackle.IsValid(__instance))
+            {
+                __result = SeaborneTackle.GetName(__instance);
+                return;
+            }
         }
 
         private static void GetDescriptionPostfix(Object __instance, ref string __result)
@@ -76,9 +81,14 @@ namespace FishingTrawler.Framework.Patches.Objects
                         return;
                 }
             }
+            else if (SeaborneTackle.IsValid(__instance))
+            {
+                __result = Game1.parseText(SeaborneTackle.GetDescription(__instance), Game1.smallFont, System.Math.Max(272, (int)Game1.dialogueFont.MeasureString((__instance.DisplayName == null) ? "" : __instance.DisplayName).X));
+                return;
+            }
         }
 
-        private static bool DrawInMenuPrefix(Object __instance, SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, Color color, bool drawShadow)
+        private static bool DrawInMenuPrefix(Object __instance, SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, ref Color color, bool drawShadow)
         {
             if (CoalClump.IsValid(__instance))
             {
@@ -97,6 +107,13 @@ namespace FishingTrawler.Framework.Patches.Objects
                         break;
                 }
                 spriteBatch.Draw(FishingTrawler.assetManager.coalClumpTexture, location + new Vector2(32f, 32f) * scaleSize, new Rectangle(xOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, scaleSize * 3f, SpriteEffects.None, layerDepth);
+
+                return false;
+            }
+            else if (SeaborneTackle.IsValid(__instance))
+            {
+                var xOffset = 16 * ((int)SeaborneTackle.GetTackleType(__instance) - 1);
+                spriteBatch.Draw(FishingTrawler.assetManager.fishingTacklesTexture, location + new Vector2(32f, 32f) * scaleSize, new Rectangle(xOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, 4f, SpriteEffects.None, layerDepth);
 
                 return false;
             }

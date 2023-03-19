@@ -32,6 +32,7 @@ namespace FishingTrawler.Framework.Managers
         internal Texture2D boatTexture;
         internal Texture2D bucketTexture;
         internal Texture2D coalClumpTexture;
+        internal Texture2D fishingTacklesTexture;
 
         // Etc.
         internal Texture2D uiTexture;
@@ -54,6 +55,7 @@ namespace FishingTrawler.Framework.Managers
             lostFishingCharmTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "LostFishingCharm.png"));
             bucketTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "BailingBucket.png"));
             coalClumpTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "CoalClump.png"));
+            fishingTacklesTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "Objects", "FishingTackles.png"));
 
             uiTexture = _modHelper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"));
         }

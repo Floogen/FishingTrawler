@@ -106,6 +106,7 @@ namespace FishingTrawler
                 new RingPatch(monitor, modHelper).Apply(harmony);
                 new FurniturePatch(monitor, modHelper).Apply(harmony);
                 new ToolPatch(monitor, modHelper).Apply(harmony);
+                new FishingRodPatch(monitor, modHelper).Apply(harmony);
 
                 // Apply Character patches
                 new FarmerPatch(monitor, modHelper).Apply(harmony);
@@ -863,6 +864,14 @@ namespace FishingTrawler
         {
             Game1.player.addItemToInventory(AnglerRing.CreateInstance());
             Game1.player.addItemToInventory(LostFishingCharm.CreateInstance());
+            foreach (TackleType tackleType in Enum.GetValues(typeof(TackleType)))
+            {
+                if (tackleType is TackleType.Unknown)
+                {
+                    continue;
+                }
+                Game1.player.addItemByMenuIfNecessary(SeaborneTackle.CreateInstance(tackleType));
+            }
             Monitor.Log($"Giving all special rewards to {Game1.player.Name}.", LogLevel.Debug);
         }
 

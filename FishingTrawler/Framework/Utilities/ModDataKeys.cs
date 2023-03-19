@@ -26,6 +26,7 @@
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
         internal const string ANGLER_RING_KEY = "PeacefulEnd.FishingTrawler_AnglerRing";
         internal const string LOST_FISHING_CHARM_KEY = "PeacefulEnd.FishingTrawler_LostFishingCharm";
+        internal const string SEABORNE_TACKLE_KEY = "PeacefulEnd.FishingTrawler_SeaborneTackle";
 
         internal const string HAS_FARMER_GOTTEN_ANGLER_RING = "PeacefulEnd.FishingTrawler_AnglerRing.HasReceived";
         internal const string HAS_FARMER_GOTTEN_LOST_FISHING_CHARM = "PeacefulEnd.FishingTrawler_LostFishingCharm.HasReceived";
