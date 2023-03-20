@@ -101,7 +101,7 @@ namespace FishingTrawler.Framework.Patches.Objects
             else if (SeaborneTackle.IsValid(__instance))
             {
                 var xOffset = 16 * ((int)SeaborneTackle.GetTackleType(__instance) - 1);
-                spriteBatch.Draw(FishingTrawler.assetManager.fishingTacklesTexture, location + new Vector2(32f, 32f) * scaleSize, new Rectangle(xOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, 4f, SpriteEffects.None, layerDepth);
+                spriteBatch.Draw(FishingTrawler.assetManager.fishingTacklesTexture, location + new Vector2(32f, 32f) * scaleSize, new Rectangle(xOffset, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, scaleSize * 4f, SpriteEffects.None, layerDepth);
 
                 return false;
             }

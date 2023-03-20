@@ -101,13 +101,13 @@ namespace FishingTrawler.Framework.Patches.Objects
             }
             else if (LostFishingCharm.IsValid(__instance))
             {
-                spriteBatch.Draw(FishingTrawler.assetManager.lostFishingCharmTexture, location + new Vector2(34f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, 4f, SpriteEffects.None, layerDepth);
+                spriteBatch.Draw(FishingTrawler.assetManager.lostFishingCharmTexture, location + new Vector2(34f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, scaleSize * 4f, SpriteEffects.None, layerDepth);
 
                 return false;
             }
             else if (Trident.IsValid(__instance))
             {
-                spriteBatch.Draw(FishingTrawler.assetManager.tridentTexture, location + new Vector2(34f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, 4f, SpriteEffects.None, layerDepth);
+                spriteBatch.Draw(FishingTrawler.assetManager.tridentTexture, location + new Vector2(34f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, scaleSize * 4f, SpriteEffects.None, layerDepth);
 
                 return false;
             }
