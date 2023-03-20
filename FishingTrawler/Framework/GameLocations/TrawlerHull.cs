@@ -1,9 +1,7 @@
 ﻿using FishingTrawler.Framework.GameLocations;
 using FishingTrawler.Framework.Objects.Items.Resources;
-using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
-using Netcode;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -11,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using xTile.Dimensions;
 using xTile.Layers;
 using xTile.Tiles;

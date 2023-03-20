@@ -1,6 +1,5 @@
 ﻿using FishingTrawler.Framework.Interfaces;
 using StardewModdingAPI;
-using System.Threading;
 
 namespace FishingTrawler.Framework.Managers
 {

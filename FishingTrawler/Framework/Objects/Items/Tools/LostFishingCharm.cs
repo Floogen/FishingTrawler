@@ -1,8 +1,6 @@
 ﻿using FishingTrawler.Framework.Utilities;
 using StardewValley;
-using StardewValley.Objects;
 using StardewValley.Tools;
-using System.Net.NetworkInformation;
 
 namespace FishingTrawler.Framework.Objects.Items.Tools
 {

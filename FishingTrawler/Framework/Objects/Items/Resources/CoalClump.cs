@@ -2,7 +2,6 @@
 
 using FishingTrawler.Framework.Utilities;
 using StardewValley;
-using StardewValley.Objects;
 
 namespace FishingTrawler.Framework.Objects.Items.Resources
 {

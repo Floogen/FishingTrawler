@@ -1,16 +1,14 @@
-﻿using FishingTrawler.Framework.Utilities;
-using StardewValley;
-using StardewValley.Objects;
-using StardewValley.Tools;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using System.Net.NetworkInformation;
+﻿using FishingTrawler.Framework.Interfaces;
+using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using FishingTrawler.Framework.Interfaces;
+using StardewValley;
+using StardewValley.Tools;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FishingTrawler.Framework.Objects.Items.Tools
 {

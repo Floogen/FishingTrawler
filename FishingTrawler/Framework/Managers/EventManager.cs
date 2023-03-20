@@ -1,16 +1,12 @@
-﻿using FishingTrawler.Framework.Utilities;
-using FishingTrawler.GameLocations;
+﻿using FishingTrawler.GameLocations;
 using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using xTile.Dimensions;
 
 namespace FishingTrawler.Framework.Managers

@@ -1,25 +1,8 @@
-﻿using FishingTrawler.Framework.Objects.Items.Resources;
-using FishingTrawler.Framework.Objects.Items.Rewards;
-using FishingTrawler.Framework.Objects.Items.Tools;
-using FishingTrawler.Framework.Utilities;
+﻿using FishingTrawler.Framework.Objects.Items.Rewards;
 using FishingTrawler.Patches;
 using HarmonyLib;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using Netcode;
 using StardewModdingAPI;
-using StardewValley;
-using StardewValley.Locations;
-using StardewValley.Objects;
 using StardewValley.Tools;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static StardewValley.Objects.BedFurniture;
 
 namespace FishingTrawler.Framework.Patches.Objects
 {

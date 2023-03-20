@@ -1,17 +1,9 @@
 ﻿using FishingTrawler.Framework.Objects.Items.Tools;
-using FishingTrawler.Framework.Patches.SMAPI;
-using FishingTrawler.GameLocations;
 using FishingTrawler.Patches;
 using HarmonyLib;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using System;
-using xTile.Dimensions;
-using xTile.Display;
-using xTile.Layers;
-using xTile.Tiles;
 
 namespace FishingTrawler.Framework.Patches.xTiles
 {

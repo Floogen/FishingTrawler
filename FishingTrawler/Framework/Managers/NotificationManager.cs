@@ -1,15 +1,10 @@
 ﻿using FishingTrawler.GameLocations;
-using FishingTrawler.Messages;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FishingTrawler.Framework.Managers
 {

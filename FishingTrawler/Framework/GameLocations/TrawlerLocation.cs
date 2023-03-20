@@ -4,11 +4,7 @@ using StardewValley.BellsAndWhistles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using xTile.Dimensions;
-using xTile.Layers;
-using xTile.Tiles;
 
 namespace FishingTrawler.Framework.GameLocations
 {

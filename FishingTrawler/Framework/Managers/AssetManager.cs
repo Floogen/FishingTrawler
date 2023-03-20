@@ -1,15 +1,6 @@
-﻿using FishingTrawler.Framework.Objects.Items.Rewards;
-using FishingTrawler.Framework.Utilities;
-using FishingTrawler.Objects;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
-using StardewValley;
-using StardewValley.Objects;
-using StardewValley.Tools;
 using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace FishingTrawler.Framework.Managers
 {

@@ -1,13 +1,7 @@
-﻿using FishingTrawler.Framework.Managers;
-using FishingTrawler.Framework.Utilities;
+﻿using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Netcode;
 using StardewValley;
 using StardewValley.Tools;
-using System.Collections.Generic;
-using xTile.Dimensions;
 
 namespace FishingTrawler.Framework.Objects.Items.Tools
 {

@@ -1,11 +1,6 @@
-﻿using FishingTrawler.Framework.Managers;
-using FishingTrawler.GameLocations;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
-using StardewValley.BellsAndWhistles;
-using StardewValley.Minigames;
-using System;
 
 namespace FishingTrawler.UI
 {

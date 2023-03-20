@@ -2,8 +2,9 @@
 using FishingTrawler.Framework.Managers;
 using FishingTrawler.Framework.Objects.Items.Rewards;
 using FishingTrawler.Framework.Objects.Items.Tools;
-using FishingTrawler.Framework.Patches.SMAPI;
+using FishingTrawler.Framework.Patches.Characters;
 using FishingTrawler.Framework.Patches.Objects;
+using FishingTrawler.Framework.Patches.SMAPI;
 using FishingTrawler.Framework.Patches.xTiles;
 using FishingTrawler.Framework.Utilities;
 using FishingTrawler.GameLocations;
@@ -24,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FishingTrawler.Framework.Patches.Characters;
 
 namespace FishingTrawler
 {

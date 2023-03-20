@@ -1,7 +1,6 @@
 ﻿using FishingTrawler.Framework.Objects.Items.Rewards;
 using FishingTrawler.Framework.Objects.Items.Tools;
 using FishingTrawler.Framework.Utilities;
-using FishingTrawler.Objects;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;

@@ -1,12 +1,6 @@
 ﻿using FishingTrawler.Framework.Utilities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
-using StardewValley.Objects;
-using StardewValley.Tools;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FishingTrawler.Framework.Objects.Items.Rewards
 {

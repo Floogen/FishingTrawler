@@ -1,5 +1,4 @@
-﻿using FishingTrawler.Framework.Managers;
-using FishingTrawler.Framework.Utilities;
+﻿using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Objects;
 using HarmonyLib;
 using Microsoft.Xna.Framework;

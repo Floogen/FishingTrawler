@@ -4,10 +4,8 @@ using FishingTrawler.Patches;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Tools;
 using System;
 
 namespace FishingTrawler.Framework.Patches.Objects

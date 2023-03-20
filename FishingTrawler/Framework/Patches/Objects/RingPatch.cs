@@ -1,5 +1,4 @@
-﻿using FishingTrawler.Framework.Objects.Items.Tools;
-using FishingTrawler.Framework.Utilities;
+﻿using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Patches;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -8,11 +7,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static StardewValley.Objects.BedFurniture;
 
 namespace FishingTrawler.Framework.Patches.Objects
 {
