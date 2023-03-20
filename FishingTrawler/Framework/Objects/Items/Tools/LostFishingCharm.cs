@@ -18,10 +18,12 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
         {
             if (FishingTrawler.ShouldMurphyAppear(Game1.getLocationFromName("IslandSouthEast")))
             {
+                who.currentLocation.playSound("cavedrip");
                 Game1.warpFarmer("IslandSouthEast", 10, 40, 2);
             }
             else if (FishingTrawler.ShouldMurphyAppear(Game1.getLocationFromName("Beach")))
             {
+                who.currentLocation.playSound("cavedrip");
                 Game1.warpFarmer("Beach", 87, 39, 2);
             }
             else
