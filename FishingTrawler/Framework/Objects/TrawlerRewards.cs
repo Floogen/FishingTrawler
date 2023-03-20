@@ -370,6 +370,10 @@ namespace FishingTrawler.Objects
             {
                 return false;
             }
+            else if (_farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_TRIDENT_TOOL) is false)
+            {
+                return false;
+            }
 
             return true;
         }
@@ -407,6 +411,10 @@ namespace FishingTrawler.Objects
             {
                 rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_SEABORNE_TACKLE_STARRY_BOBBER, SeaborneTackle.CreateInstance(TackleType.StarryBobber));
             }
+            if (hasGottenAllRewards || _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_TRIDENT_TOOL) is false)
+            {
+                rewards.Add(ModDataKeys.HAS_FARMER_GOTTEN_TRIDENT_TOOL, Trident.CreateInstance());
+            }
 
             return rewards;
         }
@@ -442,7 +450,7 @@ namespace FishingTrawler.Objects
                 _rewardChest.addItem(AncientFlag.CreateInstance(FlagType.Unknown));
             }
 
-            // If this run generates an special reward
+            // See if this run generates an special reward
             FishingTrawler.monitor.Log($"Odds for getting special reward during this run: {_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]} : {Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f}", LogLevel.Trace);
             if (Game1.random.NextDouble() <= Math.Min(int.Parse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED]) + 1, 100) / 400f)
             {
@@ -450,6 +458,15 @@ namespace FishingTrawler.Objects
                 AddSpecialReward();
             }
 
+            // If it has been over 10 trips with Murphy and the player has not received a trident, then give them one
+            if (int.TryParse(_farmer.modData[ModDataKeys.MURPHY_TRIPS_COMPLETED], out int murphyTripsCompleted) && murphyTripsCompleted >= 10 && _farmer.modData.ContainsKey(ModDataKeys.HAS_FARMER_GOTTEN_TRIDENT_TOOL) is false)
+            {
+                FishingTrawler.monitor.Log($"{_farmer.Name} has reached pity for Trident, gifting it to them!", LogLevel.Trace);
+                _rewardChest.addItem(Trident.CreateInstance());
+                _farmer.modData[ModDataKeys.HAS_FARMER_GOTTEN_TRIDENT_TOOL] = true.ToString();
+            }
+
+            // Calculate the fishing experience to be gained
             float bonusXP = 0f;
             float totalRewardXP = 3f;
             for (int x = 0; x < amountOfFish; x++)

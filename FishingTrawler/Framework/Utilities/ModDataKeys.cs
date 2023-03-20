@@ -41,6 +41,7 @@
         internal const string HAS_FARMER_GOTTEN_SEABORNE_TACKLE_ALLURING_JELLYFISH = "PeacefulEnd.FishingTrawler_SeaborneTackle.AlluringJellyfish.HasReceived";
         internal const string HAS_FARMER_GOTTEN_SEABORNE_TACKLE_WEIGHTED_TREASURE = "PeacefulEnd.FishingTrawler_SeaborneTackle.WeightedTreasure.HasReceived";
         internal const string HAS_FARMER_GOTTEN_SEABORNE_TACKLE_STARRY_BOBBER = "PeacefulEnd.FishingTrawler_SeaborneTackle.StarryBobber.HasReceived";
+        internal const string HAS_FARMER_GOTTEN_TRIDENT_TOOL = "PeacefulEnd.FishingTrawler_Trident.HasReceived";
 
         // Resource related
         internal const string COAL_CLUMP_KEY = "PeacefulEnd.FishingTrawler_CoalClump";
