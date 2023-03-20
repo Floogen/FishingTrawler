@@ -236,38 +236,116 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             }
 
             // Handle current AnimationState
+            int frameIndex = -1;
             if (animationState is AnimationState.Windup && isAnimationOver is true)
             {
                 animationTimer = 250f;
-                who.FarmerSprite.setCurrentFrame(84);
+                switch (who.FacingDirection)
+                {
+                    case Game1.up:
+                        frameIndex = 0;
+                        break;
+                    case Game1.down:
+                        frameIndex = 84;
+                        break;
+                    case Game1.left:
+                    case Game1.right:
+                        frameIndex = 30;
+                        break;
+                }
+                who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
             }
             else if (animationState is AnimationState.Throw && isAnimationOver is true)
             {
                 animationTimer = 125f;
-                who.FarmerSprite.setCurrentFrame(2);
+                switch (who.FacingDirection)
+                {
+                    case Game1.up:
+                        frameIndex = 0;
+                        break;
+                    case Game1.down:
+                        frameIndex = 2;
+                        break;
+                    case Game1.left:
+                    case Game1.right:
+                        frameIndex = 50;
+                        break;
+                }
+                who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
             }
             else if (animationState is AnimationState.Kneel && isAnimationOver is true)
             {
                 animationTimer = 125f;
-                who.FarmerSprite.setCurrentFrame(5);
+                switch (who.FacingDirection)
+                {
+                    case Game1.up:
+                        frameIndex = 0;
+                        break;
+                    case Game1.down:
+                        frameIndex = 5;
+                        break;
+                    case Game1.left:
+                    case Game1.right:
+                        frameIndex = 34;
+                        break;
+                }
+                who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
 
                 who.currentLocation.temporarySprites.Add(new TemporaryAnimatedSprite(28, 100f, 2, 1, targetPosition * 64f, flicker: false, flipped: false));
             }
             else if (animationState is AnimationState.WaitAfterKneel && isAnimationOver is true)
             {
                 animationTimer = 500f;
-                who.FarmerSprite.setCurrentFrame(4);
+                switch (who.FacingDirection)
+                {
+                    case Game1.up:
+                        frameIndex = 0;
+                        break;
+                    case Game1.down:
+                        frameIndex = 4;
+                        break;
+                    case Game1.left:
+                    case Game1.right:
+                        frameIndex = 35;
+                        break;
+                }
+                who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
             }
             else if (animationState is AnimationState.StartPullup && isAnimationOver is true)
             {
                 animationTimer = 300f;
-                who.FarmerSprite.setCurrentFrame(5);
+                switch (who.FacingDirection)
+                {
+                    case Game1.up:
+                        frameIndex = 0;
+                        break;
+                    case Game1.down:
+                        frameIndex = 5;
+                        break;
+                    case Game1.left:
+                    case Game1.right:
+                        frameIndex = 34;
+                        break;
+                }
+                who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
             }
             else if (animationState is AnimationState.FinishPullup && isAnimationOver is true)
             {
                 animationTimer = 300f;
-                who.FarmerSprite.setCurrentFrame(25);
-                //who.FarmerSprite.StopAnimation();
+                switch (who.FacingDirection)
+                {
+                    case Game1.up:
+                        frameIndex = 0;
+                        break;
+                    case Game1.down:
+                        frameIndex = 25;
+                        break;
+                    case Game1.left:
+                    case Game1.right:
+                        frameIndex = 50;
+                        break;
+                }
+                who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
             }
             else if (animationState is AnimationState.ShowFish)
             {
@@ -293,22 +371,121 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             }
             else
             {
+                float rotation = 0f;
+                var offset = Vector2.Zero;
+
+                // Draw the trident
                 switch (animationState)
                 {
                     case AnimationState.Windup:
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(52f, -48f)), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, 2.35f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        switch (who.FacingDirection)
+                        {
+                            case Game1.up:
+                                rotation = 0;
+                                break;
+                            case Game1.down:
+                                offset = new Vector2(52f, -48f);
+                                rotation = 2.35f;
+                                break;
+                            case Game1.left:
+                                offset = new Vector2(58f, -12f);
+                                rotation = 3.5f;
+                                break;
+                            case Game1.right:
+                                offset = new Vector2(58f, -72f);
+                                rotation = 1.75f;
+                                break;
+                        }
+
+                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.Throw:
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(56f, 0f)), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, 2.35f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        switch (who.FacingDirection)
+                        {
+                            case Game1.up:
+                                rotation = 0;
+                                break;
+                            case Game1.down:
+                                offset = new Vector2(56f, 0f);
+                                rotation = 2.35f;
+                                break;
+                            case Game1.left:
+                                offset = new Vector2(24f, 0f);
+                                rotation = 3.5f;
+                                break;
+                            case Game1.right:
+                                offset = new Vector2(96f, -58f);
+                                rotation = 1.75f;
+                                break;
+                        }
+
+                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.Kneel:
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(56f, 32f)), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, 2.35f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        switch (who.FacingDirection)
+                        {
+                            case Game1.up:
+                                rotation = 0;
+                                break;
+                            case Game1.down:
+                                offset = new Vector2(56f, 32f);
+                                rotation = 2.35f;
+                                break;
+                            case Game1.left:
+                                offset = new Vector2(20f, 42f);
+                                rotation = 3.25f;
+                                break;
+                            case Game1.right:
+                                offset = new Vector2(104f, -16f);
+                                rotation = 1.75f;
+                                break;
+                        }
+
+                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.WaitAfterKneel:
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(56f, 32f)), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, 2.35f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        switch (who.FacingDirection)
+                        {
+                            case Game1.up:
+                                rotation = 0;
+                                break;
+                            case Game1.down:
+                                offset = new Vector2(56f, 32f);
+                                rotation = 2.35f;
+                                break;
+                            case Game1.left:
+                                offset = new Vector2(18f, 48f);
+                                rotation = 3.25f;
+                                break;
+                            case Game1.right:
+                                offset = new Vector2(106f, -12f);
+                                rotation = 1.75f;
+                                break;
+                        }
+
+                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.StartPullup:
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(56f, 32f)), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, 2.35f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        switch (who.FacingDirection)
+                        {
+                            case Game1.up:
+                                rotation = 0;
+                                break;
+                            case Game1.down:
+                                offset = new Vector2(56f, 32f);
+                                rotation = 2.35f;
+                                break;
+                            case Game1.left:
+                                offset = new Vector2(22f, 40f);
+                                rotation = 3.25f;
+                                break;
+                            case Game1.right:
+                                offset = new Vector2(102f, -20f);
+                                rotation = 1.75f;
+                                break;
+                        }
+
+                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                 }
             }
