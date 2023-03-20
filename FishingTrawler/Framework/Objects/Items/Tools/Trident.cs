@@ -100,13 +100,20 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             targetPosition = standingPosition;
 
             // Check to see if there are fish in this location
-            caughtFishId = GetRandomFishForLocation(location);
-            if (caughtFishId == -1)
+            var fishObject = location.getFish(-1f, -1, Game1.random.Next(0, 6), who, -1f, targetPosition);
+            if (fishObject is null)
             {
                 who.currentLocation.playSound("cancel");
                 Game1.addHUDMessage(new HUDMessage("There are no fish here that can be caught with the trident.", 3) { timeLeft = 1000f });
                 return false;
             }
+            else if (FishingRod.isFishBossFish(fishObject.ParentSheetIndex) is true)
+            {
+                who.currentLocation.playSound("cancel");
+                Game1.addHUDMessage(new HUDMessage("A strong fish narrowly escapes your trident!", 2) { timeLeft = 1000f });
+                return false;
+            }
+            caughtFishId = fishObject.ParentSheetIndex;
 
             // Handle exhaustion
             if (who.Stamina <= 1f)
@@ -135,7 +142,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
 
             // Get the fish
             fishSize = GetFishSize(who, caughtFishId);
-            fishQuality = GetFishQuality(who, fishSize);
+            fishQuality = fishObject.HasContextTag("category_fish") ? GetFishQuality(who, fishSize) : 0;
             fishCount = Game1.random.NextDouble() < who.FishingLevel / 100f ? 2 : 1;
             isRecordSizeFish = who.caughtFish(caughtFishId, (int)fishSize, false, 1);
 
