@@ -381,8 +381,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                         switch (who.FacingDirection)
                         {
                             case Game1.up:
-                                rotation = 0;
-                                break;
+                                return;
                             case Game1.down:
                                 offset = new Vector2(52f, -48f);
                                 rotation = 2.35f;
@@ -403,8 +402,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                         switch (who.FacingDirection)
                         {
                             case Game1.up:
-                                rotation = 0;
-                                break;
+                                return;
                             case Game1.down:
                                 offset = new Vector2(56f, 0f);
                                 rotation = 2.35f;
@@ -425,10 +423,9 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                         switch (who.FacingDirection)
                         {
                             case Game1.up:
-                                rotation = 0;
-                                break;
+                                return;
                             case Game1.down:
-                                offset = new Vector2(56f, 32f);
+                                offset = new Vector2(56f, 64f);
                                 rotation = 2.35f;
                                 break;
                             case Game1.left:
@@ -447,10 +444,9 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                         switch (who.FacingDirection)
                         {
                             case Game1.up:
-                                rotation = 0;
-                                break;
+                                return;
                             case Game1.down:
-                                offset = new Vector2(56f, 32f);
+                                offset = new Vector2(56f, 58f);
                                 rotation = 2.35f;
                                 break;
                             case Game1.left:
@@ -469,8 +465,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                         switch (who.FacingDirection)
                         {
                             case Game1.up:
-                                rotation = 0;
-                                break;
+                                return;
                             case Game1.down:
                                 offset = new Vector2(56f, 32f);
                                 rotation = 2.35f;
