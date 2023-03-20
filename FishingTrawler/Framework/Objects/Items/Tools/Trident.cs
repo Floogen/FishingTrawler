@@ -10,6 +10,7 @@ using FishingTrawler.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using FishingTrawler.Framework.Interfaces;
 
 namespace FishingTrawler.Framework.Objects.Items.Tools
 {
@@ -99,8 +100,8 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             }
             targetPosition = standingPosition;
 
-           // Check to see if there are fish in this location
-           caughtFishId = GetRandomFishForLocation(location);
+            // Check to see if there are fish in this location
+            caughtFishId = GetRandomFishForLocation(location);
             if (caughtFishId == -1)
             {
                 Game1.addHUDMessage(new HUDMessage("There are no fish here that can be caught with the trident.", 3) { timeLeft = 1000f });
@@ -491,28 +492,41 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             bool caughtDoubleFish = fishCount == 2;
 
             float yOffset = 4f * (float)Math.Round(Math.Sin(Game1.currentGameTime.TotalGameTime.TotalMilliseconds / 250.0), 2);
-            b.Draw(Game1.mouseCursors, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-120f, -288f + yOffset)), new Rectangle(31, 1870, 73, 49), Color.White * 0.8f, 0f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
 
-            b.Draw(Game1.objectSpriteSheet, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-124f, -284f + yOffset) + new Vector2(44f, 68f)), Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, Trident.caughtFishId, 16, 16), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.0001f + 0.06f);
+            var dynamicReflectionsApi = FishingTrawler.apiManager.GetDynamicReflectionsInterface();
+            if (ShouldSkipForDynamicReflections(dynamicReflectionsApi) is false)
+            {
+                b.Draw(Game1.mouseCursors, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-120f, -288f + yOffset)), new Rectangle(31, 1870, 73, 49), Color.White * 0.8f, 0f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                b.Draw(Game1.objectSpriteSheet, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-124f, -284f + yOffset) + new Vector2(44f, 68f)), Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, Trident.caughtFishId, 16, 16), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.0001f + 0.06f);
+            }
 
+            // Draw held fish
             b.Draw(Game1.objectSpriteSheet, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(0f, -56f)), Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, Trident.caughtFishId, 16, 16), Color.White, ((float)Math.PI * 3f / 4f), new Vector2(8f, 8f), 3f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
             if (caughtDoubleFish)
             {
                 b.Draw(Game1.objectSpriteSheet, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-8f, -56f)), Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, Trident.caughtFishId, 16, 16), Color.White, ((float)Math.PI * 4f / 5f), new Vector2(8f, 8f), 3f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.058f);
             }
 
-            string name = Game1.objectInformation[caughtFishId].Split('/')[4];
-            b.DrawString(Game1.smallFont, name, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(26f - Game1.smallFont.MeasureString(name).X / 2f, -278f + yOffset)), Game1.textColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
-            if (fishSize != -1)
+            if (ShouldSkipForDynamicReflections(dynamicReflectionsApi) is false)
             {
-                b.DrawString(Game1.smallFont, Game1.content.LoadString("Strings\\StringsFromCSFiles:FishingRod.cs.14082"), Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(20f, -214f + yOffset)), Game1.textColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
-                b.DrawString(Game1.smallFont, Game1.content.LoadString("Strings\\StringsFromCSFiles:FishingRod.cs.14083", (LocalizedContentManager.CurrentLanguageCode != 0) ? Math.Round((double)fishSize * 2.54) : ((double)fishSize)), Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(85f - Game1.smallFont.MeasureString(Game1.content.LoadString("Strings\\StringsFromCSFiles:FishingRod.cs.14083", (LocalizedContentManager.CurrentLanguageCode != 0) ? Math.Round((double)fishSize * 2.54) : ((double)fishSize))).X / 2f, -179f + yOffset)), isRecordSizeFish ? (Color.Blue * Math.Min(1f, yOffset / 8f + 1.5f)) : Game1.textColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
-            }
+                string name = Game1.objectInformation[caughtFishId].Split('/')[4];
+                b.DrawString(Game1.smallFont, name, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(26f - Game1.smallFont.MeasureString(name).X / 2f, -278f + yOffset)), Game1.textColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
+                if (fishSize != -1)
+                {
+                    b.DrawString(Game1.smallFont, Game1.content.LoadString("Strings\\StringsFromCSFiles:FishingRod.cs.14082"), Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(20f, -214f + yOffset)), Game1.textColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
+                    b.DrawString(Game1.smallFont, Game1.content.LoadString("Strings\\StringsFromCSFiles:FishingRod.cs.14083", (LocalizedContentManager.CurrentLanguageCode != 0) ? Math.Round((double)fishSize * 2.54) : ((double)fishSize)), Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(85f - Game1.smallFont.MeasureString(Game1.content.LoadString("Strings\\StringsFromCSFiles:FishingRod.cs.14083", (LocalizedContentManager.CurrentLanguageCode != 0) ? Math.Round((double)fishSize * 2.54) : ((double)fishSize))).X / 2f, -179f + yOffset)), isRecordSizeFish ? (Color.Blue * Math.Min(1f, yOffset / 8f + 1.5f)) : Game1.textColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.002f + 0.06f);
+                }
 
-            if (caughtDoubleFish)
-            {
-                Utility.drawTinyDigits(2, b, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-120f, -284f + yOffset) + new Vector2(23f, 29f) * 4f), 3f, (float)who.getStandingY() / 10000f + 0.0001f + 0.061f, Color.White);
+                if (caughtDoubleFish)
+                {
+                    Utility.drawTinyDigits(2, b, Game1.GlobalToLocal(Game1.viewport, who.Position + new Vector2(-120f, -284f + yOffset) + new Vector2(23f, 29f) * 4f), 3f, (float)who.getStandingY() / 10000f + 0.0001f + 0.061f, Color.White);
+                }
             }
+        }
+
+        private static bool ShouldSkipForDynamicReflections(IDynamicReflectionsAPI api)
+        {
+            return api is not null && (api.IsFilteringWater() is true || api.IsFilteringPuddles() is true);
         }
     }
 }

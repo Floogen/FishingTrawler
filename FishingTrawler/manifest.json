@@ -11,6 +11,11 @@
     {
       "UniqueID": "Pathoschild.ContentPatcher",
       "IsRequired": true
+    },
+    {
+      "UniqueID": "PeacefulEnd.DynamicReflections",
+      "IsRequired": false,
+      "MinimumVersion": "1.4.0"
     }
   ]
 }

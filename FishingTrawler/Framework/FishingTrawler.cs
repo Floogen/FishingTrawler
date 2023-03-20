@@ -503,6 +503,11 @@ namespace FishingTrawler
                     return new[] { Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland };
                 });
             }
+
+            if (Helper.ModRegistry.IsLoaded("PeacefulEnd.DynamicReflections") && apiManager.HookIntoDynamicReflections(Helper))
+            {
+                // Do nothing here
+            }
         }
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)

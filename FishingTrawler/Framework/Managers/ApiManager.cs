@@ -9,6 +9,7 @@ namespace FishingTrawler.Framework.Managers
         private IMonitor _monitor;
         private IGenericModConfigMenuAPI genericModConfigMenuApi;
         private IContentPatcherAPI contentPatcherApi;
+        private IDynamicReflectionsAPI dynamicReflectionsApi;
 
         public ApiManager(IMonitor monitor)
         {
@@ -43,6 +44,20 @@ namespace FishingTrawler.Framework.Managers
             return true;
         }
 
+        internal bool HookIntoDynamicReflections(IModHelper helper)
+        {
+            dynamicReflectionsApi = helper.ModRegistry.GetApi<IDynamicReflectionsAPI>("PeacefulEnd.DynamicReflections");
+
+            if (dynamicReflectionsApi is null)
+            {
+                _monitor.Log("Failed to hook into PeacefulEnd.DynamicReflections.", LogLevel.Error);
+                return false;
+            }
+
+            _monitor.Log("Successfully hooked into PeacefulEnd.DynamicReflections.", LogLevel.Debug);
+            return true;
+        }
+
         internal IGenericModConfigMenuAPI GetGMCMInterface()
         {
             return genericModConfigMenuApi;
@@ -51,6 +66,11 @@ namespace FishingTrawler.Framework.Managers
         internal IContentPatcherAPI GetContentPatcherInterface()
         {
             return contentPatcherApi;
+        }
+
+        internal IDynamicReflectionsAPI GetDynamicReflectionsInterface()
+        {
+            return dynamicReflectionsApi;
         }
     }
 }
