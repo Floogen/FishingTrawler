@@ -292,6 +292,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                 }
                 who.FarmerSprite.setCurrentFrame(frameIndex, 0, 100, 1, flip: who.FacingDirection == Game1.left, secondaryArm: false);
 
+                who.currentLocation.playSound("dropItemInWater");
                 who.currentLocation.temporarySprites.Add(new TemporaryAnimatedSprite(28, 100f, 2, 1, targetPosition * 64f, flicker: false, flipped: false));
             }
             else if (animationState is AnimationState.WaitAfterKneel && isAnimationOver is true)
