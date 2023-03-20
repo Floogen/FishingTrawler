@@ -4,8 +4,10 @@ using FishingTrawler.Patches;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Tools;
 using System;
 
 namespace FishingTrawler.Framework.Patches.Objects
@@ -29,6 +31,8 @@ namespace FishingTrawler.Framework.Patches.Objects
             harmony.Patch(AccessTools.Method(_object, nameof(Tool.beginUsing), new[] { typeof(GameLocation), typeof(int), typeof(int), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(BeginUsingPrefix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Tool.tickUpdate), new[] { typeof(GameTime), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(TickUpdatePrefix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Tool.DoFunction), new[] { typeof(GameLocation), typeof(int), typeof(int), typeof(int), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(DoFunctionPrefix)));
+            harmony.Patch(AccessTools.Method(_object, nameof(Tool.endUsing), new[] { typeof(GameLocation), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(EndUsingPrefix)));
+            harmony.Patch(AccessTools.Method(_object, nameof(Tool.leftClick), new[] { typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(DoLeftClickPrefix)));
         }
 
         private static void GetNamePostfix(Tool __instance, ref string __result)
@@ -41,6 +45,11 @@ namespace FishingTrawler.Framework.Patches.Objects
             else if (LostFishingCharm.IsValid(__instance))
             {
                 __result = _helper.Translation.Get("item.lost_fishing_charm.name");
+                return;
+            }
+            else if (Trident.IsValid(__instance))
+            {
+                __result = _helper.Translation.Get("item.trident_tool.name");
                 return;
             }
         }
@@ -57,6 +66,11 @@ namespace FishingTrawler.Framework.Patches.Objects
                 __result = _helper.Translation.Get("item.lost_fishing_charm.description");
                 return;
             }
+            else if (Trident.IsValid(__instance))
+            {
+                __result = _helper.Translation.Get("item.trident_tool.description");
+                return;
+            }
         }
 
         private static void CanBeTrashedPostfix(Tool __instance, ref bool __result)
@@ -67,6 +81,11 @@ namespace FishingTrawler.Framework.Patches.Objects
                 return;
             }
             else if (LostFishingCharm.IsValid(__instance))
+            {
+                __result = true;
+                return;
+            }
+            else if (Trident.IsValid(__instance))
             {
                 __result = true;
                 return;
@@ -88,6 +107,12 @@ namespace FishingTrawler.Framework.Patches.Objects
 
                 return false;
             }
+            else if (Trident.IsValid(__instance))
+            {
+                spriteBatch.Draw(FishingTrawler.assetManager.tridentTexture, location + new Vector2(34f, 32f) * scaleSize, new Rectangle(0, 0, 16, 16), color * transparency, 0f, new Vector2(8f, 8f) * scaleSize, 4f, SpriteEffects.None, layerDepth);
+
+                return false;
+            }
 
             return true;
         }
@@ -103,6 +128,11 @@ namespace FishingTrawler.Framework.Patches.Objects
             {
                 __result = true;
                 return LostFishingCharm.Use(location, x, y, who);
+            }
+            else if (Trident.IsValid(__instance))
+            {
+                __result = true;
+                return Trident.Use(location, x, y, who);
             }
 
             return true;
@@ -120,6 +150,14 @@ namespace FishingTrawler.Framework.Patches.Objects
 
                 return false;
             }
+            else if (Trident.IsValid(__instance) && who.UsingTool && who.CurrentTool == __instance)
+            {
+                Trident.displayTimer -= time.ElapsedGameTime.TotalMilliseconds;
+                if (Trident.displayTimer <= 0f && Game1.input.GetMouseState().LeftButton == ButtonState.Pressed || Game1.didPlayerJustClickAtAll() || Game1.isOneOfTheseKeysDown(Game1.oldKBState, Game1.options.useToolButton))
+                {
+                    __instance.endUsing(who.currentLocation, who);
+                }
+            }
 
             return true;
         }
@@ -133,6 +171,38 @@ namespace FishingTrawler.Framework.Patches.Objects
             else if (LostFishingCharm.IsValid(__instance))
             {
                 return false;
+            }
+            else if (Trident.IsValid(__instance))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool EndUsingPrefix(Tool __instance, GameLocation location, Farmer who)
+        {
+            if (__instance.modData.ContainsKey(ModDataKeys.BAILING_BUCKET_KEY) && who == Game1.player && new BailingBucket(__instance) is BailingBucket bucket && bucket.IsValid)
+            {
+                return false;
+            }
+            else if (LostFishingCharm.IsValid(__instance))
+            {
+                return false;
+            }
+            else if (Trident.IsValid(__instance))
+            {
+                who.forceCanMove();
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool DoLeftClickPrefix(Tool __instance, Farmer who)
+        {
+            if (Trident.IsValid(__instance))
+            {
             }
 
             return true;

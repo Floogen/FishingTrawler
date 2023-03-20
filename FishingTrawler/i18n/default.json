@@ -96,6 +96,8 @@
   "item.coal_clump.description.medium": "A medium stack of fuel to better refill the boat's engine.",
   "item.coal_clump.name.large": "Fuel Stack (large)",
   "item.coal_clump.description.large": "A large stack of fuel to greatly refill the boat's engine.",
+  "item.trident_tool.name": "Trident",
+  "item.trident_tool.description": "An ancient three-pronged spear borne from the sea itself.\n\nUsing it near water will instantly catch fish, though they will be of lower quality.",
 
   // Seaborne Tackle names and descriptions
   "item.seaborne_tackle.guiding_narwhal.name": "Guiding Narwhal",

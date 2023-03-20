@@ -15,7 +15,7 @@ namespace FishingTrawler.Objects
 {
     internal class TrawlerRewards
     {
-        private readonly int[] _forbiddenFish = new int[] { 159, 160, 163, 775, 682, 898, 899, 900, 901 };
+        internal static readonly int[] forbiddenFish = new int[] { 159, 160, 163, 775, 682, 898, 899, 900, 901 };
 
         private Chest _rewardChest;
         private Farmer _farmer;
@@ -75,7 +75,7 @@ namespace FishingTrawler.Objects
             }
 
             Dictionary<int, string> fishData = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
-            eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !_forbiddenFish.Contains(i)));
+            eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !forbiddenFish.Contains(i)));
 
             return eligibleFishIds.Distinct().ToArray();
         }

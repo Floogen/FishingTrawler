@@ -22,6 +22,12 @@
         internal const string BAILING_BUCKET_CONTAINS_WATER = "PeacefulEnd.FishingTrawler_BailingBucket.ContainsWater";
         internal const string BAILING_BUCKET_SCALE = "PeacefulEnd.FishingTrawler_BailingBucket.Scale";
 
+        internal const string TRIDENT_TOOL_KEY = "PeacefulEnd.FishingTrawler_Trident";
+        internal const string TRIDENT_TOOL_FISH_ID = "PeacefulEnd.FishingTrawler_Trident.FishId";
+        internal const string TRIDENT_TOOL_FISH_SIZE = "PeacefulEnd.FishingTrawler_Trident.FishSize";
+        internal const string TRIDENT_TOOL_FISH_QUALITY = "PeacefulEnd.FishingTrawler_Trident.FishQuality";
+        internal const string TRIDENT_TOOL_FISH_COUNT = "PeacefulEnd.FishingTrawler_Trident.FishCount";
+
         // Rewards related
         internal const string ANCIENT_FLAG_KEY = "PeacefulEnd.FishingTrawler_AncientFlag";
         internal const string ANGLER_RING_KEY = "PeacefulEnd.FishingTrawler_AnglerRing";

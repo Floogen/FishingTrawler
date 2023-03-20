@@ -113,6 +113,9 @@ namespace FishingTrawler
 
                 // Apply Bells and Whistles patch
                 new ScreenFadePatch(monitor, modHelper).Apply(harmony);
+
+                // Apply Core patches
+                new GamePatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {
@@ -872,6 +875,7 @@ namespace FishingTrawler
                 }
                 Game1.player.addItemByMenuIfNecessary(SeaborneTackle.CreateInstance(tackleType));
             }
+            Game1.player.addItemToInventory(Trident.CreateInstance());
             Monitor.Log($"Giving all special rewards to {Game1.player.Name}.", LogLevel.Debug);
         }
 
