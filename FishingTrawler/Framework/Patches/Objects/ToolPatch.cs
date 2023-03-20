@@ -150,13 +150,9 @@ namespace FishingTrawler.Framework.Patches.Objects
 
                 return false;
             }
-            else if (Trident.IsValid(__instance) && who.UsingTool && who.CurrentTool == __instance)
+            else if (Trident.IsValid(__instance) && who.UsingTool is true && who.CurrentTool == __instance)
             {
-                Trident.displayTimer -= time.ElapsedGameTime.TotalMilliseconds;
-                if (Trident.displayTimer <= 0f && Game1.input.GetMouseState().LeftButton == ButtonState.Pressed || Game1.didPlayerJustClickAtAll() || Game1.isOneOfTheseKeysDown(Game1.oldKBState, Game1.options.useToolButton))
-                {
-                    __instance.endUsing(who.currentLocation, who);
-                }
+                Trident.Update(__instance, time, who);
             }
 
             return true;
