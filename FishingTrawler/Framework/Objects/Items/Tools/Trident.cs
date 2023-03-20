@@ -356,6 +356,8 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                 displayTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (displayTimer <= 0f && Game1.input.GetMouseState().LeftButton == ButtonState.Pressed || Game1.didPlayerJustClickAtAll() || Game1.isOneOfTheseKeysDown(Game1.oldKBState, Game1.options.useToolButton))
                 {
+                    who.addItemByMenuIfNecessary(new StardewValley.Object(caughtFishId, fishCount, quality: fishQuality));
+
                     Reset(who);
                     tool.endUsing(who.currentLocation, who);
 
