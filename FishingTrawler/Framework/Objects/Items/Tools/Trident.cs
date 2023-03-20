@@ -93,6 +93,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
 
             if (location.canFishHere() is false || string.IsNullOrEmpty(location.doesTileHaveProperty((int)standingPosition.X, (int)standingPosition.Y, "Water", "Back")) is true)
             {
+                who.currentLocation.playSound("cancel");
                 Game1.addHUDMessage(new HUDMessage("You need to be facing water to use the trident.", 3) { timeLeft = 1000f });
                 return false;
             }
@@ -102,6 +103,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             caughtFishId = GetRandomFishForLocation(location);
             if (caughtFishId == -1)
             {
+                who.currentLocation.playSound("cancel");
                 Game1.addHUDMessage(new HUDMessage("There are no fish here that can be caught with the trident.", 3) { timeLeft = 1000f });
                 return false;
             }
