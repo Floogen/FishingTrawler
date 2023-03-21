@@ -181,11 +181,17 @@ namespace FishingTrawler.GameLocations
                     {
                         currentCoalItem = CoalClump.CreateInstance(1);
                         who.addItemToInventory(currentCoalItem);
+
+                        base.playSound("coin");
+                    }
+                    else if (CoalClump.IncrementSize(currentCoalItem, 1))
+                    {
+                        base.playSound("coin");
                     }
                     else
                     {
-                        CoalClump.IncrementSize(currentCoalItem, 1);
-                    }
+                        base.playSound("cancel");
+                    }    
                 }
                 else if (actionProperty == "RefillEngine" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
                 {
@@ -206,6 +212,8 @@ namespace FishingTrawler.GameLocations
                         FishingTrawler.SyncTrawler(SyncType.Fuel, restoreAmount, FishingTrawler.GetFarmersOnTrawler());
 
                         who.removeItemFromInventory(fuelStack);
+
+                        base.playSound("furnace");
                     }
                     else
                     {

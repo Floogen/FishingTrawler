@@ -220,6 +220,7 @@ namespace FishingTrawler
 
                 // Set the theme to null
                 SetTrawlerTheme(null);
+                Game1.changeMusicTrack("none");
 
                 numberOfDeckhands = 0;
                 mainDeckhand = null;

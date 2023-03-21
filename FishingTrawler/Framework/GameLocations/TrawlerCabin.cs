@@ -123,10 +123,12 @@ namespace FishingTrawler.GameLocations
                 {
                     if (IsComputerReady() is false)
                     {
+                        base.playSound("cancel");
                         Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.computer.not_ready"), 3) { timeLeft = 1000f });
                     }
                     else
                     {
+                        base.playSound("healSound");
                         AcceptPlottedCourse();
                     }
                     return true;
@@ -147,6 +149,8 @@ namespace FishingTrawler.GameLocations
                     {
                         Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coffee_machine.drink"), null) { timeLeft = 1000f });
                     }
+
+                    base.playSound("gulp");
 
                     return true;
                 }

@@ -38,21 +38,23 @@ namespace FishingTrawler.Framework.Objects.Items.Resources
             return size;
         }
 
-        public static void IncrementSize(Item item, int increment)
+        public static bool IncrementSize(Item item, int increment)
         {
             if (IsValid(item) is false)
             {
-                return;
+                return false;
             }
 
             int currentSize = GetSize(item);
             if (currentSize + increment > MAX_SIZE)
             {
                 Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.coal_clump.max_stack"), 3) { timeLeft = 1000f });
-                return;
+                return false;
             }
 
             item.modData[ModDataKeys.COAL_CLUMP_KEY] = (currentSize + increment).ToString();
+
+            return true;
         }
     }
 }
