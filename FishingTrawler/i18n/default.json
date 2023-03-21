@@ -165,6 +165,7 @@
   "game_message.computer.not_ready": "The guidance system has not finished plotting a new course.",
   "game_message.coffee_machine.drink": "The coffee gives you a much needed boost.",
   "game_message.lost_fishing_charm.no_murphy": "The charm does not react. Murphy must not be around today.",
+  "game_message.murphy_busy": "Murphy is busy steering the ship... Best not to distract him.",
 
   // UI related
   "ui.flooding.name": "Flooding",

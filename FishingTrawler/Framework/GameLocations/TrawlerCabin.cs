@@ -119,6 +119,11 @@ namespace FishingTrawler.GameLocations
                     Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.pathos_cat"));
                     return true;
                 }
+                else if (actionProperty == "MurphyBusy")
+                {
+                    Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.murphy_busy"));
+                    return true;
+                }
                 else if (actionProperty == "Guidance" && base.IsWithinRangeOfTile(tileLocation.X, tileLocation.Y, 1, 1, who) is true)
                 {
                     if (IsComputerReady() is false)
@@ -166,6 +171,14 @@ namespace FishingTrawler.GameLocations
             if (actionProperty is not null)
             {
                 if (actionProperty == "PathosCat")
+                {
+                    if (base.IsWithinRangeOfTile(xTile, yTile, 1, 1, who) is false)
+                    {
+                        Game1.mouseCursorTransparency = 0.5f;
+                    }
+                    return true;
+                }
+                else if (actionProperty == "MurphyBusy")
                 {
                     if (base.IsWithinRangeOfTile(xTile, yTile, 1, 1, who) is false)
                     {
