@@ -30,7 +30,6 @@ namespace FishingTrawler.Framework.Patches.Objects
             harmony.Patch(AccessTools.Method(_object, nameof(Tool.tickUpdate), new[] { typeof(GameTime), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(TickUpdatePrefix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Tool.DoFunction), new[] { typeof(GameLocation), typeof(int), typeof(int), typeof(int), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(DoFunctionPrefix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Tool.endUsing), new[] { typeof(GameLocation), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(EndUsingPrefix)));
-            harmony.Patch(AccessTools.Method(_object, nameof(Tool.leftClick), new[] { typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(DoLeftClickPrefix)));
         }
 
         private static void GetNamePostfix(Tool __instance, ref string __result)
@@ -188,15 +187,6 @@ namespace FishingTrawler.Framework.Patches.Objects
             {
                 who.forceCanMove();
                 return false;
-            }
-
-            return true;
-        }
-
-        private static bool DoLeftClickPrefix(Tool __instance, Farmer who)
-        {
-            if (Trident.IsValid(__instance))
-            {
             }
 
             return true;
