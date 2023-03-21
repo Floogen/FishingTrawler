@@ -1,5 +1,6 @@
 ﻿using FishingTrawler.Framework.External.GenericModConfigMenu;
 using FishingTrawler.Framework.Managers;
+using FishingTrawler.Framework.Objects.Items.Resources;
 using FishingTrawler.Framework.Objects.Items.Rewards;
 using FishingTrawler.Framework.Objects.Items.Tools;
 using FishingTrawler.Framework.Patches.Characters;
@@ -229,6 +230,12 @@ namespace FishingTrawler
                 foreach (var bucket in Game1.player.Items.Where(i => i is Tool tool && new BailingBucket(tool).IsValid))
                 {
                     Game1.player.removeItemFromInventory(bucket);
+                }
+
+                // Take away any fuel clumps
+                foreach (var fuelClump in Game1.player.Items.Where(i => CoalClump.IsValid(i)))
+                {
+                    Game1.player.removeItemFromInventory(fuelClump);
                 }
 
                 // Reset the trawler
