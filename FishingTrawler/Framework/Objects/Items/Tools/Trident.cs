@@ -4,6 +4,7 @@ using FishingTrawler.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json.Linq;
 using StardewValley;
 using StardewValley.Tools;
 using System;
@@ -27,7 +28,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
     public class Trident
     {
         internal static int caughtFishId;
-        internal static float fishSize;
+        internal static double fishSize;
         internal static int fishQuality;
         internal static int fishCount;
         internal static bool isRecordSizeFish;
@@ -141,7 +142,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             oldFacingDirection = who.FacingDirection;
 
             // Get the fish
-            fishSize = GetFishSize(who, caughtFishId);
+            fishSize = fishObject.HasContextTag("category_fish") ? GetFishSize(who, caughtFishId) : -1;
             fishQuality = fishObject.HasContextTag("category_fish") ? GetFishQuality(who) : 0;
             fishCount = Game1.random.NextDouble() < who.FishingLevel / 100f ? 2 : 1;
             isRecordSizeFish = who.caughtFish(caughtFishId, (int)fishSize, false, 1);
@@ -170,20 +171,18 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             return quality;
         }
 
-        private static float GetFishSize(Farmer who, int whichFish)
+        private static double GetFishSize(Farmer who, int whichFish)
         {
             Dictionary<int, string> data = Game1.content.Load<Dictionary<int, string>>("Data\\Fish");
 
             int minFishSize = 0;
-            int maxFishSize = 0;
             if (data.ContainsKey(whichFish))
             {
                 string[] rawData = data[whichFish].Split('/');
                 minFishSize = Convert.ToInt32(rawData[3]);
-                maxFishSize = Convert.ToInt32(rawData[4]);
             }
 
-            return minFishSize;
+            return Math.Round(minFishSize + Game1.random.NextDouble(), 2);
         }
 
         private static int GetRandomFishForLocation(GameLocation location)
