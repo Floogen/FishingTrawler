@@ -94,7 +94,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             if (location.canFishHere() is false || string.IsNullOrEmpty(location.doesTileHaveProperty((int)standingPosition.X, (int)standingPosition.Y, "Water", "Back")) is true)
             {
                 who.currentLocation.playSound("cancel");
-                Game1.addHUDMessage(new HUDMessage("You need to be facing water to use the trident.", 3) { timeLeft = 1000f });
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.trident.face_water"), 3) { timeLeft = 1000f });
                 return false;
             }
             targetPosition = standingPosition;
@@ -104,13 +104,13 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             if (fishObject is null)
             {
                 who.currentLocation.playSound("cancel");
-                Game1.addHUDMessage(new HUDMessage("There are no fish here that can be caught with the trident.", 3) { timeLeft = 1000f });
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.trident.no_fish"), 3) { timeLeft = 1000f });
                 return false;
             }
             else if (FishingRod.isFishBossFish(fishObject.ParentSheetIndex) is true)
             {
                 who.currentLocation.playSound("cancel");
-                Game1.addHUDMessage(new HUDMessage("A strong fish narrowly escapes your trident!", 2) { timeLeft = 1000f });
+                Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.trident.boss_fish"), 2) { timeLeft = 1000f });
                 return false;
             }
             caughtFishId = fishObject.ParentSheetIndex;

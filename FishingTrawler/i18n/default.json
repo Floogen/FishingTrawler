@@ -166,6 +166,9 @@
   "game_message.coffee_machine.drink": "The coffee gives you a much needed boost.",
   "game_message.lost_fishing_charm.no_murphy": "The charm does not react. Murphy must not be around today.",
   "game_message.murphy_busy": "Murphy is busy steering the ship... Best not to distract him.",
+  "game_message.trident.face_water": "You need to be facing water to use the trident.",
+  "game_message.trident.no_fish": "There are no fish here that can be caught with the trident.",
+  "game_message.trident.boss_fish": "A strong fish narrowly escapes your trident!",
 
   // UI related
   "ui.flooding.name": "Flooding",
