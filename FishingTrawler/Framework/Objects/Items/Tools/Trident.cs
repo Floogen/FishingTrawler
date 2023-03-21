@@ -142,7 +142,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
 
             // Get the fish
             fishSize = GetFishSize(who, caughtFishId);
-            fishQuality = fishObject.HasContextTag("category_fish") ? GetFishQuality(who, fishSize) : 0;
+            fishQuality = fishObject.HasContextTag("category_fish") ? GetFishQuality(who) : 0;
             fishCount = Game1.random.NextDouble() < who.FishingLevel / 100f ? 2 : 1;
             isRecordSizeFish = who.caughtFish(caughtFishId, (int)fishSize, false, 1);
 
@@ -153,11 +153,21 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
             return false;
         }
 
-        private static int GetFishQuality(Farmer who, float fishSize)
+        private static int GetFishQuality(Farmer who)
         {
-            int initialSize = ((!((double)fishSize < 0.33)) ? (((double)fishSize < 0.66) ? 1 : 2) : 0);
+            int quality = 0;
+            float fishingLevelOffset = who.FishingLevel / 100f;
+            switch (Game1.random.NextDouble())
+            {
+                case var value when value < 0.15 + fishingLevelOffset:
+                    quality = 2;
+                    break;
+                case var value when value < 0.35 + fishingLevelOffset:
+                    quality = 1;
+                    break;
+            }
 
-            return Math.Max(0, initialSize - 1);
+            return quality;
         }
 
         private static float GetFishSize(Farmer who, int whichFish)
