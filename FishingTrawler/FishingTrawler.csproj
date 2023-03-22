@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<Version>2.0.0</Version>
+		<Version>1.0.0</Version>
 		<TargetFramework>net5.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<EnableHarmony>true</EnableHarmony>
 		<EnableModZip>false</EnableModZip>
 		<EnableModDeploy>false</EnableModDeploy>
 		<GameModsPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Mods</GameModsPath>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="packages\**" />
@@ -27,7 +28,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="i18n\de.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="i18n\default.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

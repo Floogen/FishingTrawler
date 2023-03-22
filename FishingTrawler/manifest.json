@@ -1,12 +1,12 @@
 ﻿{
-  "Name": "Fishing Trawler",
+  "Name": "Fishing Trawler - New Horizons",
   "Author": "PeacefulEnd",
   "Version": "REPLACE_ME_WITH_VERSION",
-  "Description": "A new minigame for Stardew Valley that lets you fish in bulk!",
-  "UniqueID": "PeacefulEnd.FishingTrawler",
+  "Description": "A fast-paced and heavily inspired minigame for fishing in bulk.",
+  "UniqueID": "PeacefulEnd.FishingTrawler.NewHorizons",
   "EntryDll": "FishingTrawler.dll",
   "MinimumApiVersion": "3.0.0",
-  "UpdateKeys": [ "Nexus:8406" ],
+  "UpdateKeys": [ "Nexus:15941" ],
   "Dependencies": [
     {
       "UniqueID": "Pathoschild.ContentPatcher",
