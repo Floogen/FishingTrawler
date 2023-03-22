@@ -7,7 +7,7 @@
   "config.option.net_output.name": "Fishing Net Output",
   "config.option.net_output.description": "Determines the amount of fish that each net gives on the trawler. Default is 1 (so 2 in total, as there are two nets).",
   "config.option.engine_boost.name": "Engine Boost",
-  "config.option.engine_boost.description": "Determines the amount of bonus fish that the engine gives when working. Default is 2.",
+  "config.option.engine_boost.description": "Determines the amount of bonus fish (per net) that the engine gives with over 50% fuel. Default is 1.",
   "config.option.event_frequency_lower.name": "Frequency of Events (Lower)",
   "config.option.event_frequency_lower.description": "Sets minimum amount of time before an event can occur. 1 is one second, 2 is two, etc.",
   "config.option.hull.event_frequency_upper.name": "Frequency of Hull Events (Upper)",

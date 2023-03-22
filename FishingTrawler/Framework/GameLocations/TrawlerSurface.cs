@@ -370,7 +370,7 @@ namespace FishingTrawler.GameLocations
                     switch (fuelLevel)
                     {
                         case var _ when fuelLevel > 50:
-                            fishCaughtInNet += 1;
+                            fishCaughtInNet += FishingTrawler.config.engineFishBonus;
                             break;
                         case var _ when fuelLevel <= 50 && fuelLevel > 0:
                             // No bonus fish per net

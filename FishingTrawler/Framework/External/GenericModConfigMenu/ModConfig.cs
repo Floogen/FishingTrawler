@@ -5,7 +5,7 @@
         public int minimumFishingLevel = 3;
         public bool disableScreenFade = false;
         public float fishPerNet = 1f;
-        public int engineFishBonus = 2;
+        public int engineFishBonus = 1;
         public int hullEventFrequencyLower = 1;
         public int hullEventFrequencyUpper = 5;
         public int netEventFrequencyLower = 3;
