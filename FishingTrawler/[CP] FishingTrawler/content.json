@@ -1,5 +1,5 @@
 {
-  "Format": "1.21.0",
+  "Format": "1.28.4",
   "Changes": [
     {
       "Action": "EditMap",
@@ -18,7 +18,7 @@
         "Height": 7
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDay}}": "true"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDay}}": "true"
       }
     },
     {
@@ -38,7 +38,7 @@
         "Height": 7
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDay}}": "false"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDay}}": "false"
       }
     },
     {
@@ -59,7 +59,7 @@
         "Height": 16
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDayIsland}}": "true"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDayIsland}}": "true"
       }
     },
     {
@@ -80,7 +80,7 @@
         "Height": 10
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDayIsland}}": "true"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDayIsland}}": "true"
       }
     },
     {
@@ -101,7 +101,7 @@
         "Height": 3
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDayIsland}}": "true"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDayIsland}}": "true"
       }
     },
     {
@@ -122,9 +122,9 @@
         "Height": 16
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDayIsland}}": "false"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDayIsland}}": "false"
       }
-    },    
+    },
     {
       "Action": "EditMap",
       "Target": "Maps/Island_SE",
@@ -143,7 +143,7 @@
         "Height": 10
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDayIsland}}": "false"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDayIsland}}": "false"
       }
     },
     {
@@ -164,7 +164,7 @@
         "Height": 3
       },
       "When": {
-        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler/MurphyAppearanceDayIsland}}": "false"
+        "DayOfWeek |contains={{PeacefulEnd.FishingTrawler.NewHorizons/MurphyAppearanceDayIsland}}": "false"
       }
     },
   ]
