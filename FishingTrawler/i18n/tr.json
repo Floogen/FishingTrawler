@@ -74,7 +74,7 @@
   "status_message.losing_fish": "Balıkları kaybediyoruz!",
   "status_message.taking_on_water": "Su alıyoruz!",
   "status_message.lots_of_problems": "Çok fazla sorun var!",
-  "status_message.engine_failing": "Motor duruyor!",
+  "status_message.engine_failing": "Motor arızalı!",
   "status_message.nets_torn": "Ağlar kopuk!",
   "status_message.leak": "Bir sızıntı var!",
 
