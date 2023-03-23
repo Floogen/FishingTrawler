@@ -343,8 +343,8 @@ namespace FishingTrawler
                 e.Edit(asset =>
                 {
                     var data = asset.AsDictionary<string, string>().Data;
-                    data[ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED] = string.Format(FishingTrawler.i18n.Get("letter.meet_murphy"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]);
-                    data[ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND] = string.Format(FishingTrawler.i18n.Get("letter.island_murphy"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]);
+                    data[ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED] = string.Format(FishingTrawler.i18n.Get("letter.meet_murphy"), Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] : config.dayOfWeekChoice);
+                    data[ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND] = string.Format(FishingTrawler.i18n.Get("letter.island_murphy"), Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND) ? Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] : config.dayOfWeekChoiceIsland);
                 });
             }
             else if (e.NameWithoutLocale.IsEquivalentTo("Data/ChairTiles"))
