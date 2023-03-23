@@ -8,8 +8,8 @@
   "config.option.net_output.description": "Her ağın tekneye verdiği balık miktarını belirler. Varsayılan 1'dir (iki ağ olduğu için toplamda 2).",
   "config.option.engine_boost.name": "Motor Desteği",
   "config.option.engine_boost.description": "Motorun %50'den daha fazla yakıtla verdiği bonus balık miktarını (ağ başına) belirler. Varsayılan 1'dir.",
-  "config.option.event_frequency_lower.name": "Olayların Sıklığı (Alt Sınır)",
-  "config.option.event_frequency_lower.description": "Bir olay gerçekleşmeden önce geçmesi gereken minimum süreyi belirler. Bir saniye için 1 , iki saniye için 2 vb.",
+  "config.option.event_frequency_lower.name": "Arıza Sıklığı (Alt Sınır)",
+  "config.option.event_frequency_lower.description": "Bir arıza gerçekleşmeden önce geçmesi gereken minimum süreyi belirler. Bir saniye için 1 , iki saniye için 2 vb.",
   "config.option.hull.event_frequency_upper.name": "Gövdede Delik Oluşma Sıklığı (Üst Sınır)",
   "config.option.hull.event_frequency_upper.description": "Gövdede delik oluşmadan önce geçebilecek maksimum süreyi belirler. Bir saniye için 1, iki saniye için 2 vb.",
   "config.option.net.event_frequency_upper.name": "Ağların Kopma Sıklığı (Üst Sınır)",
@@ -101,15 +101,15 @@
 
   // Seaborne Tackle names and descriptions
   "item.seaborne_tackle.guiding_narwhal.name": "Yol Gösteren Narval",
-  "item.seaborne_tackle.guiding_narwhal.description": "Parlayan boynuz, balıkları kancaya çeker.\n\nBalıkların ısırma olasılığını artırır.\n\nAsla kırılmaz.",
+  "item.seaborne_tackle.guiding_narwhal.description": "Parlayan boynuz, balıkları kancaya çeker.\n\nBalıkların oltayı ısırma olasılığını artırır.\n\nAsla kırılmaz.",
   "item.seaborne_tackle.rusty_cage.name": "Paslı Kafes",
-  "item.seaborne_tackle.rusty_cage.description": "Kafes paslı olsa da balıkları etkili bir şekilde yakalar.\n\nCauses fish to escape slower when you aren't reeling them in.\n\nNever breaks.",
+  "item.seaborne_tackle.rusty_cage.description": "Kafes paslı olsa da balıkları etkili bir şekilde yakalar.\n\nOlta sarılmazken balıkların daha yavaş kaçmasını sağlar.\n\nAsla kırılmaz.",
   "item.seaborne_tackle.alluring_jellyfish.name": "Cezbedici Denizanası",
-  "item.seaborne_tackle.alluring_jellyfish.description": "The bouncing tendrils of the jellyfish help distract the fish.\n\nSlightly increases the size of your \"fishing bar\".\n\nNever breaks.",
+  "item.seaborne_tackle.alluring_jellyfish.description": "Denizanasının hareketli uzantıları, balıkların dikkatini dağıtmaya yardımcı olur.\n\n\"Olta boyutunu\" biraz artırır.\n\nAsla kırılmaz.",
   "item.seaborne_tackle.weighted_treasure.name": "Ağırlıklı Hazine",
-  "item.seaborne_tackle.weighted_treasure.description": "A weighted tackle in the shape of a familiar bag.\n\nFish don't escape while collecting treasures and slightly increases the chance to find treasures.\n\nNever breaks.",
+  "item.seaborne_tackle.weighted_treasure.description": "Tanıdık bir çanta görünümünde ağırlıklı bir olta takımı.\n\nHazine tutulurken balıklar kaçamaz ve hazine bulma şansını biraz artırır.\n\nAsla kırılmaz.",
   "item.seaborne_tackle.starry_bobber.name": "Yıldızlı Mantar",
-  "item.seaborne_tackle.starry_bobber.description": "The shiny, stardrop-like tackle helps attract the attention of high quality fish.\n\nBoosts the quality of fish that you catch.\n\nNever breaks.",
+  "item.seaborne_tackle.starry_bobber.description": "Parlak, yıldızkaydı benzeri olta takımı yüksek kaliteli balıkların dikkatini çekmeye yardımcı olur.\n\nYakalanan balıkların kalitesini artırır.\n\nAsla kırılmaz.",
   
   // Ancient flag reward names and descriptions
   "item.ancient_flag.parely.name": "Barış Bayrağı",
@@ -122,7 +122,7 @@
   "item.ancient_flag.slime_king.name": "Balçıkça Kralı",
   "item.ancient_flag.king_crab.name": "Kral Yengeç",
   "item.ancient_flag.eternal_flame.name": "Sonsuz Alev",
-  "item.ancient_flag.swift_winds.name": "Çevik Rüzgar",
+  "item.ancient_flag.swift_winds.name": "Çevik Rüzgarlar",
   "item.ancient_flag.unknown.name": "Antik Bayrak",
 
   "item.ancient_flag.parely.description": "Sızıntı oluşmasını engeller, ama ödül kalitesini %25 oranında düşürür.",
@@ -130,10 +130,12 @@
   "item.ancient_flag.gamblers_crest.description": "%50 şansla yakalanan balık miktarını iki katına çıkarır, ama %25 şansla bütün balıkları tüketir.",
   "item.ancient_flag.mermaids_blessing.description": "%10 şansla bir balığı tüketir, ama rastgele bir balık sandığı ödülü verir.",
   "item.ancient_flag.patron_saint.description": "%25 şansla bir balığı tüketir, ama yakaladığın için tam tecrübe puanını verir.",
-  "item.ancient_flag.sharks_fin.description": "Balıkçı teknesinin yolculuğunu bir dakika uzatır, balık yakalamak için daha çok zaman verir.",
+  "item.ancient_flag.sharks_fin.description": "Balıkçı teknesinin yolculuğunu bir dakika uzatarak balık yakalamak için daha çok zaman verir.",
   "item.ancient_flag.worldly_flag.description": "Normalde okyanusta bulunmayan balıkların yakalanmasını sağlar.",
   "item.ancient_flag.slime_king.description": "Bütün balıkları tüketir ama %75 şansla her balığı bir balçığa, %50 şansla  Balçık İstavridine ve 1% şansla da rastgele bir balçıkça yumurtasına çevirir.",
   "item.ancient_flag.king_crab.description": "Balıkçı teknesini yengeç çömleği ödülleriyle sınırlar, genellikle yengeçlerle.",
+  "item.ancient_flag.eternal_flame.description": "Yakalanan balık miktarını ikiye katlar, ama aynı zamanda motorun yakıt tüketimini de.",
+  "item.ancient_flag.swift_winds.description": "Murphy'nin kahvesinin etki süresini büyük ölçüde artırır, aynı zamanda gücünü de biraz artırır.",
   "item.ancient_flag.unknown.description": "Sihirle hafifçe parıldayan eski bir bayrak.\n\nBelki Murphy bunun hakkında daha çok şey biliyordur?",
 
 
@@ -153,20 +155,34 @@
   "game_message.bonus_xp_gained": "Koruyucu Aziz bayrağı sana {0} bonus tecrübe puanı hediye etti!",
   "game_message.empty_crate": "Balık sandığı boş.",
   "game_message.messy_note": "Burada bir not var...#El yazısını okuyamıyorsun.",
-  "game_message.readable_note": "Burada bir not var...#Murphy yazmış! Her {0} iskeleye yanaşacağını ve balığa çıkmak istiyorsan gece çökmeden önce onunla konuşman gerektiğini yazıyor.",
+  "game_message.readable_note": "Burada bir not var...#Murphy yazmış! Haftaya iskeleye yanaşacağını ve balığa çıkmak istiyorsan gece çökmeden önce onunla konuşman gerektiğini yazıyor.",
   "game_message.speak_to_captain": "Gemisine binmeden önce kaptanla konuşmalısın!",
   "game_message.walk_the_plank": "Tahtada yürümek iyi bir fikir gibi durmuyor...",
   "game_message.pathos_cat": "İlginç siyah beyaz desenli bir kedi.",
+  "game_message.coal_clump.max_stack": "Daha fazla yakıt taşıyamazsın!",
+  "game_message.coal_clump.must_be_holding": "Motoru doldurmak için yakıt gerekli.",
+  "game_message.coal_clump.engine_full": "Motor zaten yakıt dolu!",
+  "game_message.computer.not_ready": "Kılavuz sistemi yeni bir rota hesaplamayı bitirmedi.",
+  "game_message.coffee_machine.drink": "Kahve sana çok ihtiyaç duyacağın desteği sağladı.",
+  "game_message.lost_fishing_charm.no_murphy": "Tılsım çalışmıyor. Herhalde Murphy bugün ortalarda yok .",
+  "game_message.murphy_busy": "Murphy gemiyi yönlendirmekle meşgul... En iyisi rahatsız etmemek.",
+  "game_message.trident.face_water": "Mızrağı kullanmak için suya dönük olmalısın.",
+  "game_message.trident.no_fish": "Burada mızrakla yakalanabilecek hiç balık yok.",
+  "game_message.trident.boss_fish": "Güçlü bir balık kıl payıyla mızrağından kaçtı!",
 
   // UI related
   "ui.flooding.name": "Su Baskını",
   "ui.nets.name": "Balık Ağı",
   "ui.engine.name": "Motor",
+  "ui.gps.name": "GPS",
   "ui.generic.working": "Sağlam",
   "ui.nets.ripping": "Kopuyor",
   "ui.nets.ripped": "Kopuk",
   "ui.engine.failing": "Arızalı",
+  "ui.gps.ready": "Hazır",
+  "ui.gps.plotting": "Hesaplıyor",
 
   // Etc
   "etc.murphy_name": "Murphy"
+  "etc.coffee_machine": "Murphy'nin Kahve Makinesi"
 }
