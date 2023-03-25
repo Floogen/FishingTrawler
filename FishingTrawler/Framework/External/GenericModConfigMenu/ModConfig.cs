@@ -4,6 +4,7 @@
     {
         public int minimumFishingLevel = 3;
         public bool disableScreenFade = false;
+        public bool useOldTrawlerSprite = false;
         public float fishPerNet = 1f;
         public int engineFishBonus = 1;
         public int hullEventFrequencyLower = 1;

@@ -101,7 +101,7 @@ namespace FishingTrawler.Framework.Managers
                 case TrawlerSurface trawlerSurface:
                     x = 41;
                     y = 23;
-                    position = Game1.GlobalToLocal(new Vector2(41.5f, 23.7f) * 64f);
+                    position = FishingTrawler.config.useOldTrawlerSprite ? Game1.GlobalToLocal(new Vector2(40.45f, 22.8f) * 64f) : Game1.GlobalToLocal(new Vector2(41.5f, 23.7f) * 64f);
                     break;
                 case TrawlerHull trawlerHull:
                     x = 14;

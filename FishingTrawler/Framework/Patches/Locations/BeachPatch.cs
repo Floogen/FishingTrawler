@@ -99,7 +99,23 @@ namespace FishingTrawler.Patches.Locations
             }
 
             Texture2D boatTexture = FishingTrawler.assetManager.boatTexture;
-            if (boatTexture != null)
+            if (FishingTrawler.config.useOldTrawlerSprite)
+            {
+                boatTexture = FishingTrawler.assetManager.oldBoatTexture;
+                if (boatTexture != null)
+                {
+                    b.Draw(boatTexture, Game1.GlobalToLocal(FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 224, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+                    if (FishingTrawler.trawlerObject._closeGate)
+                    {
+                        b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(107f, 16f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(251, 32, 18, 15), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                    }
+                    else
+                    {
+                        b.Draw(boatTexture, Game1.GlobalToLocal(new Vector2(106f, 7f) * 4f + FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(282, 23, 4, 24), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 0.07f);
+                    }
+                }
+            }
+            else if (boatTexture != null)
             {
                 b.Draw(boatTexture, Game1.GlobalToLocal(FishingTrawler.trawlerObject.GetTrawlerPosition()), new Rectangle(0, 16, 288, 160), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
                 if (FishingTrawler.trawlerObject._closeGate)

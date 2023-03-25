@@ -6,6 +6,7 @@ using StardewValley;
 using StardewValley.BellsAndWhistles;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using xTile.Dimensions;
 using xTile.Layers;
@@ -40,12 +41,12 @@ namespace FishingTrawler.GameLocations
         private float _fastOffset = -7f;
         private float _nextBubble = 0.1f;
 
-        private const string FLAG_LAYER_NAME = "Flags";
-        private const string ROPE_LAYER_NAME = "Front";
+        private string _ropeLayerName = "Front";
+        private int _trawlerTileSheetIndex = 3;
+
+        private const int FLAG_ID = 123456789;
         private const int CLOUD_ID = 1010101;
         private const int GROUND_ID = 2020202;
-        private const int FLAGS_TILESHEET_INDEX = 2;
-        private const int TRAWLER_TILESHEET_INDEX = 4;
 
         public TrawlerSurface()
         {
@@ -54,6 +55,12 @@ namespace FishingTrawler.GameLocations
 
         internal TrawlerSurface(string mapPath, string name) : base(mapPath, name)
         {
+            if (FishingTrawler.config.useOldTrawlerSprite)
+            {
+                _ropeLayerName = "AlwaysFront";
+                _trawlerTileSheetIndex = 2;
+            }
+
             ignoreDebrisWeather.Value = true;
             critters = new List<Critter>();
 
@@ -61,7 +68,7 @@ namespace FishingTrawler.GameLocations
             fishCaughtMultiplier = 1;
             _netRipLocations = new List<Location>();
 
-            Layer ropeLayer = map.GetLayer(ROPE_LAYER_NAME);
+            Layer ropeLayer = map.GetLayer(_ropeLayerName);
             for (int x = 0; x < ropeLayer.LayerWidth; x++)
             {
                 for (int y = 0; y < ropeLayer.LayerHeight; y++)
@@ -140,7 +147,7 @@ namespace FishingTrawler.GameLocations
         {
             base.UpdateWhenCurrentLocation(time);
 
-            if (hullFuelLevel > 0)
+            if (hullFuelLevel > 0 && FishingTrawler.config.useOldTrawlerSprite is false)
             {
                 Rectangle back_rectangle = new Rectangle(33 * 64, 23 * 64, 16, 6 * 64);
                 if (_nextBubble > 0f)
@@ -217,7 +224,7 @@ namespace FishingTrawler.GameLocations
 
         public override bool isActionableTile(int xTile, int yTile, Farmer who)
         {
-            string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", ROPE_LAYER_NAME);
+            string actionProperty = doesTileHaveProperty(xTile, yTile, "CustomAction", _ropeLayerName);
             if (actionProperty != null && actionProperty == "RippedNet")
             {
                 if (!base.IsWithinRangeOfTile(xTile, yTile, 2, 4, who))
@@ -244,8 +251,8 @@ namespace FishingTrawler.GameLocations
 
         private bool IsNetRipped(int tileX, int tileY)
         {
-            Tile hole = map.GetLayer(ROPE_LAYER_NAME).Tiles[tileX, tileY];
-            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", ROPE_LAYER_NAME) == "RippedNet")
+            Tile hole = map.GetLayer(_ropeLayerName).Tiles[tileX, tileY];
+            if (hole != null && doesTileHaveProperty(tileX, tileY, "CustomAction", _ropeLayerName) == "RippedNet")
             {
                 return bool.Parse(hole.Properties["IsRipped"]);
             }
@@ -254,29 +261,17 @@ namespace FishingTrawler.GameLocations
             return false;
         }
 
-        private int[] GetFlagTileIndexes(int startingIndex)
-        {
-            List<int> indexes = new List<int>();
-            for (int offset = 0; offset < 8; offset++)
-            {
-                indexes.Add(startingIndex + (Enum.GetNames(typeof(FlagType)).Length * 2) * offset);
-            }
-
-            return indexes.ToArray();
-        }
-
         public void SetFlagTexture(FlagType flagType)
         {
             if (flagType == FlagType.Unknown)
             {
-                // Clear the flag
-                setMapTileIndex(40, 22, -1, FLAG_LAYER_NAME);
-                setMapTileIndex(41, 22 - 1, -1, FLAG_LAYER_NAME);
                 return;
             }
 
-            setAnimatedMapTile(40, 22, GetFlagTileIndexes(2 * (int)flagType), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
-            setAnimatedMapTile(41, 22, GetFlagTileIndexes(2 * (int)flagType + 1), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
+            if (temporarySprites.Any(s => s.id == FLAG_ID) is false)
+            {
+                temporarySprites.Add(new TemporaryAnimatedSprite(Path.Combine(FishingTrawler.assetManager.assetFolderPath, "Maps", "FlagsAnimated.png"), new Rectangle(0, (int)flagType * 16, 32, 16), 60f, 8, int.MaxValue, (FishingTrawler.config.useOldTrawlerSprite ? new Vector2(38.6f, 21.1f) : new Vector2(40f, 22f)) * 64f, flicker: false, flipped: false, 1f, 0f, Color.White, 4f, 0f, 0f, 0f) { drawAboveAlwaysFront = true, id = FLAG_ID });
+            }
         }
 
         public bool AttemptCreateNetRip(int tileX = -1, int tileY = -1)
@@ -303,13 +298,21 @@ namespace FishingTrawler.GameLocations
             }
 
             // Set the net as ripped
-            Tile firstTile = map.GetLayer(ROPE_LAYER_NAME).Tiles[netLocation.X, netLocation.Y];
+            Tile firstTile = map.GetLayer(_ropeLayerName).Tiles[netLocation.X, netLocation.Y];
             firstTile.Properties["IsRipped"] = true;
 
-            setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(74), 90, ROPE_LAYER_NAME, null, TRAWLER_TILESHEET_INDEX);
+            if (FishingTrawler.config.useOldTrawlerSprite)
+            {
+                setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, _ropeLayerName, null, _trawlerTileSheetIndex);
+                setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, _ropeLayerName, null, _trawlerTileSheetIndex);
+            }
+            else
+            {
+                setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(74), 90, _ropeLayerName, null, _trawlerTileSheetIndex);
+            }
 
             // Copy over the old properties
-            map.GetLayer(ROPE_LAYER_NAME).Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
+            map.GetLayer(_ropeLayerName).Tiles[netLocation.X, netLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
             playSound("crit");
 
@@ -318,7 +321,7 @@ namespace FishingTrawler.GameLocations
 
         public bool AttemptFixNet(int tileX, int tileY, Farmer who, bool forceRepair = false)
         {
-            AnimatedTile firstTile = map.GetLayer(ROPE_LAYER_NAME).Tiles[tileX, tileY] as AnimatedTile;
+            AnimatedTile firstTile = map.GetLayer(_ropeLayerName).Tiles[tileX, tileY] as AnimatedTile;
 
             if (firstTile is null)
             {
@@ -342,10 +345,18 @@ namespace FishingTrawler.GameLocations
                 base.AddRepairedTile(tileX, tileY);
 
                 // Patch up the net
-                setMapTile(tileX, tileY, 99, ROPE_LAYER_NAME, null, TRAWLER_TILESHEET_INDEX);
+                if (FishingTrawler.config.useOldTrawlerSprite)
+                {
+                    setMapTile(tileX, tileY, 435, _ropeLayerName, null, _trawlerTileSheetIndex);
+                    setMapTile(tileX, tileY - 1, 436, _ropeLayerName, null, _trawlerTileSheetIndex);
+                }
+                else
+                {
+                    setMapTile(tileX, tileY, 99, _ropeLayerName, null, _trawlerTileSheetIndex);
+                }
 
                 // Add the custom properties for tracking
-                map.GetLayer(ROPE_LAYER_NAME).Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
+                map.GetLayer(_ropeLayerName).Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
 
                 playSound("harvest");
             }

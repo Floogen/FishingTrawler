@@ -61,16 +61,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Remove="Framework\Assets\Maps\FlagsAnimatedCorrected.png" />
+		<None Remove="Framework\Assets\Maps\TrawlerTilesOld.png" />
 		<None Remove="Framework\Assets\Objects\CoalClump.png" />
 		<None Remove="Framework\Assets\Objects\FishingTackles.png" />
 		<None Remove="Framework\Assets\Objects\LostFishingCharm.png" />
+		<None Remove="Framework\Assets\Objects\TrawlerOld.png" />
 		<None Remove="Framework\Assets\Objects\Trident.png" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<UpToDateCheckInput Remove="Framework\Assets\Maps\FishingTrawlerOld.tmx" />
+		<UpToDateCheckInput Remove="Framework\Assets\Maps\FlagsAnimatedCorrected.png" />
+		<UpToDateCheckInput Remove="Framework\Assets\Maps\TrawlerTilesOld.png" />
 		<UpToDateCheckInput Remove="Framework\Assets\Objects\CoalClump.png" />
 		<UpToDateCheckInput Remove="Framework\Assets\Objects\FishingTackles.png" />
 		<UpToDateCheckInput Remove="Framework\Assets\Objects\LostFishingCharm.png" />
+		<UpToDateCheckInput Remove="Framework\Assets\Objects\TrawlerOld.png" />
 		<UpToDateCheckInput Remove="Framework\Assets\Objects\Trident.png" />
 	</ItemGroup>
 
@@ -82,6 +89,9 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Framework\Assets\Objects\LostFishingCharm.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Framework\Assets\Objects\TrawlerOld.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Framework\Assets\Objects\Trident.png">
