@@ -484,7 +484,7 @@ namespace FishingTrawler
             {
                 // Register our config options
                 var configAPI = apiManager.GetGMCMInterface();
-                configAPI.Register(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config));
+                configAPI.Register(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config), titleScreenOnly: true);
                 configAPI.AddNumberOption(ModManifest, () => config.minimumFishingLevel, value => config.minimumFishingLevel = value, () => i18n.Get("config.option.required_fishing_level.name"), () => i18n.Get("config.option.required_fishing_level.description"), 0, 10);
                 configAPI.AddBoolOption(ModManifest, () => config.disableScreenFade, (val) => config.disableScreenFade = val, () => i18n.Get("config.option.disable_screen_fade.name"), () => i18n.Get("config.option.disable_screen_fade.description"));
                 configAPI.AddNumberOption(ModManifest, () => config.fishPerNet, (val) => config.fishPerNet = val, () => i18n.Get("config.option.net_output.name"), () => i18n.Get("config.option.net_output.description"), 0f, 1f, 0.5f);
