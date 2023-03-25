@@ -254,29 +254,13 @@ namespace FishingTrawler.GameLocations
             return false;
         }
 
-        private int[] GetFlagTileIndexes(int startingIndex)
-        {
-            List<int> indexes = new List<int>();
-            for (int offset = 0; offset < 8; offset++)
-            {
-                indexes.Add(startingIndex + (Enum.GetNames(typeof(FlagType)).Length * 2) * offset);
-            }
-
-            return indexes.ToArray();
-        }
-
         public void SetFlagTexture(FlagType flagType)
         {
             if (flagType == FlagType.Unknown)
             {
-                // Clear the flag
-                setMapTileIndex(40, 22, -1, FLAG_LAYER_NAME);
-                setMapTileIndex(41, 22 - 1, -1, FLAG_LAYER_NAME);
                 return;
             }
 
-            setAnimatedMapTile(40, 22, GetFlagTileIndexes(2 * (int)flagType), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
-            setAnimatedMapTile(41, 22, GetFlagTileIndexes(2 * (int)flagType + 1), 60, FLAG_LAYER_NAME, null, FLAGS_TILESHEET_INDEX);
         }
 
         public bool AttemptCreateNetRip(int tileX = -1, int tileY = -1)

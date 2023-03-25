@@ -67,10 +67,6 @@ namespace FishingTrawler.Framework.Patches.xTiles
                 {
                     trawlerSurface.Map.GetLayer("WaterFlow").Draw(displayDevice, mapViewport, displayOffset, wrapAround, pixelZoom);
                 }
-                if (__instance.Id.Equals("AlwaysFront", StringComparison.OrdinalIgnoreCase) is true)
-                {
-                    trawlerSurface.Map.GetLayer("Flags").Draw(displayDevice, mapViewport, displayOffset, wrapAround, pixelZoom);
-                }
             }
         }
     }
