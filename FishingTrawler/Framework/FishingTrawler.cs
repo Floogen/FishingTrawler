@@ -265,9 +265,6 @@ namespace FishingTrawler
                 // Clear any previous reward data, set the head deckhand (which determines fishing level for reward calc)
                 _trawlerRewards.Value.Reset(Game1.player);
 
-                // Set flag data
-                _trawlerSurface.Value.SetFlagTexture(GetHoistedFlag());
-
                 // Start the timer (2.5 minute default)
                 eventManager.SetTripTimer(150000); //150000
 
@@ -334,6 +331,19 @@ namespace FishingTrawler
 
                 return;
             }
+
+            // Check if player is warping between traweler locations and needs to adjust for useOldTrawlerSprite
+            if (IsPlayerOnTrawler() && IsValidTrawlerLocation(e.NewLocation) && config.useOldTrawlerSprite is true)
+            {
+                if (e.OldLocation is TrawlerCabin)
+                {
+                    e.Player.setTileLocation(new Vector2(42, 26));
+                }
+                else if (e.OldLocation is TrawlerHull)
+                {
+                    e.Player.setTileLocation(new Vector2(38, 24));
+                }
+            }
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
@@ -375,6 +385,7 @@ namespace FishingTrawler
 
             if (IsMainDeckhand() && _trawlerCabin.Value.HasLeftCabin())
             {
+                _trawlerSurface.Value.SetFlagTexture(GetHoistedFlag());
                 eventManager.UpdateEvents(e, _trawlerCabin.Value, _trawlerSurface.Value, _trawlerHull.Value);
             }
 
@@ -487,6 +498,7 @@ namespace FishingTrawler
                 configAPI.Register(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config), titleScreenOnly: true);
                 configAPI.AddNumberOption(ModManifest, () => config.minimumFishingLevel, value => config.minimumFishingLevel = value, () => i18n.Get("config.option.required_fishing_level.name"), () => i18n.Get("config.option.required_fishing_level.description"), 0, 10);
                 configAPI.AddBoolOption(ModManifest, () => config.disableScreenFade, (val) => config.disableScreenFade = val, () => i18n.Get("config.option.disable_screen_fade.name"), () => i18n.Get("config.option.disable_screen_fade.description"));
+                configAPI.AddBoolOption(ModManifest, () => config.useOldTrawlerSprite, (val) => config.useOldTrawlerSprite = val, () => i18n.Get("config.option.use_old_trawler_sprite.name"), () => i18n.Get("config.option.use_old_trawler_sprite.description")); ;
                 configAPI.AddNumberOption(ModManifest, () => config.fishPerNet, (val) => config.fishPerNet = val, () => i18n.Get("config.option.net_output.name"), () => i18n.Get("config.option.net_output.description"), 0f, 1f, 0.5f);
                 configAPI.AddNumberOption(ModManifest, () => config.engineFishBonus, value => config.engineFishBonus = value, () => i18n.Get("config.option.engine_boost.name"), () => i18n.Get("config.option.engine_boost.description"), 0, 2);
                 configAPI.AddNumberOption(ModManifest, () => config.hullEventFrequencyUpper, (val) => config.hullEventFrequencyUpper = val, () => i18n.Get("config.option.hull.event_frequency_upper.name"), () => i18n.Get("config.option.hull.event_frequency_upper.description"), 1, 15);
@@ -604,7 +616,7 @@ namespace FishingTrawler
             Game1.locations.Add(hullLocation);
 
             // Add the surface location
-            TrawlerSurface surfaceLocation = new TrawlerSurface(Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
+            TrawlerSurface surfaceLocation = new TrawlerSurface(config.useOldTrawlerSprite ? Path.Combine(assetManager.assetFolderPath, "Maps", "Old", "FishingTrawler.tmx") : Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false, locationContext = locationContext };
             Game1.locations.Add(surfaceLocation);
 
             // Add the cabin location

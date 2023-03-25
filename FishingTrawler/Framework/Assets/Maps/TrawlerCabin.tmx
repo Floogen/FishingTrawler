@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="12" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="10">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="12" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="12">
  <properties>
   <property name="AmbientLight" value="170 190 90"/>
   <property name="Light_Asdf" value="4 4 4 7 1 4 13 1 4"/>
