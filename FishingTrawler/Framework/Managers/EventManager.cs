@@ -114,7 +114,7 @@ namespace FishingTrawler.Framework.Managers
                 }
                 else
                 {
-                    message = GetMostImportantMessage(CreateHullEvents(trawlerHull), trawlerSurface, trawlerHull);
+                    message = GetMostImportantMessage(CreateEvents(trawlerHull), trawlerSurface, trawlerHull);
                 }
 
                 // Check for empty string 
@@ -135,7 +135,7 @@ namespace FishingTrawler.Framework.Managers
                 }
                 else
                 {
-                    message = GetMostImportantMessage(CreateHullEvents(trawlerSurface), trawlerSurface, trawlerHull);
+                    message = GetMostImportantMessage(CreateEvents(trawlerSurface), trawlerSurface, trawlerHull);
                 }
 
                 // Check for empty string 
@@ -192,7 +192,7 @@ namespace FishingTrawler.Framework.Managers
             return executedEvents == 0 ? null : possibleMessages.OrderByDescending(m => m.Value * possibleMessages.Count(p => p.Key == m.Key)).FirstOrDefault().Key;
         }
 
-        private List<KeyValuePair<string, int>> CreateHullEvents(TrawlerHull trawlerHull)
+        private List<KeyValuePair<string, int>> CreateEvents(TrawlerHull trawlerHull)
         {
             int executedEvents = 0;
             List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
@@ -251,7 +251,7 @@ namespace FishingTrawler.Framework.Managers
         }
 
 
-        private List<KeyValuePair<string, int>> CreateHullEvents(TrawlerSurface trawlerSurface)
+        private List<KeyValuePair<string, int>> CreateEvents(TrawlerSurface trawlerSurface)
         {
             int executedEvents = 0;
             List<KeyValuePair<string, int>> possibleMessages = new List<KeyValuePair<string, int>>();
