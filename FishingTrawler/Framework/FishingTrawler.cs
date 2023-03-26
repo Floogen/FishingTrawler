@@ -733,7 +733,7 @@ namespace FishingTrawler
 
         internal static bool IsMainDeckhand()
         {
-            return mainDeckhand != null && mainDeckhand == Game1.player ? true : false;
+            return mainDeckhand != null && mainDeckhand == Game1.MasterPlayer ? true : false;
         }
 
         internal static FlagType GetHoistedFlag()
