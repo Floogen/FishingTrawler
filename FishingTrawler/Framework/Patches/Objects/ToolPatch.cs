@@ -121,12 +121,12 @@ namespace FishingTrawler.Framework.Patches.Objects
                 __result = true;
                 return bucket.Use(location, x, y, who);
             }
-            else if (LostFishingCharm.IsValid(__instance))
+            else if (LostFishingCharm.IsValid(__instance) && who == Game1.player)
             {
                 __result = true;
                 return LostFishingCharm.Use(location, x, y, who);
             }
-            else if (Trident.IsValid(__instance))
+            else if (Trident.IsValid(__instance) && who == Game1.player)
             {
                 __result = true;
                 return Trident.Use(location, x, y, who);
