@@ -20,6 +20,8 @@ namespace FishingTrawler.Framework.GameLocations
         internal TrawlerLocation(string mapPath, string name) : base(mapPath, name)
         {
             _recentlyRepairedLocations = new List<Location>();
+
+            FishingTrawler.assetManager.HandleMapAssets(this);
         }
 
         internal abstract void Reset();

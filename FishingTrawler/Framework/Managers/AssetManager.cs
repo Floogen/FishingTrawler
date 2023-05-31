@@ -1,7 +1,11 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using FishingTrawler.Framework.GameLocations;
+using FishingTrawler.GameLocations;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
+using StardewValley;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FishingTrawler.Framework.Managers
 {
@@ -50,6 +54,19 @@ namespace FishingTrawler.Framework.Managers
         public Texture2D TridentTexture { get { return Textures[GetTextureKey(_tridentTexturePath)]; } }
         private string _tridentTexturePath { get { return Path.Combine(assetFolderPath, "Objects", "Trident.png"); } }
 
+        // Map tilesheets
+        public Texture2D TrawlerCabinTexture { get { return Textures[GetTextureKey(TrawlerCabinTexturePath)]; } }
+        public string TrawlerCabinTexturePath { get { return Path.Combine(assetFolderPath, "Maps", "TrawlerCabin.png"); } }
+
+        public Texture2D TrawlerHullTexture { get { return Textures[GetTextureKey(TrawlerHullTexturePath)]; } }
+        public string TrawlerHullTexturePath { get { return Path.Combine(assetFolderPath, "Maps", "TrawlerHull.png"); } }
+
+        public Texture2D TrawlerSurfaceTexture { get { return Textures[GetTextureKey(TrawlerSurfaceTexturePath)]; } }
+        public string TrawlerSurfaceTexturePath { get { return Path.Combine(assetFolderPath, "Maps", "SurfaceTiles.png"); } }
+
+        public Texture2D TrawlerTilesTexture { get { return Textures[GetTextureKey(TrawlerTilesTexturePath)]; } }
+        public string TrawlerTilesTexturePath { get { return Path.Combine(assetFolderPath, "Maps", "TrawlerTiles.png"); } }
+
         // Etc.
         public Texture2D UITexture { get { return Textures[GetTextureKey(_uiTexturePath)]; } }
         private string _uiTexturePath { get { return Path.Combine(assetFolderPath, "UI", "TrawlerUI.png"); } }
@@ -83,6 +100,11 @@ namespace FishingTrawler.Framework.Managers
             RegisterTexture(_fishingTackleTexturePath);
             RegisterTexture(_tridentTexturePath);
 
+            RegisterTexture(TrawlerCabinTexturePath);
+            RegisterTexture(TrawlerSurfaceTexturePath);
+            RegisterTexture(TrawlerHullTexturePath);
+            RegisterTexture(TrawlerTilesTexturePath);
+
             RegisterTexture(_uiTexturePath);
         }
 
@@ -94,6 +116,26 @@ namespace FishingTrawler.Framework.Managers
         internal void RegisterTexture(string textureFilePath)
         {
             Textures[GetTextureKey(textureFilePath)] = _modHelper.ModContent.Load<Texture2D>(textureFilePath);
+        }
+
+        internal void HandleMapAssets(TrawlerLocation trawlerLocation)
+        {
+            switch (trawlerLocation)
+            {
+                case TrawlerCabin trawlerCabin:
+                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerCabin").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerCabinTexturePath);
+                    break;
+                case TrawlerSurface trawlerSurface:
+                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerSurface").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerSurfaceTexturePath);
+                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerTiles").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerTilesTexturePath);
+                    break;
+                case TrawlerHull trawlerHull:
+                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerHull").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerHullTexturePath);
+                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerTiles").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerTilesTexturePath);
+                    break;
+            }
+
+            trawlerLocation.Map.LoadTileSheets(Game1.mapDisplayDevice);
         }
     }
 }
