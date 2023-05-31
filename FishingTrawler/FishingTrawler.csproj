@@ -57,6 +57,18 @@
 		<None Update="[CP] FishingTrawler\assets\Murphy.png">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
+		<None Update="[CP] FishingTrawler\assets\SurfaceTiles.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+		<None Update="[CP] FishingTrawler\assets\TrawlerCabin.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+		<None Update="[CP] FishingTrawler\assets\TrawlerHull.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+		<None Update="[CP] FishingTrawler\assets\TrawlerTiles.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
