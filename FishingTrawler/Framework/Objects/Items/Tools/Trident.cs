@@ -4,7 +4,6 @@ using FishingTrawler.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json.Linq;
 using StardewValley;
 using StardewValley.Tools;
 using System;
@@ -416,7 +415,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                                 break;
                         }
 
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        b.Draw(FishingTrawler.assetManager.TridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.Throw:
                         switch (who.FacingDirection)
@@ -437,7 +436,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                                 break;
                         }
 
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        b.Draw(FishingTrawler.assetManager.TridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(0, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.Kneel:
                         switch (who.FacingDirection)
@@ -458,7 +457,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                                 break;
                         }
 
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        b.Draw(FishingTrawler.assetManager.TridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.WaitAfterKneel:
                         switch (who.FacingDirection)
@@ -479,7 +478,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                                 break;
                         }
 
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        b.Draw(FishingTrawler.assetManager.TridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                     case AnimationState.StartPullup:
                         switch (who.FacingDirection)
@@ -500,7 +499,7 @@ namespace FishingTrawler.Framework.Objects.Items.Tools
                                 break;
                         }
 
-                        b.Draw(FishingTrawler.assetManager.tridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
+                        b.Draw(FishingTrawler.assetManager.TridentTexture, Game1.GlobalToLocal(Game1.viewport, who.Position + offset), new Rectangle(16, 0, 16, 16), Color.White * 0.8f, rotation, Vector2.Zero, 4f, SpriteEffects.None, (float)who.getStandingY() / 10000f + 0.06f);
                         break;
                 }
             }
