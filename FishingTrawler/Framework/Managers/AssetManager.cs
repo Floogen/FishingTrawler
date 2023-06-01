@@ -3,6 +3,7 @@ using FishingTrawler.GameLocations;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -120,22 +121,34 @@ namespace FishingTrawler.Framework.Managers
 
         internal void HandleMapAssets(TrawlerLocation trawlerLocation)
         {
-            switch (trawlerLocation)
+            try
             {
-                case TrawlerCabin trawlerCabin:
-                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerCabin").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerCabinTexturePath);
-                    break;
-                case TrawlerSurface trawlerSurface:
-                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerSurface").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerSurfaceTexturePath);
-                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerTiles").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerTilesTexturePath);
-                    break;
-                case TrawlerHull trawlerHull:
-                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerHull").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerHullTexturePath);
-                    trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerTiles").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerTilesTexturePath);
-                    break;
-            }
+                switch (trawlerLocation)
+                {
+                    case TrawlerCabin trawlerCabin:
+                        trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerCabin").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerCabinTexturePath);
+                        break;
+                    case TrawlerSurface trawlerSurface:
+                        if (FishingTrawler.config.useOldTrawlerSprite is false)
+                        {
+                            trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerSurface").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerSurfaceTexturePath);
+                        }
 
-            trawlerLocation.Map.LoadTileSheets(Game1.mapDisplayDevice);
+                        trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerTiles").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerTilesTexturePath);
+                        break;
+                    case TrawlerHull trawlerHull:
+                        trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerHull").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerHullTexturePath);
+                        trawlerLocation.Map.TileSheets.First(t => t.Id == "z_trawlerTiles").ImageSource = FishingTrawler.assetManager.GetTextureKey(FishingTrawler.assetManager.TrawlerTilesTexturePath);
+                        break;
+                }
+
+                trawlerLocation.Map.LoadTileSheets(Game1.mapDisplayDevice);
+            }
+            catch (Exception ex)
+            {
+                _monitor.Log($"There was an issue loading the trawler's tilesheet, external changes will not be loaded. See the log for details", LogLevel.Warn);
+                _monitor.Log($"There was an issue loading the trawler's tilesheet, external changes will not be loaded:\n{ex}", LogLevel.Trace);
+            }
         }
     }
 }
