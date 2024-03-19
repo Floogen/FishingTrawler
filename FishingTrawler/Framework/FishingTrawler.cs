@@ -715,7 +715,7 @@ namespace FishingTrawler
         {
             if (Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED))
             {
-                if (location is Beach && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
+                if (location is Beach && !Game1.isStartingToGetDarkOut(location) && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
                 {
                     return true;
                 }
@@ -723,7 +723,7 @@ namespace FishingTrawler
 
             if (Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND))
             {
-                if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut() && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
+                if (location is IslandSouthEast && !Game1.isStartingToGetDarkOut(location) && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND] && (!location.modData.ContainsKey(ModDataKeys.MURPHY_ON_TRIP) || location.modData[ModDataKeys.MURPHY_ON_TRIP] == "false"))
                 {
                     return true;
                 }
