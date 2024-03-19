@@ -257,7 +257,7 @@ namespace FishingTrawler.GameLocations
         public Buff GetCoffeeBuff()
         {
             int speedBuff = 9;
-            var buffEffect = new BuffEffects(new StardewValley.GameData.Objects.ObjectBuffAttributesData() { Speed = hasSwiftWinds is true ? 3 : 2 });
+            var buffEffect = new BuffEffects(new StardewValley.GameData.Buffs.BuffAttributesData() { Speed = hasSwiftWinds is true ? 3 : 2 });
             var buff = new Buff(COFFEE_MACHINE_SOURCE, FishingTrawler.i18n.Get("etc.coffee_machine"), duration: hasSwiftWinds is true ? 60000 * 3 : 60000, iconSheetIndex: speedBuff, effects: buffEffect);
 
             return buff;
