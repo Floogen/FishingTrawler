@@ -61,13 +61,13 @@ namespace FishingTrawler.Objects
                     continue;
                 }
 
-                eligibleFishIds.AddRange(locationData[location.Name].Fish.Where(f => f.IsBossFish is false).Select(f => f.Id));
+                eligibleFishIds.AddRange(locationData[location.Name].Fish.Where(f => f.IsBossFish is false).Select(f => f.ItemId));
             }
 
             Dictionary<string, string> fishData = Game1.content.Load<Dictionary<string, string>>("Data\\Fish");
             eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !forbiddenFish.Contains(i)));
 
-            return eligibleFishIds.Distinct().ToArray();
+            return eligibleFishIds.Where(i => string.IsNullOrEmpty(i) is false).Distinct().ToArray();
         }
 
         private int AttemptGamble(int amountOfFish)
@@ -424,7 +424,8 @@ namespace FishingTrawler.Objects
             FishingTrawler.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
 
             string[] keys = GetEligibleFishIds(hasWorldly);
-            Dictionary<string, string> fishData = Game1.content.Load<Dictionary<string, string>>("Data\\Fish");
+            //Dictionary<string, string> fishData = Game1.content.Load<Dictionary<string, string>>("Data\\Fish");
+            Dictionary<string, string> fishData = DataLoader.Fish(Game1.content);
 
             // Attempt gamble, if the effect is active
             if (isGambling)
@@ -471,13 +472,14 @@ namespace FishingTrawler.Objects
                 Utility.Shuffle(Game1.random, keys);
                 for (int i = 0; i < keys.Length; i++)
                 {
-                    if (!fishData.ContainsKey(keys[i]))
+                    Item fish = ItemRegistry.Create(keys[i], randomQuantity);
+                    if (!fishData.ContainsKey(fish.ItemId))
                     {
                         FishingTrawler.monitor.Log($"Failed to find fish ID {keys[i]} in fishData, skipping!", LogLevel.Trace);
                         continue;
                     }
 
-                    string[] specificFishData = fishData[keys[i]].Split('/');
+                    string[] specificFishData = fishData[fish.ItemId].Split('/');
 
                     if (specificFishData[1] != "trap" && hasKingCrab)
                     {
@@ -519,7 +521,7 @@ namespace FishingTrawler.Objects
                         if (Game1.random.NextDouble() <= chance - fishCatchChanceOffset)
                         {
                             caughtFish = true;
-                            selectedReward = new Object(keys[i], randomQuantity);
+                            selectedReward = fish;
                             caughtXP = 3f + difficulty / 3;
                             break;
                         }
