@@ -59,8 +59,9 @@ namespace FishingTrawler.Objects
         private string[] GetEligibleFishIds(bool allowCatchingOfNonOceanFish = false)
         {
             List<string> eligibleFishIds = new List<string>();
+            Dictionary<string, string> fishData = Game1.content.Load<Dictionary<string, string>>("Data\\Fish");
 
-            // Iterate through any valid locations to find the fish eligible for rewarding (fish need to be in season and player must have minimum level for it)
+            // Iterate through any valid locations to find the fish eligible for rewarding (fish need to be in season and player must have minimum level for it, but weather and time requirements are ignored)
             Dictionary<string, LocationData> locationData = Game1.content.Load<Dictionary<string, LocationData>>("Data\\Locations");
             foreach (GameLocation location in Game1.locations.Where(l => l.Name == (allowCatchingOfNonOceanFish ? l.Name : "Beach")))
             {
@@ -69,11 +70,10 @@ namespace FishingTrawler.Objects
                     continue;
                 }
 
-                eligibleFishIds.AddRange(locationData[location.Name].Fish.Where(f => f.IsBossFish is false).Select(f => f.ItemId));
+                var checkGenericFishRequirementsMethod = FishingTrawler.modHelper.Reflection.GetMethod(typeof(GameLocation), "CheckGenericFishRequirements");
+                eligibleFishIds.AddRange(locationData[location.Name].Fish.Where(f => string.IsNullOrEmpty(f.ItemId) is false && f.IsBossFish is false && (f.Condition is null || GameStateQuery.CheckConditions(f.Condition, location) is true) && checkGenericFishRequirementsMethod.Invoke<bool>(ItemRegistry.Create(f.ItemId, 1), fishData, location, _farmer, f, 50, true, false, false, false) is true).Select(f => f.ItemId));
             }
-
-            Dictionary<string, string> fishData = Game1.content.Load<Dictionary<string, string>>("Data\\Fish");
-            eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap").Select(f => f.Key).Where(i => !forbiddenFish.Contains(i)));
+            eligibleFishIds.AddRange(fishData.Where(f => f.Value.Split('/')[1] == "trap" && (allowCatchingOfNonOceanFish is true || f.Value.Split('/')[4] == "ocean")).Select(f => f.Key).Where(i => !forbiddenFish.Contains(i)));
 
             return eligibleFishIds.Where(i => string.IsNullOrEmpty(i) is false).Distinct().ToArray();
         }
@@ -94,6 +94,11 @@ namespace FishingTrawler.Objects
 
             Game1.addHUDMessage(new HUDMessage(FishingTrawler.i18n.Get("game_message.gamblers_crest_effect.neutral")));
             return amountOfFish;
+        }
+
+        private bool CheckGenericFishRequirements(Item fish, Dictionary<string, string> allFishData, GameLocation location, Farmer player, SpawnFishData spawn, int waterDepth, bool usingMagicBait, bool hasCuriosityLure, bool usingTargetBait, bool isTutorialCatch)
+        {
+            return true;
         }
 
         private void AddMermaidTreasure(int clearWaterDistance)
@@ -431,7 +436,7 @@ namespace FishingTrawler.Objects
         {
             FishingTrawler.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
 
-            string[] keys = GetEligibleFishIds(hasWorldly);
+            string[] keys = GetEligibleFishIds(hasWorldly || forceWordlyFlag);
             //Dictionary<string, string> fishData = Game1.content.Load<Dictionary<string, string>>("Data\\Fish");
             Dictionary<string, string> fishData = DataLoader.Fish(Game1.content);
 
