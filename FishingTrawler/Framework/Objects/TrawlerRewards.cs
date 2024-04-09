@@ -419,7 +419,7 @@ namespace FishingTrawler.Objects
             _farmer.modData[selectedReward.Key] = true.ToString();
         }
 
-        internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5)
+        internal void CalculateAndPopulateReward(int amountOfFish, int baseXpReduction = 5, bool forceWordlyFlag = false)
         {
             FishingTrawler.monitor.Log($"Calculating rewards for {Game1.player.Name} with {amountOfFish} fish caught!", LogLevel.Trace);
 
