@@ -48,6 +48,14 @@ namespace FishingTrawler.Objects
             hasKingCrab = false;
         }
 
+        public void ClearRewardChest()
+        {
+            if (_rewardChest is not null)
+            {
+                _rewardChest.Items.Clear();
+            }
+        }
+
         private string[] GetEligibleFishIds(bool allowCatchingOfNonOceanFish = false)
         {
             List<string> eligibleFishIds = new List<string>();

@@ -934,6 +934,7 @@ namespace FishingTrawler
                 catchFishOutsideOcean = parsedCatchFishOutsideOcean;
             }
 
+            _trawlerRewards.Value.ClearRewardChest();
             _trawlerRewards.Value.CalculateAndPopulateReward(fishCount, forceWordlyFlag: catchFishOutsideOcean);
             Monitor.Log($"Generating trawler rewards using {fishCount} fish count to {Game1.player.Name}.", LogLevel.Debug);
         }
