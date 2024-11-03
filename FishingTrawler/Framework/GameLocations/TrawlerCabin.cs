@@ -77,7 +77,7 @@ namespace FishingTrawler.GameLocations
             }
 
             // Set coffee machine animation
-            setAnimatedMapTile(0, 4, new int[] { 31, 32, 33, 32 }, 90, "Front", null, TRAWLER_TILESHEET_INDEX);
+            setAnimatedMapTile(0, 4, new int[] { 31, 32, 33, 32 }, 90, "Front", Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
         }
 
         public override void UpdateWhenCurrentLocation(GameTime time)
@@ -86,11 +86,11 @@ namespace FishingTrawler.GameLocations
 
             if (IsComputerReady() is false)
             {
-                setMapTileIndex(3, 2, -1, "Front", TRAWLER_TILESHEET_INDEX);
+                setMapTile(3, 2, -1, "Front", Map.TileSheets[0].Id);
             }
             else
             {
-                setAnimatedMapTile(3, 2, new int[] { 13, 14, 15, 16, 17 }, 90, "Front", null, TRAWLER_TILESHEET_INDEX);
+                setAnimatedMapTile(3, 2, new int[] { 13, 14, 15, 16, 17 }, 90, "Front", Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
             }
         }
 

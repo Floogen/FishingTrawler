@@ -8,6 +8,7 @@ using StardewValley;
 using StardewValley.Locations;
 using System;
 using System.Linq;
+using xTile;
 using xTile.Tiles;
 
 namespace FishingTrawler.Patches.Locations
@@ -230,8 +231,8 @@ namespace FishingTrawler.Patches.Locations
         {
             for (int x = 0; x < 3; x++)
             {
-                location.setMapTileIndex(82 + x, 37, startingOffset + x, "Buildings");
-                location.setMapTileIndex(82 + x, 38, startingOffset + x + 5, "Buildings"); // Offsetting by 5 for second row from tilesheet
+                location.setMapTile(82 + x, 37, startingOffset + x, "Buildings", location.Map.TileSheets[0].Id);
+                location.setMapTile(82 + x, 38, startingOffset + x + 5, "Buildings", location.Map.TileSheets[0].Id); // Offsetting by 5 for second row from tilesheet
             }
         }
     }

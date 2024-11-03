@@ -154,13 +154,13 @@ namespace FishingTrawler.GameLocations
 
                     AmbientLocationSounds.addSound(new Vector2(1.5f, 5.5f), AmbientLocationSounds.sound_engine);
                 }
-                setMapTileIndex(2, 5, -1, "AlwaysFront", TRAWLER_TILESHEET_INDEX);
+                setMapTile(2, 5, -1, "AlwaysFront", Map.TileSheets[0].Id);
             }
             else
             {
                 AmbientLocationSounds.removeSound(new Vector2(1.5f, 5.5f));
 
-                setAnimatedMapTile(2, 5, new int[] { 24, 25, 26, 27, 28 }, 90, "AlwaysFront", null, TRAWLER_TILESHEET_INDEX);
+                setAnimatedMapTile(2, 5, new int[] { 24, 25, 26, 27, 28 }, 90, "AlwaysFront", Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
             }
 
             base.UpdateWhenCurrentLocation(time);
@@ -368,7 +368,7 @@ namespace FishingTrawler.GameLocations
                     if (isFirstTile)
                     {
                         // Board up the hole
-                        setMapTile(tileX, y, GetRandomBoardTile(), "Buildings", null, TRAWLER_TILESHEET_INDEX);
+                        setMapTile(tileX, y, GetRandomBoardTile(), "Buildings", Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
 
                         // Add the custom properties for tracking
                         map.GetLayer("Buildings").Tiles[tileX, tileY].Properties.CopyFrom(firstTile.Properties);
@@ -384,7 +384,7 @@ namespace FishingTrawler.GameLocations
                     AnimatedTile animatedTile = map.GetLayer(targetLayer).Tiles[tileX, y] as AnimatedTile;
                     int tileIndex = animatedTile.TileFrames[0].TileIndex - 1;
 
-                    setMapTile(tileX, y, tileIndex, targetLayer, null, TRAWLER_TILESHEET_INDEX);
+                    setMapTile(tileX, y, tileIndex, targetLayer, Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
                 }
             }
 
@@ -435,7 +435,7 @@ namespace FishingTrawler.GameLocations
                 if (isFirstTile)
                 {
                     // Break open the hole, copying over the properties
-                    setAnimatedMapTile(holeLocation.X, holeLocation.Y, holeLocation.Y == 1 ? GetHullLeakTileIndexes(401) : GetHullLeakTileIndexes(377), 60, "Buildings", null, TRAWLER_TILESHEET_INDEX);
+                    setAnimatedMapTile(holeLocation.X, holeLocation.Y, holeLocation.Y == 1 ? GetHullLeakTileIndexes(401) : GetHullLeakTileIndexes(377), 60, "Buildings", Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
                     map.GetLayer("Buildings").Tiles[holeLocation.X, holeLocation.Y].Properties.CopyFrom(firstTile.Properties);
 
                     playSound("barrelBreak");
@@ -447,7 +447,7 @@ namespace FishingTrawler.GameLocations
                 string targetLayer = y == 4 ? WATER_SPLASH_LAYER : "Buildings";
 
                 int[] animatedHullTileIndexes = GetHullLeakTileIndexes(map.GetLayer(targetLayer).Tiles[holeLocation.X, y].TileIndex + 1);
-                setAnimatedMapTile(holeLocation.X, y, animatedHullTileIndexes, 60, targetLayer, null, TRAWLER_TILESHEET_INDEX);
+                setAnimatedMapTile(holeLocation.X, y, animatedHullTileIndexes, 60, targetLayer, Map.TileSheets[TRAWLER_TILESHEET_INDEX].Id);
             }
 
             return true;

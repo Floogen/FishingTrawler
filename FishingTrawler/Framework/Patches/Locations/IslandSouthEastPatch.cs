@@ -230,8 +230,8 @@ namespace FishingTrawler.Patches.Locations
         {
             for (int x = 0; x < 3; x++)
             {
-                location.setMapTileIndex(5 + x, 38, startingOffset + x, "Buildings");
-                location.setMapTileIndex(5 + x, 39, startingOffset + x + 5, "Buildings"); // Offsetting by 5 for second row from tilesheet
+                location.setMapTile(5 + x, 38, startingOffset + x, "Buildings", location.Map.TileSheets[0].Id);
+                location.setMapTile(5 + x, 39, startingOffset + x + 5, "Buildings", location.Map.TileSheets[0].Id); // Offsetting by 5 for second row from tilesheet
             }
         }
     }
