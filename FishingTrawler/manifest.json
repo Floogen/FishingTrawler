@@ -5,7 +5,7 @@
   "Description": "A fast-paced and heavily inspired minigame for fishing in bulk.",
   "UniqueID": "PeacefulEnd.FishingTrawler.NewHorizons",
   "EntryDll": "FishingTrawler.dll",
-  "MinimumApiVersion": "3.0.0",
+  "MinimumGameVersion": "1.6.9",
   "UpdateKeys": [ "Nexus:15941" ],
   "Dependencies": [
     {

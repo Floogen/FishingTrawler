@@ -140,7 +140,7 @@ namespace FishingTrawler.Objects
                                 possibles.Add(390);
                             }
                             possibles.Add(382);
-                            treasures.Add(new Object(possibles.ElementAt(Game1.random.Next(possibles.Count)).ToString(), Game1.random.Next(2, 7) * (!(Game1.random.NextDouble() < 0.05 + (int)_farmer.luckLevel * 0.015) ? 1 : 2)));
+                            treasures.Add(new Object(possibles.ElementAt(Game1.random.Next(possibles.Count)).ToString(), Game1.random.Next(2, 7) * (!(Game1.random.NextDouble() < 0.05 + _farmer.LuckLevel * 0.015) ? 1 : 2)));
                             if (Game1.random.NextDouble() < 0.05 + _farmer.LuckLevel * 0.03)
                             {
                                 treasures.Last().Stack *= 2;

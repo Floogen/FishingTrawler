@@ -302,12 +302,12 @@ namespace FishingTrawler.GameLocations
 
             if (FishingTrawler.config.useOldTrawlerSprite)
             {
-                setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, _ropeLayerName, null, _trawlerTileSheetIndex);
-                setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, _ropeLayerName, null, _trawlerTileSheetIndex);
+                setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(530), 90, _ropeLayerName, Map.TileSheets[_trawlerTileSheetIndex].Id);
+                setAnimatedMapTile(netLocation.X, netLocation.Y - 1, GetNetRippedTileIndexes(506), 90, _ropeLayerName, Map.TileSheets[_trawlerTileSheetIndex].Id);
             }
             else
             {
-                setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(74), 90, _ropeLayerName, null, _trawlerTileSheetIndex);
+                setAnimatedMapTile(netLocation.X, netLocation.Y, GetNetRippedTileIndexes(74), 90, _ropeLayerName, Map.TileSheets[_trawlerTileSheetIndex].Id);
             }
 
             // Copy over the old properties
@@ -346,12 +346,12 @@ namespace FishingTrawler.GameLocations
                 // Patch up the net
                 if (FishingTrawler.config.useOldTrawlerSprite)
                 {
-                    setMapTile(tileX, tileY, 435, _ropeLayerName, null, _trawlerTileSheetIndex);
-                    setMapTile(tileX, tileY - 1, 436, _ropeLayerName, null, _trawlerTileSheetIndex);
+                    setMapTile(tileX, tileY, 435, _ropeLayerName, Map.TileSheets[_trawlerTileSheetIndex].Id);
+                    setMapTile(tileX, tileY - 1, 436, _ropeLayerName, Map.TileSheets[_trawlerTileSheetIndex].Id);
                 }
                 else
                 {
-                    setMapTile(tileX, tileY, 99, _ropeLayerName, null, _trawlerTileSheetIndex);
+                    setMapTile(tileX, tileY, 99, _ropeLayerName, Map.TileSheets[_trawlerTileSheetIndex].Id);
                 }
 
                 // Add the custom properties for tracking
