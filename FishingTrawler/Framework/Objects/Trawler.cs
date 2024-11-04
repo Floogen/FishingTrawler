@@ -73,21 +73,13 @@ namespace FishingTrawler.Objects
             // Reset the plank tile for departure
             if (location is Beach)
             {
-                int index = location.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
-                if (index != -1)
-                {
-                    location.setMapTileIndex(87, 40, -1, "Back");
-                    location.setMapTileIndex(87, 40, 14, "Back", index);
-                }
+                location.setMapTile(87, 40, -1, "Back", location.Map.TileSheets[0].Id);
+                location.setMapTile(87, 40, 14, "Back", "z_beachPatch");
             }
             else if (location is IslandSouthEast)
             {
-                int index = location.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
-                if (index != -1)
-                {
-                    location.setMapTileIndex(10, 41, -1, "Back");
-                    location.setMapTileIndex(10, 41, 14, "Back", index);
-                }
+                location.setMapTile(10, 41, -1, "Back", location.Map.TileSheets[0].Id);
+                location.setMapTile(10, 41, 14, "Back", "z_beachPatch");
             }
 
             string id = location.currentEvent is null ? "Empty" : location.currentEvent.id.ToString();
@@ -189,17 +181,13 @@ namespace FishingTrawler.Objects
             // Reset the plank tile for departure
             if (Game1.currentLocation is Beach)
             {
-                Game1.currentLocation.setMapTileIndex(87, 40, -1, "Back");
-                Game1.currentLocation.setMapTileIndex(87, 40, 504, "Back", 1);
+                Game1.currentLocation.setMapTile(87, 40, -1, "Back", location.Map.TileSheets[0].Id);
+                Game1.currentLocation.setMapTile(87, 40, 504, "Back", location.Map.TileSheets[1].Id);
             }
             else if (Game1.currentLocation is IslandSouthEast)
             {
-                int index = location.Map.TileSheets.ToList().FindIndex(t => t.Id == "z_beachPatch");
-                if (index != -1)
-                {
-                    Game1.currentLocation.setMapTileIndex(10, 41, -1, "Back");
-                    Game1.currentLocation.setMapTileIndex(10, 41, 18, "Back", index);
-                }
+                Game1.currentLocation.setMapTile(10, 41, -1, "Back", location.Map.TileSheets[0].Id);
+                Game1.currentLocation.setMapTile(10, 41, 18, "Back", "z_beachPatch");
             }
 
             Reset();

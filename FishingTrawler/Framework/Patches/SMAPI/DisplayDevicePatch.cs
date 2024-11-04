@@ -25,8 +25,7 @@ namespace FishingTrawler.Framework.Patches.SMAPI
 
         internal override void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method("StardewModdingAPI.Framework.Rendering.SDisplayDevice:DrawTile", new[] { typeof(Tile), typeof(xTile.Dimensions.Location), typeof(float) }), prefix: new HarmonyMethod(GetType(), nameof(DrawTilePrefix)));
-            harmony.Patch(AccessTools.Method("StardewModdingAPI.Framework.Rendering.SXnaDisplayDevice:DrawTile", new[] { typeof(Tile), typeof(xTile.Dimensions.Location), typeof(float) }), prefix: new HarmonyMethod(GetType(), nameof(DrawTilePrefix)));
+            harmony.Patch(AccessTools.Method("xTile.Display.XnaDisplayDevice:DrawTile", new[] { typeof(Tile), typeof(xTile.Dimensions.Location), typeof(float) }), prefix: new HarmonyMethod(GetType(), nameof(DrawTilePrefix)));
         }
 
         private static bool DrawTilePrefix(IDisplayDevice __instance, SpriteBatch ___m_spriteBatchAlpha, Dictionary<TileSheet, Texture2D> ___m_tileSheetTextures, Color ___m_modulationColour, ref Vector2 ___m_tilePosition, ref Microsoft.Xna.Framework.Rectangle ___m_sourceRectangle, Tile? tile, Location location, float layerDepth)

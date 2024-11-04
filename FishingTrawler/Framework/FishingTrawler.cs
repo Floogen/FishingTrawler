@@ -580,7 +580,7 @@ namespace FishingTrawler
             if (Context.IsMainPlayer)
             {
                 // Must be a user set date (default Wednesday), the player's fishing level >= 3 and the bridge must be fixed on the beach
-                if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR])
+                if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && Game1.MasterPlayer.FishingLevel >= config.minimumFishingLevel && beach.bridgeFixed.Value && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} intro letter about Murphy!", LogLevel.Trace);
                     Game1.MasterPlayer.mailbox.Add(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED);
@@ -588,7 +588,7 @@ namespace FishingTrawler
 
                 // Must be a user set island date (default Satuday), met Murphy and Ginger Island's resort must be built
                 IslandSouth resort = Game1.getLocationFromName("IslandSouth") as IslandSouth;
-                if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND) && Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && resort.resortRestored && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
+                if (!Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND) && Game1.MasterPlayer.mailReceived.Contains(ModDataKeys.MAIL_FLAG_MURPHY_WAS_INTRODUCED) && resort.resortRestored.Value && todayDayOfWeek == Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_ISLAND])
                 {
                     Monitor.Log($"Sending {Game1.MasterPlayer.Name} Ginger Island letter about Murphy!", LogLevel.Trace);
                     Game1.MasterPlayer.mailbox.Add(ModDataKeys.MAIL_FLAG_MURPHY_FOUND_GINGER_ISLAND);
