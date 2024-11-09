@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FishingTrawler.Framework.Interfaces;
 
 namespace FishingTrawler
 {
@@ -550,6 +551,16 @@ namespace FishingTrawler
             {
                 // Do nothing here
             }
+            
+            if (Helper.ModRegistry.IsLoaded("DLX.QuickSave") && apiManager.HookIntoQuickSave(Helper))
+            {
+                var saveAPI = apiManager.GetQuickSaveInterface();
+                saveAPI.SavingEvent += BeforeQuickSaveEvent;
+                saveAPI.SavedEvent += AfterQuickSaveEvent;
+            }
+            
+            
+
 
             // Make our internal textures available to the game
             foreach (var textureName in assetManager.Textures.Keys)
@@ -557,6 +568,33 @@ namespace FishingTrawler
                 var loadedTexture = Helper.GameContent.Load<Texture2D>(textureName);
                 assetManager.Textures[textureName] = loadedTexture;
             }
+        }
+        
+        private void BeforeQuickSaveEvent(object sender, ISavingEventArgs e)
+        {
+            // Offload the custom locations
+            Game1.locations.Remove(_trawlerHull.Value);
+            Game1.locations.Remove(_trawlerSurface.Value);
+            Game1.locations.Remove(_trawlerCabin.Value);
+        }
+        
+        private void AfterQuickSaveEvent(object sender, ISavedEventArgs e)
+        {
+            TrawlerHull hullLocation = new TrawlerHull(Path.Combine(assetManager.assetFolderPath, "Maps", "TrawlerHull.tmx"), ModDataKeys.TRAWLER_HULL_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
+            Game1.locations.Add(hullLocation);
+
+            // Add the surface location
+            TrawlerSurface surfaceLocation = new TrawlerSurface(config.useOldTrawlerSprite ? Path.Combine(assetManager.assetFolderPath, "Maps", "Old", "FishingTrawler.tmx") : Path.Combine(assetManager.assetFolderPath, "Maps", "FishingTrawler.tmx"), ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) { IsOutdoors = true, IsFarm = false };
+            Game1.locations.Add(surfaceLocation);
+
+            // Add the cabin location
+            TrawlerCabin cabinLocation = new TrawlerCabin(Path.Combine(assetManager.assetFolderPath, "Maps", "TrawlerCabin.tmx"), ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) { IsOutdoors = false, IsFarm = false };
+            Game1.locations.Add(cabinLocation);
+
+            // Verify our locations were added and establish our location variables
+            _trawlerHull.Value = Game1.getLocationFromName(ModDataKeys.TRAWLER_HULL_LOCATION_NAME) as TrawlerHull;
+            _trawlerSurface.Value = Game1.getLocationFromName(ModDataKeys.TRAWLER_SURFACE_LOCATION_NAME) as TrawlerSurface;
+            _trawlerCabin.Value = Game1.getLocationFromName(ModDataKeys.TRAWLER_CABIN_LOCATION_NAME) as TrawlerCabin;
         }
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)

@@ -9,6 +9,8 @@ namespace FishingTrawler.Framework.Managers
         private IGenericModConfigMenuAPI genericModConfigMenuApi;
         private IContentPatcherAPI contentPatcherApi;
         private IDynamicReflectionsAPI dynamicReflectionsApi;
+        private IQuickSaveAPI quickSaveApi;
+
 
         public ApiManager(IMonitor monitor)
         {
@@ -56,6 +58,20 @@ namespace FishingTrawler.Framework.Managers
             _monitor.Log("Successfully hooked into PeacefulEnd.DynamicReflections.", LogLevel.Debug);
             return true;
         }
+        
+        internal bool HookIntoQuickSave(IModHelper helper)
+        {
+            quickSaveApi = helper.ModRegistry.GetApi<IQuickSaveAPI>("DLX.QuickSave");
+
+            if (quickSaveApi is null)
+            {
+                _monitor.Log("Failed to hook into DLX.QuickSave.", LogLevel.Error);
+                return false;
+            }
+
+            _monitor.Log("Successfully hooked into DLX.QuickSave.", LogLevel.Debug);
+            return true;
+        }
 
         internal IGenericModConfigMenuAPI GetGMCMInterface()
         {
@@ -70,6 +86,11 @@ namespace FishingTrawler.Framework.Managers
         internal IDynamicReflectionsAPI GetDynamicReflectionsInterface()
         {
             return dynamicReflectionsApi;
+        }
+        
+        internal IQuickSaveAPI GetQuickSaveInterface()
+        {
+            return quickSaveApi;
         }
     }
 }
