@@ -6,7 +6,7 @@
 		<EnableHarmony>true</EnableHarmony>
 		<EnableModZip>false</EnableModZip>
 		<EnableModDeploy>false</EnableModDeploy>
-		<GameModsPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Mods</GameModsPath>
+		<GameModsPath>C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods</GameModsPath>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
 	<ItemGroup>

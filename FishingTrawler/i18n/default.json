@@ -1,5 +1,7 @@
 {
   // Config settings
+  "config.option.minigame_duration.name": "Duration of Minigame",
+  "config.option.minigame_duration.description": "Sets the duration of the minigame in minutes.",
   "config.option.required_fishing_level.name": "Minimum Fishing Level Required",
   "config.option.required_fishing_level.description": "Sets the minimum fishing requirement for Murphy to appear.",
   "config.option.disable_screen_fade.name": "Disable Screen Fade",

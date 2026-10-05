@@ -229,10 +229,14 @@ namespace FishingTrawler.Patches.Locations
 
         private static void SwapRewardChestTiles(GameLocation location, int startingOffset)
         {
+            Map map = location.Map;
+            TileSheet tileSheet = map.GetTileSheet("z_beachPatch");
+
+
             for (int x = 0; x < 3; x++)
             {
-                location.setMapTile(82 + x, 37, startingOffset + x, "Buildings", location.Map.TileSheets[0].Id);
-                location.setMapTile(82 + x, 38, startingOffset + x + 5, "Buildings", location.Map.TileSheets[0].Id); // Offsetting by 5 for second row from tilesheet
+                location.setMapTile(82 + x, 37, startingOffset + x, "Buildings", tileSheet.Id);
+                location.setMapTile(82 + x, 38, startingOffset + x + 5, "Buildings", tileSheet.Id); // Offsetting by 5 for second row from tilesheet
             }
         }
     }
