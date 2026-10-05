@@ -232,7 +232,6 @@ namespace FishingTrawler.Patches.Locations
             Map map = location.Map;
             TileSheet tileSheet = map.GetTileSheet("z_beachPatch");
 
-
             for (int x = 0; x < 3; x++)
             {
                 location.setMapTile(82 + x, 37, startingOffset + x, "Buildings", tileSheet.Id);
