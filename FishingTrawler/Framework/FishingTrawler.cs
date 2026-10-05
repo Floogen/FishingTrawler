@@ -269,7 +269,7 @@ namespace FishingTrawler
                 _trawlerRewards.Value.Reset(Game1.player);
 
                 // Start the timer (2.5 minute default)
-                eventManager.SetTripTimer(150000); //150000
+                eventManager.SetTripTimer((int) (config.minigameDuration * 60f * 1000f)); //150000
 
                 // Setup the cabin
                 _trawlerCabin.Value.Reset();
@@ -286,7 +286,7 @@ namespace FishingTrawler
                         _trawlerRewards.Value.fishCatchChanceOffset = 0.25f;
                         break;
                     case FlagType.JollyRoger:
-                        // Quadruples net output 
+                        // Quadruples net output
                         _trawlerSurface.Value.fishCaughtMultiplier = 4;
                         _trawlerHull.Value.hasWeakHull = true;
                         break;
@@ -518,11 +518,12 @@ namespace FishingTrawler
                 // Register our config options
                 var configAPI = apiManager.GetGMCMInterface();
                 configAPI.Register(ModManifest, () => config = new ModConfig(), () => Helper.WriteConfig(config), titleScreenOnly: true);
-                configAPI.AddNumberOption(ModManifest, () => config.minimumFishingLevel, value => config.minimumFishingLevel = value, () => i18n.Get("config.option.required_fishing_level.name"), () => i18n.Get("config.option.required_fishing_level.description"), 0, 10);
+                configAPI.AddNumberOption(ModManifest, () => config.minigameDuration, (val) => config.minigameDuration = val, () => i18n.Get("config.option.minigame_duration.name"), () => i18n.Get("config.option.minigame_duration.description"), 2.5f, 5f, 0.25f);
+                configAPI.AddNumberOption(ModManifest, () => config.minimumFishingLevel, (val) => config.minimumFishingLevel = val, () => i18n.Get("config.option.required_fishing_level.name"), () => i18n.Get("config.option.required_fishing_level.description"), 0, 10);
                 configAPI.AddBoolOption(ModManifest, () => config.disableScreenFade, (val) => config.disableScreenFade = val, () => i18n.Get("config.option.disable_screen_fade.name"), () => i18n.Get("config.option.disable_screen_fade.description"));
                 configAPI.AddBoolOption(ModManifest, () => config.useOldTrawlerSprite, (val) => config.useOldTrawlerSprite = val, () => i18n.Get("config.option.use_old_trawler_sprite.name"), () => i18n.Get("config.option.use_old_trawler_sprite.description")); ;
                 configAPI.AddNumberOption(ModManifest, () => config.fishPerNet, (val) => config.fishPerNet = val, () => i18n.Get("config.option.net_output.name"), () => i18n.Get("config.option.net_output.description"), 0f, 1f, 0.5f);
-                configAPI.AddNumberOption(ModManifest, () => config.engineFishBonus, value => config.engineFishBonus = value, () => i18n.Get("config.option.engine_boost.name"), () => i18n.Get("config.option.engine_boost.description"), 0, 2);
+                configAPI.AddNumberOption(ModManifest, () => config.engineFishBonus, (val) => config.engineFishBonus = val, () => i18n.Get("config.option.engine_boost.name"), () => i18n.Get("config.option.engine_boost.description"), 0, 2);
                 configAPI.AddNumberOption(ModManifest, () => config.hullEventFrequencyUpper, (val) => config.hullEventFrequencyUpper = val, () => i18n.Get("config.option.hull.event_frequency_upper.name"), () => i18n.Get("config.option.hull.event_frequency_upper.description"), 1, 15);
                 configAPI.AddNumberOption(ModManifest, () => config.hullEventFrequencyLower, (val) => config.hullEventFrequencyLower = val, () => i18n.Get("config.option.hull.event_frequency_lower.name"), () => i18n.Get("config.option.hull.event_frequency_lower.description"), 1, 15);
                 configAPI.AddNumberOption(ModManifest, () => config.netEventFrequencyUpper, (val) => config.netEventFrequencyUpper = val, () => i18n.Get("config.option.net.event_frequency_upper.name"), () => i18n.Get("config.option.net.event_frequency_upper.description"), 1, 15);
