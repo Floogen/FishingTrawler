@@ -50,10 +50,7 @@ namespace FishingTrawler.Objects
 
         public void ClearRewardChest()
         {
-            if (_rewardChest is not null)
-            {
-                _rewardChest.Items.Clear();
-            }
+            _rewardChest?.Items.Clear();
         }
 
         private string[] GetEligibleFishIds(bool allowCatchingOfNonOceanFish = false)
@@ -523,7 +520,7 @@ namespace FishingTrawler.Objects
                     }
                     else if (_farmer.FishingLevel >= Convert.ToInt32(specificFishData[12]))
                     {
-                        int difficulty = Convert.ToInt32(specificFishData[1]);
+                        int difficulty = Convert.ToInt32(specificFishData[1]); // issue on this line, most likely is with modded fish indices are shuffled around [not fixed indices]
                         double chance = Convert.ToDouble(specificFishData[10]);
                         double dropOffAmount = Convert.ToDouble(specificFishData[11]) * chance;
                         minWaterDistance = Convert.ToInt32(specificFishData[9]);

@@ -13,9 +13,17 @@
         internal const string MURPHY_FINISHED_TALKING_KEY = "PeacefulEnd.FishingTrawler_MurphyFinishedTalking";
         internal const string MURPHY_HAS_SEEN_FLAG_KEY = "PeacefulEnd.FishingTrawler_MurphyHasSeenFlag";
         internal const string MURPHY_ON_TRIP = "PeacefulEnd.FishingTrawler_MurphyOnTrip";
-        internal const string MURPHY_DAY_TO_APPEAR = "PeacefulEnd.FishingTrawler_MurphyDayToAppear";
-        internal const string MURPHY_DAY_TO_APPEAR_ISLAND = "PeacefulEnd.FishingTrawler_MurphyDayToAppearIsland";
+        internal const string MURPHY_DAY_TO_APPEAR_BEACH_START = "PeacefulEnd.FishingTrawler_MurphyDayToAppearBeachStart";
+        internal const string MURPHY_DAY_TO_APPEAR_BEACH_END = "PeacefulEnd.FishingTrawler_MurphyDayToAppearBeachEnd";
+        internal const string MURPHY_DAY_TO_APPEAR_ISLAND_START = "PeacefulEnd.FishingTrawler_MurphyDayToAppearIslandStart";
+        internal const string MURPHY_DAY_TO_APPEAR_ISLAND_END = "PeacefulEnd.FishingTrawler_MurphyDayToAppearIslandEnd";
         internal const string MURPHY_TRIPS_COMPLETED = "PeacefulEnd.FishingTrawler_MurphyTripsCompleted";
+        internal const string MURPHY_LAST_TRIP_BEACH_DAY = "PeacefulEnd.FishingTrawler_MurphyLastTripBeachDay";
+        internal const string MURPHY_LAST_TRIP_BEACH_SEASON = "PeacefulEnd.FishingTrawler_MurphyLastTripBeachSeason";
+        internal const string MURPHY_LAST_TRIP_BEACH_YEAR = "PeacefulEnd.FishingTrawler_MurphyLastTripBeachYear";
+        internal const string MURPHY_LAST_TRIP_ISLAND_DAY = "PeacefulEnd.FishingTrawler_MurphyLastTripIslandDay";
+        internal const string MURPHY_LAST_TRIP_ISLAND_SEASON = "PeacefulEnd.FishingTrawler_MurphyLastTripIslandSeason";
+        internal const string MURPHY_LAST_TRIP_ISLAND_YEAR = "PeacefulEnd.FishingTrawler_MurphyLastTripIslandYear";
 
         // Item related
         internal const string BAILING_BUCKET_KEY = "PeacefulEnd.FishingTrawler_BailingBucket";

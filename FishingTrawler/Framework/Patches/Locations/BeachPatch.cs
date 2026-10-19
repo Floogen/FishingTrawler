@@ -1,4 +1,7 @@
-﻿using FishingTrawler.Framework.Utilities;
+﻿using System;
+using System.Linq;
+using FishingTrawler.Framework.External.GenericModConfigMenu;
+using FishingTrawler.Framework.Utilities;
 using FishingTrawler.Objects;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -6,8 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
-using System;
-using System.Linq;
 using xTile;
 using xTile.Tiles;
 
@@ -73,11 +74,15 @@ namespace FishingTrawler.Patches.Locations
 
                     if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.en)
                     {
-                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked every {0} and to speak with him before nightfall if you wish to go on a fishing trip.", Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]));
+                        string frontStringBeach = TrawlerHelper.IsDayARange(Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_BEACH_START], Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_BEACH_END]) ? "from every" : "every";
+                        string endStringBeach = TrawlerHelper.IsDayARange(Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_BEACH_START], Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_BEACH_END]) ? "to" : "";
+                        string beachAppearance = TrawlerHelper.DayRangeString(Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_BEACH_START], Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR_BEACH_END], frontStringBeach, endStringBeach);
+
+                        Game1.drawObjectDialogue(string.Format("There's a note here...#It is from Murphy! It says he will be docked {0} and to speak with him before nightfall if you wish to go on a fishing trip.", beachAppearance));
                         break;
                     }
-
-                    Game1.drawObjectDialogue(string.Format(FishingTrawler.i18n.Get("game_message.readable_note"), Game1.MasterPlayer.modData[ModDataKeys.MURPHY_DAY_TO_APPEAR]));
+                    // no implementations for other languages yet besides English
+                    Game1.drawObjectDialogue(FishingTrawler.i18n.Get("game_message.readable_note"));
                     break;
                 default:
                     break;
